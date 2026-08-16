@@ -392,6 +392,85 @@ def test_sleeper_sync_reaches_the_browser(browser, monkeypatch):
         ctx.close()
 
 
+def test_live_roster_claims_survive_a_reload(browser):
+    """`mine` lived only in the browser, so every state replay emptied the roster."""
+    from fantasyleague import serve
+
+    with serve.BoardServer(board.load(), port=0, teams=12, slot=5) as s:
+        ctx = browser.new_context()
+        pg = ctx.new_page()
+        pg.goto(f"http://127.0.0.1:{s.port}/")
+        pg.wait_for_selector(".row")
+        pg.wait_for_selector("#livepill:not([hidden])")
+        for rk in (1, 2, 3, 4):
+            pg.locator(f'.row[data-rk="{rk}"]').click()
+        pg.locator('.row[data-rk="7"]').click()          # overall pick 5 — slot 5's own
+        pg.wait_for_selector("#rostercard:not([hidden])")
+        assert "Amon-Ra St. Brown" in pg.locator("#roster").text_content()
+        assert s.bus.state()["picks"][4]["mine"] is True
+
+        pg.reload()
+        pg.wait_for_selector(".row")
+        pg.wait_for_selector("#rostercard:not([hidden])", timeout=5000)
+        assert "Amon-Ra St. Brown" in pg.locator("#roster").text_content()
+        assert pg.locator(".row.gone").count() == 5
+        ctx.close()
+
+
+def test_a_sleeper_pick_can_be_claimed_as_yours(browser):
+    """Server-sourced picks used to skip the claim path entirely."""
+    from fantasyleague import serve
+
+    with serve.BoardServer(board.load(), port=0, teams=12, slot=5) as s:
+        ctx = browser.new_context()
+        pg = ctx.new_page()
+        pg.goto(f"http://127.0.0.1:{s.port}/")
+        pg.wait_for_selector(".row")
+        pg.wait_for_selector("#livepill:not([hidden])")
+        for rank in (10, 11, 12, 13):
+            s.bus.pick(rank, source="sleeper")
+        s.bus.pick(20, source="sleeper")                 # overall pick 5 == ours
+        pg.wait_for_selector("#rostercard:not([hidden])", timeout=5000)
+        assert pg.locator('.row[data-rk="20"]').get_attribute("class").find("mine") != -1
+        assert "yours" in pg.locator("#toastMsg").text_content()
+        # …and it can be handed back, which the server records too.
+        pg.locator("#toastMine").click()
+        pg.wait_for_function("() => document.getElementById('rostercard').hidden", timeout=3000)
+        assert s.bus.state()["picks"][4]["mine"] is False
+        ctx.close()
+
+
+def test_offboard_pick_keeps_the_counter_honest(page):
+    page.locator("#slot").fill("5")
+    for rk in (1, 2, 3):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    assert "yours in 1" in page.locator("#pickinfo").text_content()
+    page.locator("#offboard").click()
+    assert "your pick" in page.locator("#pickinfo").text_content()
+    assert page.locator(".row.gone").count() == 3        # nobody was crossed off
+    page.locator("#toastUndo").click()
+    assert "yours in 1" in page.locator("#pickinfo").text_content()
+
+
+def test_odds_survive_past_the_sixteenth_round(browser, page_url):
+    """A 10-team league drafts 20 rounds; pick 165 is not the end of the draft."""
+    ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pg.locator("#teams").fill("10")
+    pg.locator("#slot").fill("1")
+    pg.evaluate("""() => {
+      const rows = [...document.querySelectorAll('.row')].slice(0, 164);
+      rows.forEach(r => r.click());
+    }""")
+    info = pg.locator("#pickinfo").text_content()
+    assert "no picks left" not in info
+    assert "#180" in info          # slot 1 of 10 turns at 180/181, well past round 16
+    assert pg.locator('.row:not(.gone) .odds').count() > 0
+    ctx.close()
+
+
 def _mine_label(page) -> str:
     # .toast-mine is text-transform: uppercase, so inner_text() would be "THAT'S MINE".
     return page.locator("#toastMine").text_content()

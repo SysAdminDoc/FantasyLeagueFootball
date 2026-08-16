@@ -39,11 +39,11 @@ def _print_players(players, header: str) -> None:
     print()
 
 
-def _print_odds(players, teams: int, slot: int, current: int) -> None:
+def _print_odds(players, teams: int, slot: int, current: int, rounds: int) -> None:
     """Best available with survival odds at your next two picks."""
-    mine = draft_mod.next_picks(teams, slot, current, count=3)
+    mine = draft_mod.next_picks(teams, slot, current, count=3, rounds=rounds)
     if not mine:
-        print(f"\nPick {current} · no picks left for slot {slot} in a {teams}-team draft\n")
+        print(f"\nPick {current} · slot {slot} has finished drafting ({rounds} rounds)\n")
         _print_players(players, "Best available")
         return
     yours = "your pick now" if mine[0] == current else f"yours in {mine[0] - current}"
@@ -106,7 +106,8 @@ def cmd_next(args: argparse.Namespace) -> int:
     avail = board_mod.best_available(data, pos=args.pos, drafted=drafted, limit=args.limit)
 
     if args.slot:
-        _print_odds(avail, args.teams, args.slot, args.pick or len(drafted) + 1)
+        rounds = draft_mod.rounds_for(len(data.players), args.teams)
+        _print_odds(avail, args.teams, args.slot, args.pick or len(drafted) + 1, rounds)
     else:
         _print_players(avail, "Best available")
     breaks = board_mod.tier_breaks(data, drafted=drafted)

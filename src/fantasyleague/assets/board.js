@@ -23,14 +23,18 @@
     n.hidden = false;
   }
 
-  // State is an ordered pick log: [{rank, ts}] in the order players were crossed
-  // off. `gone` is a derived index for O(1) lookups. Storage schema v2; v1 was a
-  // bare array of rank strings, migrated in load order (Set insertion order).
+  // State is an ordered pick log: [{rank, ts, mine}] in the order players were
+  // crossed off. An entry with rank === null is an off-board pick — someone this
+  // board doesn't rank was taken, which still burns an overall selection, so it
+  // is counted but nobody is crossed off. `gone` is a derived index for O(1)
+  // lookups. Storage schema v2; v1 was a bare array of rank strings, migrated in
+  // load order (Set insertion order).
   var log = [];
   var gone = new Set();
 
   function rebuildIndex() {
-    gone = new Set(log.map(function (e) { return String(e.rank); }));
+    gone = new Set();
+    log.forEach(function (e) { if (e.rank != null) gone.add(String(e.rank)); });
   }
 
   (function load() {
@@ -42,8 +46,10 @@
       if (Array.isArray(parsed)) {                                     // v1
         log = parsed.map(function (r) { return { rank: Number(r), ts: null }; });
       } else if (parsed && parsed.v === 2 && Array.isArray(parsed.log)) {
-        log = parsed.log.filter(function (e) { return e && typeof e.rank === "number"; })
-          .map(function (e) { return { rank: e.rank, ts: e.ts || null, mine: !!e.mine }; });
+        log = parsed.log.filter(function (e) { return e && (typeof e.rank === "number" || e.rank === null); })
+          .map(function (e) {
+            return { rank: e.rank == null ? null : e.rank, name: e.name || "", ts: e.ts || null, mine: !!e.mine };
+          });
       }
     } catch (e) { log = []; }
     rebuildIndex();
@@ -66,20 +72,43 @@
 
   function crossOff(rank, fromServer, mine) {
     if (gone.has(String(rank))) return false;
-    log.push({ rank: rank, ts: Date.now(), mine: !!mine });
+    log.push({ rank: rank, name: "", ts: Date.now(), mine: !!mine });
     rebuildIndex();
-    if (!fromServer) remote({ pick: { rank: rank } });
+    // Ownership travels with the pick: the server is authoritative in live mode,
+    // so a claim the client kept to itself would vanish on the next state replay.
+    if (!fromServer) remote({ pick: { rank: rank, mine: !!mine } });
     return true;
   }
 
+  // Someone off this board was taken. Counted, never crossed off — without it the
+  // pick counter (and "your pick", and the odds) fall behind for the rest of the draft.
+  function pickOffboard(name, fromServer) {
+    log.push({ rank: null, name: name || "", ts: Date.now(), mine: false });
+    rebuildIndex();
+    if (!fromServer) remote({ offboard: { name: name || "" } });
+  }
+
+  function undoLastOffboard() {
+    for (var i = log.length - 1; i >= 0; i--) {
+      if (log[i].rank == null) {
+        log.splice(i, 1);
+        rebuildIndex();
+        remote({ undo_pick: i + 1 });
+        return true;
+      }
+    }
+    return false;
+  }
+
   function entryFor(rank) {
+    if (rank == null) return null;
     for (var i = 0; i < log.length; i++) if (log[i].rank === rank) return log[i];
     return null;
   }
 
   function setMine(rank, mine) {
     var e = entryFor(rank);
-    if (e) { e.mine = !!mine; save(); }
+    if (e) { e.mine = !!mine; save(); remote({ mine: { rank: rank, value: !!mine } }); }
   }
 
   function restore(rank, fromServer) {
@@ -121,6 +150,7 @@
   }
 
   function byRank(rank) {
+    if (rank == null) return null;                // off-board pick
     for (var i = 0; i < DATA.players.length; i++) {
       if (DATA.players[i].rank === rank) return DATA.players[i];
     }
@@ -141,9 +171,16 @@
     try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {}
   }
 
+  // Rounds come from board depth, not a constant: a 10-team league drafts 20
+  // rounds off a 200-player board, and assuming 16 told it "no picks left" from
+  // pick 161 — exactly the late rounds a deep board exists for.
+  function boardRounds(teams) {
+    return Math.max(1, Math.ceil(DATA.players.length / teams));
+  }
   function snakePicks(teams, slot, rounds) {
     var out = [];
-    for (var r = 0; r < (rounds || 16); r++) {
+    var n = rounds || boardRounds(teams);
+    for (var r = 0; r < n; r++) {
       out.push(r * teams + (r % 2 === 0 ? slot : teams - slot + 1));
     }
     return out;
@@ -700,7 +737,7 @@
       toggle(Number(matches[0].dataset.rk));
       document.getElementById("search").value = "";
     } else if (matches.length === 0) {
-      say("No player matches “" + q + "”.");
+      say("No player matches “" + q + "”. Use Off-board pick if they were taken anyway.");
     } else {
       say(matches.length + " players match — keep typing.");
     }
@@ -747,6 +784,16 @@
   });
 
   document.getElementById("print").addEventListener("click", function () { window.print(); });
+
+  document.getElementById("offboard").addEventListener("click", function () {
+    pickOffboard("");
+    save();
+    say("Off-board pick recorded. Pick " + (log.length + 1) + " is on the clock.");
+    toast("Off-board pick recorded", function () {
+      undoLastOffboard(); save(); say("Off-board pick removed.");
+    });
+    paint();
+  });
 
   // Roster as CSV. Clipboard first (works everywhere the page does); if the browser
   // refuses, fall back to selecting the text in a prompt the user can copy by hand.
@@ -836,17 +883,38 @@
     es.addEventListener("error", function () { setPill(false); });
     es.addEventListener("state", function (ev) {
       var st = JSON.parse(ev.data);
-      log = (st.picks || []).map(function (p) { return { rank: p.rank, ts: p.ts || null }; });
+      // The server owns `mine` now, so replaying state no longer forgets which
+      // picks are yours — that used to empty the roster card on every reload.
+      log = (st.picks || []).map(function (p) {
+        return { rank: p.rank == null ? null : p.rank, name: p.name || "", ts: p.ts || null, mine: !!p.mine };
+      });
+      if (st.teams) { draft.teams = st.teams; teamsIn.value = st.teams; }
+      if (st.slot) { draft.slot = st.slot; slotIn.value = st.slot; }
       rebuildIndex(); save(); paint();
     });
     es.addEventListener("pick", function (ev) {
       var p = JSON.parse(ev.data);
-      if (crossOff(p.rank, true)) {
-        save();
+      if (p.rank != null && gone.has(String(p.rank))) return;
+      if (p.rank == null) {
+        pickOffboard(p.name, true);
+        if (p.source !== "board") say("Off-board pick" + (p.name ? ": " + p.name : "") + ".");
+      } else {
+        crossOff(p.rank, true, p.mine);
         var pl = byRank(p.rank);
-        if (pl && p.source !== "board") say(pl.name + " crossed off" + (p.source ? " (" + p.source + ")" : "") + ".");
-        paint();
+        if (pl && p.source !== "board") {
+          // A pick that arrives from Sleeper can be yours too — offer the same
+          // claim the manual path does instead of silently ignoring it.
+          say(pl.name + (p.mine ? " crossed off — added to your roster." : " crossed off (" + p.source + ")."));
+          toast(pl.name + (p.mine ? " — yours" : " crossed off (" + p.source + ")"), null, p.rank);
+        }
       }
+      save();
+      paint();
+    });
+    es.addEventListener("mine", function (ev) {
+      var p = JSON.parse(ev.data);
+      var e = entryFor(p.rank);
+      if (e && e.mine !== !!p.mine) { e.mine = !!p.mine; save(); paint(); }
     });
     es.addEventListener("undo", function (ev) {
       var p = JSON.parse(ev.data);

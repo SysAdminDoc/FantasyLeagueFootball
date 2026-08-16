@@ -6,6 +6,23 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+- Roster claims survive live mode. Ownership is now server state, so a reload or a
+  dropped SSE connection no longer empties "Your roster" — and a pick that arrives
+  from Sleeper can be claimed as yours, which was impossible before: the automatic
+  claim only ever ran for picks made in the browser, so the roster card, lineup
+  needs and bye warnings were dead whenever `serve --sleeper` was doing the work.
+- Picks of players this board doesn't rank are counted instead of dropped. A deep
+  bench pick used to leave the pick counter, "your pick" detection, the survival
+  odds and opponent attribution one behind for the rest of the draft. Sleeper
+  records them automatically; an **Off-board pick** button does the same by hand.
+- A pick undone in Sleeper is undone on the board. Previously the pick stuck, and
+  because its number was remembered the replacement pick was ignored for good.
+- Snake maths follows board depth instead of assuming 16 rounds. A 10-team league
+  drafts 20 rounds off a 200-player board and used to be told "no picks left" from
+  pick 161 — with odds and auto-claim switching off — in exactly the late rounds
+  the 200-player board was built for.
+
 ### Security
 - `POST /state` refuses cross-origin writes. A JSON content type is now required
   (which forces a browser into a CORS preflight that cannot succeed, since no

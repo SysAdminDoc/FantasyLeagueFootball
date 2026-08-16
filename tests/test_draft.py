@@ -29,6 +29,31 @@ def test_next_picks_from_current():
     assert draft.next_picks(12, 5, 21, count=3) == [29, 44, 53]
 
 
+def test_rounds_come_from_board_depth():
+    """A 10-team league drafts 20 rounds off a 200-player board, not 16."""
+    assert draft.rounds_for(200, 12) == 17
+    assert draft.rounds_for(200, 10) == 20
+    assert draft.rounds_for(200, 8) == 25
+    assert draft.rounds_for(5, 12) == 1
+    with pytest.raises(ValueError):
+        draft.rounds_for(200, 1)
+
+
+def test_next_picks_past_the_sixteenth_round():
+    """Capping at 16 rounds used to report "no picks left" from pick 161 on."""
+    rounds = draft.rounds_for(200, 10)
+    assert draft.next_picks(10, 1, 165, rounds=rounds) == [180, 181]
+    assert draft.next_picks(10, 1, 165) == []          # the old default still stops at 16
+    data = board.load()
+    assert draft.next_picks(10, 1, 165, rounds=draft.rounds_for(len(data.players), 10))
+
+
+def test_slot_of_walks_the_snake():
+    assert [draft.slot_of(p, 4) for p in range(1, 9)] == [1, 2, 3, 4, 4, 3, 2, 1]
+    picks = draft.snake_picks(12, 7, 4)
+    assert all(draft.slot_of(p, 12) == 7 for p in picks)
+
+
 def test_availability_matches_published_method():
     # ADP 20, σ = ADP/4 = 5: 1 − Φ((29−20)/5) ≈ 0.036, 1 − Φ((17−20)/5) ≈ 0.726
     assert draft.availability(20, None, 29) == pytest.approx(0.0359, abs=0.005)

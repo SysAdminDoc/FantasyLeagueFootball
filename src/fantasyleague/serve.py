@@ -36,6 +36,7 @@ from typing import Self
 from urllib.parse import urlsplit
 
 from . import board as board_mod
+from . import draft as draft_mod
 from . import render as render_mod
 from .models import Dataset
 
@@ -46,9 +47,21 @@ SOURCE_RE = re.compile(r"[A-Za-z0-9_.-]{1,32}")
 
 @dataclass
 class Bus:
-    """Authoritative pick log for a live session plus SSE fan-out."""
+    """Authoritative pick log for a live session plus SSE fan-out.
+
+    The log holds every pick made, not just the ones on this board: a manager who
+    takes someone the board never ranked still burns an overall pick, and dropping
+    those entries used to leave the pick counter, "your pick" detection and the
+    survival odds one behind for the rest of the draft. Off-board picks carry
+    `rank: None` and are counted but never crossed off.
+
+    Ownership lives here too, so a reload or an SSE reconnect cannot lose it, and
+    a pick that arrives from Sleeper can be recognised as yours.
+    """
 
     data: Dataset
+    teams: int = 12
+    slot: int | None = None
     picks: list[dict] = field(default_factory=list)
     _clients: list[queue.Queue] = field(default_factory=list)
     _lock: threading.Lock = field(default_factory=threading.Lock)
@@ -57,26 +70,96 @@ class Bus:
 
     def state(self) -> dict:
         with self._lock:
-            return {"picks": list(self.picks), "current_pick": len(self.picks) + 1}
+            return {
+                "picks": list(self.picks),
+                "current_pick": len(self.picks) + 1,
+                "teams": self.teams,
+                "slot": self.slot,
+            }
 
-    def pick(self, rank: int, source: str = "manual") -> bool:
+    def my_picks(self) -> set[int]:
+        """Overall pick numbers belonging to this board's slot."""
+        if not self.slot or not 1 <= self.slot <= self.teams:
+            return set()
+        rounds = draft_mod.rounds_for(len(self.data.players), self.teams)
+        return set(draft_mod.snake_picks(self.teams, self.slot, rounds))
+
+    def _is_mine(self, pick_no: int, slot: int | None) -> bool:
+        """Sleeper tells us which slot picked; otherwise fall back to snake maths."""
+        if slot is not None and self.slot is not None:
+            return slot == self.slot
+        return pick_no in self.my_picks()
+
+    def _append(self, entry: dict) -> dict:
+        entry["pick_no"] = len(self.picks) + 1
+        entry.setdefault("ts", int(time.time() * 1000))
+        entry["mine"] = bool(
+            entry["mine"] if entry.get("mine") is not None
+            else self._is_mine(entry["pick_no"], entry.get("slot"))
+        )
+        self.picks.append(entry)
+        return entry
+
+    def pick(
+        self,
+        rank: int,
+        source: str = "manual",
+        slot: int | None = None,
+        mine: bool | None = None,
+    ) -> bool:
         """Cross *rank* off. Returns False if it was already gone (idempotent)."""
         with self._lock:
             if any(p["rank"] == rank for p in self.picks):
                 return False
-            entry = {"rank": rank, "ts": int(time.time() * 1000), "source": source}
-            self.picks.append(entry)
+            entry = self._append({"rank": rank, "source": source, "slot": slot, "mine": mine})
         self._broadcast("pick", entry)
+        return True
+
+    def pick_offboard(self, source: str = "manual", name: str = "", slot: int | None = None) -> dict:
+        """Record a pick of someone this board doesn't rank, so the count stays true."""
+        with self._lock:
+            entry = self._append(
+                {"rank": None, "name": name, "source": source, "slot": slot, "mine": None}
+            )
+        self._broadcast("pick", entry)
+        return entry
+
+    def set_mine(self, rank: int, mine: bool = True) -> bool:
+        """Claim (or release) a pick for this board's manager."""
+        with self._lock:
+            entry = next((p for p in self.picks if p["rank"] == rank), None)
+            if entry is None or entry["mine"] == mine:
+                return False
+            entry["mine"] = mine
+            payload = dict(entry)
+        self._broadcast("mine", payload)
         return True
 
     def undo(self, rank: int, source: str = "manual") -> bool:
         with self._lock:
             before = len(self.picks)
             self.picks = [p for p in self.picks if p["rank"] != rank]
+            self._renumber()
             changed = len(self.picks) != before
         if changed:
             self._broadcast("undo", {"rank": rank, "source": source})
         return changed
+
+    def undo_pick_no(self, pick_no: int, source: str = "manual") -> dict | None:
+        """Drop the pick at overall *pick_no* — how a commissioner's undo arrives."""
+        with self._lock:
+            entry = next((p for p in self.picks if p["pick_no"] == pick_no), None)
+            if entry is None:
+                return None
+            self.picks = [p for p in self.picks if p is not entry]
+            self._renumber()
+        self._broadcast("undo", {"rank": entry["rank"], "pick_no": pick_no, "source": source})
+        return entry
+
+    def _renumber(self) -> None:
+        """Pick numbers are positions in the log; removing one closes the gap."""
+        for i, entry in enumerate(self.picks, start=1):
+            entry["pick_no"] = i
 
     def reset(self, source: str = "manual") -> None:
         with self._lock:
@@ -89,6 +172,16 @@ class Bus:
             self.reset(source)
         elif "undo" in body:
             self.undo(_as_rank(body["undo"], "undo"), source)
+        elif "undo_pick" in body:
+            self.undo_pick_no(_as_rank(body["undo_pick"], "undo_pick"), source)
+        elif "mine" in body:
+            spec = body["mine"]
+            if not isinstance(spec, dict) or "rank" not in spec:
+                raise ValueError('mine must be an object, e.g. {"mine": {"rank": 3, "value": true}}')
+            self.set_mine(_as_rank(spec["rank"], "mine.rank"), bool(spec.get("value", True)))
+        elif "offboard" in body:
+            spec = body["offboard"] if isinstance(body["offboard"], dict) else {}
+            self.pick_offboard(source=source, name=str(spec.get("name") or ""))
         elif "pick" in body:
             spec = body["pick"]
             if not isinstance(spec, dict):
@@ -97,9 +190,14 @@ class Bus:
             token = spec.get("rank", spec.get("name"))
             if token is None:
                 raise ValueError("pick needs a rank or a name")
-            self.pick(board_mod.resolve(self.data, token).rank, source)
+            mine = spec.get("mine")
+            self.pick(
+                board_mod.resolve(self.data, token).rank,
+                source,
+                mine=None if mine is None else bool(mine),
+            )
         else:
-            raise ValueError("expected one of: pick, undo, reset")
+            raise ValueError("expected one of: pick, undo, reset, mine, offboard")
         return self.state()
 
     # ---- fan-out -----------------------------------------------------------
@@ -308,7 +406,7 @@ class BoardServer:
         slot: int | None = None,
     ):
         self.data = data
-        self.bus = Bus(data)
+        self.bus = Bus(data, teams=teams or draft_mod.DEFAULT_TEAMS, slot=slot)
         html = render_mod.render(data, title=title, league=league, teams=teams, slot=slot, live=True)
         self.httpd = _Server((host, port), make_handler(self.bus, html.encode("utf-8")))
         self._thread: threading.Thread | None = None

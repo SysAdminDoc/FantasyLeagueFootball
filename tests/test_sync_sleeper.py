@@ -49,33 +49,74 @@ def test_resolves_players_by_sleeper_id(data, bus):
 
 def test_apply_crosses_off_and_tags_source(data, bus):
     s, log = make(data, bus)
-    assert s.apply(PICKS) == 3
+    assert s.apply(PICKS) == 4
     ranks = [p["rank"] for p in bus.state()["picks"]]
-    assert ranks == [21, 31, 189]  # A.J. Brown, Josh Allen, Texans D/ST
+    # A.J. Brown, Josh Allen, Texans D/ST, then a player this board doesn't rank.
+    assert ranks == [21, 31, 189, None]
     assert all(p["source"] == "sleeper" for p in bus.state()["picks"])
-    assert bus.state()["current_pick"] == 4
     assert any("A.J. Brown" in m for m in log)
+
+
+def test_offboard_pick_still_advances_the_counter(data, bus):
+    """A player we don't rank still burns an overall pick — dropping it drifts the clock."""
+    s, _ = make(data, bus)
+    s.apply(PICKS)
+    assert bus.state()["current_pick"] == 5
+    offboard = bus.state()["picks"][3]
+    assert offboard["rank"] is None and offboard["name"] == "Not OnBoard"
+    assert [p["pick_no"] for p in bus.state()["picks"]] == [1, 2, 3, 4]
 
 
 def test_unknown_player_logged_once_not_every_poll(data, bus):
     s, log = make(data, bus)
     s.apply(PICKS)
-    s._seen.clear()  # simulate the next poll returning the same list
+    s._applied.clear()  # simulate losing our memory of what was applied
     s.apply(PICKS)
     assert sum("not on this board" in m for m in log) == 1
 
 
 def test_repeated_polls_are_idempotent(data, bus):
     s, _ = make(data, bus)
-    assert s.apply(PICKS) == 3
+    assert s.apply(PICKS) == 4
     assert s.apply(PICKS) == 0
-    assert len(bus.state()["picks"]) == 3
+    assert len(bus.state()["picks"]) == 4
+
+
+def test_undone_pick_is_mirrored(data, bus):
+    """A commissioner's undo removes the pick from the feed; the board must follow."""
+    s, log = make(data, bus)
+    s.apply(PICKS)
+    assert s.apply(PICKS[:3]) == 0
+    assert [p["rank"] for p in bus.state()["picks"]] == [21, 31, 189]
+    assert bus.state()["current_pick"] == 4
+    assert any("undone in Sleeper" in m for m in log)
+    # …and the corrected pick at that number lands.
+    redone = [*PICKS[:3], {**PICKS[3], "player_id": "4034", "metadata": {"first_name": "Christian",
+                                                                        "last_name": "McCaffrey"}}]
+    assert s.apply(redone) == 1
+    assert bus.state()["picks"][3]["rank"] is not None
+
+
+def test_replaced_pick_at_the_same_number_is_swapped(data, bus):
+    s, _ = make(data, bus)
+    s.apply(PICKS[:1])
+    swapped = [{**PICKS[0], "player_id": "4984", "metadata": {"first_name": "Josh", "last_name": "Allen"}}]
+    s.apply(swapped)
+    assert [p["rank"] for p in bus.state()["picks"]] == [31]
+
+
+def test_draft_slot_marks_your_own_picks(data):
+    bus = serve.Bus(data, teams=12, slot=2)
+    s, _ = make(data, bus)
+    s.apply(PICKS)
+    mine = [p["mine"] for p in bus.state()["picks"]]
+    assert mine == [False, True, False, False]  # pick 2 was draft_slot 2
 
 
 def test_picks_applied_in_pick_order(data, bus):
     s, _ = make(data, bus)
     s.apply(list(reversed(PICKS)))  # server order should not matter after sorting upstream
-    assert len(bus.state()["picks"]) == 3
+    assert len(bus.state()["picks"]) == 4
 
 
 def test_poll_once_survives_network_failure(data, bus, monkeypatch):
@@ -93,7 +134,7 @@ def test_poll_once_survives_network_failure(data, bus, monkeypatch):
 def test_poll_once_applies_fetched_picks(data, bus, monkeypatch):
     s, _ = make(data, bus)
     monkeypatch.setattr(sleeper, "fetch_picks", lambda _d, timeout=10.0: PICKS)
-    assert s.poll_once() == 3
+    assert s.poll_once() == 4
     assert s.poll_once() == 0
 
 
@@ -114,13 +155,13 @@ def test_start_stop_is_clean(data, bus, monkeypatch):
     s, _ = make(data, bus, interval=0.05)
     s.start()
     for _ in range(50):
-        if len(bus.state()["picks"]) == 3:
+        if len(bus.state()["picks"]) == 4:
             break
         import time
 
         time.sleep(0.02)
     s.stop()
-    assert len(bus.state()["picks"]) == 3
+    assert len(bus.state()["picks"]) == 4
     assert not s._thread.is_alive()
 
 

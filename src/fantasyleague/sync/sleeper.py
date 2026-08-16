@@ -47,9 +47,10 @@ def fetch_draft(draft_id: str, timeout: float = 10.0) -> dict:
 
 @dataclass
 class SleeperSync:
-    """Polls a Sleeper draft and pushes picks into a Bus.
+    """Polls a Sleeper draft and pushes picks into a `serve.Bus`.
 
-    `bus` is anything with `.pick(rank, source=...)` — the serve.Bus in practice.
+    The bus must offer `pick`, `pick_offboard` and `undo_pick_no`: a live draft
+    includes players this board never ranked, and commissioners undo picks.
     """
 
     data: Dataset
@@ -59,7 +60,9 @@ class SleeperSync:
     on_event: object = None  # optional callable(str) for CLI logging
 
     _index: dict = field(default_factory=dict, init=False)
-    _seen: set = field(default_factory=set, init=False)
+    # pick_no -> the sleeper player_id applied for it, so a commissioner's undo
+    # (the pick vanishes from the feed) can be mirrored instead of sticking.
+    _applied: dict = field(default_factory=dict, init=False)
     _unknown: set = field(default_factory=set, init=False)
     _stop: threading.Event = field(default_factory=threading.Event, init=False)
     _thread: threading.Thread | None = field(default=None, init=False)
@@ -73,22 +76,47 @@ class SleeperSync:
         """Board player for a Sleeper pick, or None when they're off our board."""
         return self._index.get(str(pick.get("player_id")))
 
+    @staticmethod
+    def _display_name(pick: dict) -> str:
+        meta = pick.get("metadata") or {}
+        name = " ".join(filter(None, [meta.get("first_name"), meta.get("last_name")])).strip()
+        return name or f"sleeper {pick.get('player_id')}"
+
+    def _undo_missing(self, picks: list[dict]) -> int:
+        """Mirror picks that disappeared from the feed (commissioner undo / reset)."""
+        live = {p.get("pick_no") for p in picks}
+        undone = 0
+        for no in sorted(self._applied.keys() - live, reverse=True):
+            self._applied.pop(no, None)
+            if self.bus.undo_pick_no(no, source="sleeper"):
+                undone += 1
+                self._log(f"pick {no}: undone in Sleeper")
+        return undone
+
     def apply(self, picks: list[dict]) -> int:
-        """Cross off everyone in *picks*; returns how many were newly applied."""
+        """Sync *picks* into the bus; returns how many were newly applied."""
+        self._undo_missing(picks)
         applied = 0
         for pick in picks:
             no = pick.get("pick_no")
-            if no in self._seen:
+            pid = str(pick.get("player_id"))
+            if self._applied.get(no) == pid:
                 continue
-            self._seen.add(no)
+            if no in self._applied:               # same slot, different player: redo it
+                self.bus.undo_pick_no(no, source="sleeper")
+            self._applied[no] = pid
+            slot = pick.get("draft_slot")
             player = self.resolve(pick)
             if player is None:
-                pid = str(pick.get("player_id"))
+                # Still a pick: it burns an overall selection, and dropping it left
+                # the counter — and therefore "your pick" — behind for good.
                 if pid not in self._unknown:      # log once, not every poll
                     self._unknown.add(pid)
-                    self._log(f"pick {no}: sleeper player {pid} is not on this board")
+                    self._log(f"pick {no}: {self._display_name(pick)} is not on this board")
+                self.bus.pick_offboard(source="sleeper", name=self._display_name(pick), slot=slot)
+                applied += 1
                 continue
-            if self.bus.pick(player.rank, source="sleeper"):
+            if self.bus.pick(player.rank, source="sleeper", slot=slot):
                 applied += 1
                 self._log(f"pick {no}: {player.name} ({player.pos} {player.team})")
         return applied

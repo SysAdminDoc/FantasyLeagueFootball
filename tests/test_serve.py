@@ -46,7 +46,7 @@ def test_root_serves_live_board(server):
 
 def test_state_round_trip_by_rank_and_name(server):
     status, st = _get(server, "/state")[0], json.loads(_get(server, "/state")[2])
-    assert status == 200 and st == {"picks": [], "current_pick": 1}
+    assert status == 200 and st["picks"] == [] and st["current_pick"] == 1
 
     status, st = _post(server, "/state", {"pick": {"rank": 3}})
     assert status == 200 and [p["rank"] for p in st["picks"]] == [3]
@@ -183,7 +183,8 @@ def test_sse_sends_state_then_broadcasts_picks(server):
         if line in (b"\r\n", b"\n", b""):
             break
     events = _read_events(f, 1)
-    assert events == [("state", {"picks": [], "current_pick": 1})]
+    assert events[0][0] == "state"
+    assert events[0][1]["picks"] == [] and events[0][1]["current_pick"] == 1
 
     # A pick from another connection reaches the stream.
     got = {}
@@ -208,6 +209,44 @@ def test_bus_source_tag_and_client_count(server):
     server.bus.pick(5, source="sleeper")
     assert server.bus.state()["picks"][0]["source"] == "sleeper"
     assert server.bus.pick(5, source="sleeper") is False
+
+
+def test_ownership_is_server_state_so_a_reload_cannot_lose_it(server):
+    """`mine` used to live only in the browser, so an SSE state replay wiped it."""
+    _post(server, "/state", {"pick": {"rank": 3}})
+    assert server.bus.state()["picks"][0]["mine"] is False
+    status, st = _post(server, "/state", {"mine": {"rank": 3, "value": True}})
+    assert status == 200 and st["picks"][0]["mine"] is True
+    # A fresh client reading /state sees the claim.
+    assert json.loads(_get(server, "/state")[2])["picks"][0]["mine"] is True
+    assert _post(server, "/state", {"mine": {"rank": 3, "value": False}})[1]["picks"][0]["mine"] is False
+    assert _post(server, "/state", {"mine": {"value": True}})[0] == 400
+
+
+def test_your_slot_claims_its_own_picks_automatically():
+    with serve.BoardServer(board.load(), port=0, teams=12, slot=3) as s:
+        for rank in (1, 2, 4):
+            s.bus.pick(rank)
+        assert [p["mine"] for p in s.bus.state()["picks"]] == [False, False, True]
+        # Slot 3 in a 12-team snake picks 3rd and 22nd.
+        assert {3, 22} <= s.bus.my_picks()
+
+
+def test_offboard_picks_count_without_crossing_anyone_off(server):
+    _post(server, "/state", {"pick": {"rank": 1}})
+    status, st = _post(server, "/state", {"offboard": {"name": "Deep Sleeper"}})
+    assert status == 200
+    assert [p["rank"] for p in st["picks"]] == [1, None]
+    assert st["current_pick"] == 3
+    assert st["picks"][1]["name"] == "Deep Sleeper"
+
+
+def test_undo_pick_no_renumbers_the_log(server):
+    for rank in (1, 2, 3):
+        server.bus.pick(rank)
+    assert server.bus.undo_pick_no(2)["rank"] == 2
+    assert [(p["pick_no"], p["rank"]) for p in server.bus.state()["picks"]] == [(1, 1), (2, 3)]
+    assert server.bus.undo_pick_no(99) is None
 
 
 def test_urls_and_context_manager():

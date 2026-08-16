@@ -14,10 +14,23 @@ import math
 from .models import Player
 
 DEFAULT_TEAMS = 12
+DEFAULT_ROUNDS = 16
 MIN_SD = 0.5
 
 
-def snake_picks(teams: int, slot: int, rounds: int = 16) -> list[int]:
+def rounds_for(players: int, teams: int) -> int:
+    """Rounds needed to draft a board *players* deep with *teams* managers.
+
+    Not a constant: a 10-team league runs 20 rounds on a 200-player board, and
+    assuming 16 told those leagues they had "no picks left" from pick 161 on —
+    exactly the late rounds the deep board exists for.
+    """
+    if teams < 2:
+        raise ValueError("teams must be at least 2")
+    return max(1, -(-players // teams))
+
+
+def snake_picks(teams: int, slot: int, rounds: int = DEFAULT_ROUNDS) -> list[int]:
     """Overall pick numbers for *slot* (1-based) in a snake draft of *teams*."""
     if teams < 2:
         raise ValueError("teams must be at least 2")
@@ -30,9 +43,17 @@ def snake_picks(teams: int, slot: int, rounds: int = 16) -> list[int]:
     return picks
 
 
-def next_picks(teams: int, slot: int, current_pick: int, count: int = 2, rounds: int = 16) -> list[int]:
+def next_picks(
+    teams: int, slot: int, current_pick: int, count: int = 2, rounds: int = DEFAULT_ROUNDS
+) -> list[int]:
     """The next *count* of your picks at or after *current_pick*."""
     return [p for p in snake_picks(teams, slot, rounds) if p >= current_pick][:count]
+
+
+def slot_of(pick: int, teams: int) -> int:
+    """Which draft slot owns overall *pick* in a snake draft."""
+    rnd, idx = divmod(pick - 1, teams)
+    return idx + 1 if rnd % 2 == 0 else teams - idx
 
 
 def phi(z: float) -> float:

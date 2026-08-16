@@ -45,6 +45,7 @@ __CSS__
       <label class="numfield">Teams <input id="teams" type="number" min="2" max="24" inputmode="numeric"></label>
       <label class="numfield">Your slot <input id="slot" type="number" min="1" max="24" inputmode="numeric" placeholder="—"></label>
       <div class="pickinfo" id="pickinfo"></div>
+      <button class="ghost" id="offboard" type="button" title="Someone not on this board was taken — keeps the pick count honest">Off-board pick</button>
     </div>
     <div class="storenote" id="storenote" hidden></div>
   </div>

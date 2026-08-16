@@ -440,6 +440,34 @@ def test_a_sleeper_pick_can_be_claimed_as_yours(browser):
         ctx.close()
 
 
+def test_unsynced_picks_are_reported_and_replayed(browser):
+    """A failed POST used to be swallowed, so the next state replay deleted the pick."""
+    from fantasyleague import serve
+
+    with serve.BoardServer(board.load(), port=0) as s:
+        ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+        pg = ctx.new_page()
+        pg.goto(f"http://127.0.0.1:{s.port}/")
+        pg.wait_for_selector(".row")
+        pg.wait_for_selector("#livepill:not([hidden])")
+
+        pg.route("**/state", lambda route: route.abort())
+        pg.locator('.row[data-rk="30"]').click()
+        pg.wait_for_selector("#livepill.off", timeout=3000)
+        assert "not synced" in pg.locator("#livepill").text_content().lower()
+        assert "not synced" in pg.locator("#toastMsg").text_content().lower()
+        assert len(s.bus.state()["picks"]) == 0
+
+        # Reconnecting replays the queue rather than losing the pick.
+        pg.unroute("**/state")
+        pg.evaluate("() => window.dispatchEvent(new Event('online'))")
+        pg.reload()
+        pg.wait_for_selector(".row")
+        pg.wait_for_function("() => document.querySelector('#livepill') && "
+                             "!document.querySelector('#livepill').classList.contains('off')", timeout=5000)
+        ctx.close()
+
+
 def test_offboard_pick_keeps_the_counter_honest(page):
     page.locator("#slot").fill("5")
     for rk in (1, 2, 3):
@@ -499,6 +527,82 @@ def test_superflex_board_plans_with_two_quarterbacks(browser, tmp_path):
     roster = pg.locator("#roster").text_content()
     assert roster.count("QB") >= 2
     assert "BN" not in roster, "a second QB must take a starting slot in superflex"
+    ctx.close()
+
+
+def test_toggle_buttons_show_their_state(page):
+    off = page.evaluate("() => getComputedStyle(document.querySelector('#liveval')).backgroundColor")
+    page.locator("#liveval").click()
+    on = page.evaluate("() => getComputedStyle(document.querySelector('#liveval')).backgroundColor")
+    assert off != on, "a pressed toggle must look pressed, not only change the rows"
+    page.locator("#liveval").click()
+    assert page.evaluate(
+        "() => getComputedStyle(document.querySelector('#liveval')).backgroundColor") == off
+
+
+def test_only_reset_reads_as_destructive(page):
+    page.locator("#print").hover()
+    print_colour = page.evaluate("() => getComputedStyle(document.querySelector('#print')).color")
+    page.locator("#reset").hover()
+    reset_colour = page.evaluate("() => getComputedStyle(document.querySelector('#reset')).color")
+    assert print_colour != reset_colour
+    assert reset_colour == "rgb(217, 97, 93)"      # --avoid
+
+
+def test_toast_fits_a_phone_and_waits_while_focused(browser, page_url):
+    ctx = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True,
+                              has_touch=True, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pg.locator("#slot").fill("5")
+    for rk in (1, 2, 3, 4):
+        pg.locator(f'.row[data-rk="{rk}"]').click()
+    row = pg.locator('.row[data-nm="jacory croskey-merritt"]')     # the longest name on the board
+    row.scroll_into_view_if_needed()
+    row.click()
+    fits = pg.evaluate("""() => {
+      const u = document.querySelector('#toastUndo').getBoundingClientRect();
+      const m = document.querySelector('#toastMine').getBoundingClientRect();
+      return u.right <= innerWidth && u.left >= 0 && m.right <= innerWidth;
+    }""")
+    assert fits, "Undo — the only safety net — was pushed off-screen"
+    pg.locator("#toastUndo").focus()
+    pg.wait_for_timeout(8400)
+    assert pg.locator("#toast").is_visible(), "the timer must pause while the toast has focus"
+    ctx.close()
+
+
+def test_dark_mode_declares_its_color_scheme(page):
+    assert page.evaluate("() => getComputedStyle(document.documentElement).colorScheme") == "dark"
+
+
+def test_empty_rails_are_hidden_not_shown_as_blank_cards(browser, tmp_path):
+    import dataclasses
+
+    data = board.load()
+    out = tmp_path / "empty.html"
+    render.write(
+        dataclasses.replace(data, plan=[], do_not_draft=[], injuries=[], sleepers=[], trending=[]),
+        out,
+    )
+    ctx = browser.new_context(viewport={"width": 1440, "height": 900}, color_scheme="light")
+    pg = ctx.new_page()
+    pg.goto(out.resolve().as_uri())
+    pg.wait_for_selector(".row")
+    for element_id in ("plan", "dndcard", "injcard", "slpcard", "trendcard"):
+        assert pg.locator(f"#{element_id}").is_hidden(), f"#{element_id} should not render empty"
+    assert pg.locator("#bestAvail .ba-item").count() > 0
+    ctx.close()
+
+
+def test_auction_values_print_in_black(browser, page_url):
+    ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pg.emulate_media(media="print")
+    assert pg.evaluate("() => getComputedStyle(document.querySelector('.val')).color") == "rgb(0, 0, 0)"
     ctx.close()
 
 

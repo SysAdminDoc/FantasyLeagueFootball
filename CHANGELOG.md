@@ -6,7 +6,27 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Accessibility
+- Secondary text meets WCAG AA on every surface in both themes. Player notes, tier
+  ranges, rank numbers, card headings and all four ghost buttons sat between
+  3.4:1 and 4.4:1 — worst over a hovered row. The lowest ratio on the board is now
+  4.7:1, and the status colours clear AA on their own pill backgrounds too. A test
+  parses the palettes and fails if either drifts back.
+- Both themes declare `color-scheme`, so the number spinners, the search field's
+  clear button and the scrollbars stop rendering light-on-dark.
+- The toast keeps Undo on screen at 390px (a long player name used to push it off
+  the edge), holds while it has hover or focus instead of expiring mid-read, and
+  moves focus to Undo when the cross-off came from the keyboard — previously you
+  had to Shift+Tab back through every row between the board and the toast.
+- Toggle buttons show a pressed state, so whether Live value or Keeper info is on
+  is visible rather than inferred from the rows; and hovering a harmless control
+  no longer turns it the same red as Reset.
+
 ### Changed
+- Empty rails are hidden instead of rendering header-only cards and a stray rule
+  where the plan would be — Trending already did this; the rest now match.
+- The printed sheet flattens the status colours: auction values printed light
+  green on white at 2.2:1, and bye/age warnings amber at 2.0:1.
 - The board reads its starting lineup, format and provenance from the dataset
   instead of assuming the packaged one. A `2qb` board is priced off two QB slots
   but the page still showed "Yahoo default · 0.5 PPR · QB Single" and planned your
@@ -24,6 +44,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   board and late-round targets are reachable without scrolling past 200 rows.
 
 ### Fixed
+- A live pick that fails to reach the server is reported and retried rather than
+  swallowed. A phone that drops Wi-Fi for a moment kept accepting taps, and the
+  next state replay silently deleted them; unsynced changes are now queued, shown
+  in the live pill and in a toast, and replayed on reconnect.
 - `validate` reports the dataset shapes that used to be raw tracebacks: an unknown
   field (with a "did you mean 'note'?" hint), `ids: null`, a number where text
   belongs, and a missing top-level field. `build` on such a file now prints one

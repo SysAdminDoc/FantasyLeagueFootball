@@ -80,12 +80,12 @@ __CSS__
         </div>
       </section>
 
-      <section class="card">
+      <section class="card" id="dndcard">
         <h2>Do not draft</h2>
         <div class="card-body"><ul class="listing" id="dnd"></ul></div>
       </section>
 
-      <section class="card">
+      <section class="card" id="injcard">
         <h2>Injury board</h2>
         <div class="card-body tight" id="inj"></div>
       </section>
@@ -95,7 +95,7 @@ __CSS__
         <div class="card-body tight" id="trend"></div>
       </section>
 
-      <section class="card">
+      <section class="card" id="slpcard">
         <h2>Late-round targets</h2>
         <div class="card-body"><ul class="listing" id="slp"></ul></div>
       </section>

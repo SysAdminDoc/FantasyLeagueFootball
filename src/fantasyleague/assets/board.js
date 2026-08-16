@@ -62,12 +62,47 @@
   // ---- live mode: a served page follows the server's log over SSE and echoes
   // local actions back with fetch(), so every open tab shows the same board.
   var LIVE = !!DATA.live;
+  // Writes that never reached the server. A phone that drops Wi-Fi for a moment
+  // keeps accepting taps; swallowing the failures meant the next state replay
+  // quietly deleted those picks. Queue them, say so, and replay on reconnect.
+  var unsynced = [];
+  var setPill = function () {};
+
   function remote(body) {
-    if (!LIVE) return;
+    if (!LIVE) return null;
     try {
-      fetch("/state", { method: "POST", headers: { "Content-Type": "application/json", "X-Source": "board" },
-        body: JSON.stringify(body) }).catch(function () {});
-    } catch (e) { /* no fetch — nothing to sync */ }
+      return fetch("/state", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Source": "board" },
+        body: JSON.stringify(body)
+      }).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r;
+      }).catch(function (err) { queueUnsynced(body); throw err; });
+    } catch (e) {
+      queueUnsynced(body);
+      return null;
+    }
+  }
+
+  function queueUnsynced(body) {
+    unsynced.push(body);
+    setPill(false);
+    toast(unsynced.length === 1
+      ? "Not synced — the server didn't get that. Retrying."
+      : unsynced.length + " changes not synced. Retrying.");
+    say("That change has not reached the server yet.");
+  }
+
+  function flushUnsynced() {
+    if (!unsynced.length) return;
+    var queued = unsynced.slice();
+    unsynced = [];
+    queued.forEach(function (body) { remote(body); });
+    if (!unsynced.length) {
+      setPill(true);
+      say("Reconnected — queued changes sent.");
+    }
   }
 
   function crossOff(rank, fromServer, mine) {
@@ -425,6 +460,8 @@
   var undoAction = null;                        // function that reverts the last action
 
   var mineRank = null;                          // rank the "That's mine" button toggles
+  var TOAST_MS = 8000;
+  var toastReturnFocus = null;                  // where to put focus back after Undo
   function toast(msg, undo, rank) {
     toastMsg.textContent = msg;
     undoAction = undo || null;
@@ -438,14 +475,36 @@
       toastMine.hidden = true;
     }
     toastEl.hidden = false;
+    startToastTimer();
+    // Keyboard users would otherwise have to Shift+Tab back through every row
+    // between the board and the toast before Undo expires.
+    if (undo && lastActionWasKeyboard) {
+      toastReturnFocus = document.activeElement;
+      toastUndo.focus();
+    }
+  }
+  function startToastTimer() {
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(hideToast, 6000);
+    toastTimer = setTimeout(hideToast, TOAST_MS);
   }
   function hideToast() {
+    clearTimeout(toastTimer);
     toastEl.hidden = true;
     undoAction = null;
     mineRank = null;
+    if (toastReturnFocus && document.contains(toastReturnFocus)) toastReturnFocus.focus();
+    toastReturnFocus = null;
   }
+  // Reading or reaching for the toast should not race its own timer.
+  toastEl.addEventListener("mouseenter", function () { clearTimeout(toastTimer); });
+  toastEl.addEventListener("focusin", function () { clearTimeout(toastTimer); });
+  toastEl.addEventListener("mouseleave", startToastTimer);
+  toastEl.addEventListener("focusout", function (e) {
+    if (!toastEl.contains(e.relatedTarget)) startToastTimer();
+  });
+
+  // A click from Enter/Space reports detail 0; a real pointer click reports 1+.
+  var lastActionWasKeyboard = false;
   toastMine.addEventListener("click", function () {
     if (mineRank === null) return;
     var e = entryFor(mineRank);
@@ -560,6 +619,13 @@
       }).join("");
     }
 
+    // A board with no rails showed three header-only boxes and a 2px rule where
+    // the plan would be. Trending already hid itself; the rest now match.
+    [["plan", DATA.plan], ["dndcard", DATA.do_not_draft],
+     ["injcard", DATA.injuries], ["slpcard", DATA.sleepers]].forEach(function (pair) {
+      document.getElementById(pair[0]).hidden = !(pair[1] && pair[1].length);
+    });
+
     // Where the ranks came from is a property of the dataset, not of the template:
     // a variant or a hand-written board must not credit Rotoworld for its order.
     document.getElementById("provenance").textContent =
@@ -631,9 +697,11 @@
           '<span class="flags"><span class="vorslot"></span><span class="ageslot"></span><span class="valslot"></span><span class="byeslot"></span><span class="oddsslot"></span>' +
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
-        b.addEventListener("click", function () {
+        b.addEventListener("click", function (ev) {
+          lastActionWasKeyboard = ev.detail === 0;
           toggle(p.rank);
           paint();
+          lastActionWasKeyboard = false;
         });
         rows.appendChild(b);
       });
@@ -906,13 +974,16 @@
   // ---- SSE client + screen wake lock (served pages only) ----
   if (LIVE && typeof EventSource !== "undefined") {
     var pill = document.getElementById("livepill");
-    var setPill = function (on) {
+    setPill = function (on) {
       pill.hidden = false;
-      pill.classList.toggle("off", !on);
-      pill.textContent = on ? "Live · following the server" : "Live · reconnecting…";
+      var stuck = unsynced.length;
+      pill.classList.toggle("off", !on || !!stuck);
+      pill.textContent = stuck
+        ? "Live · " + stuck + " change" + (stuck === 1 ? "" : "s") + " not synced"
+        : on ? "Live · following the server" : "Live · reconnecting…";
     };
     var es = new EventSource("/events");
-    es.addEventListener("open", function () { setPill(true); });
+    es.addEventListener("open", function () { setPill(true); flushUnsynced(); });
     es.addEventListener("error", function () { setPill(false); });
     es.addEventListener("state", function (ev) {
       var st = JSON.parse(ev.data);

@@ -33,6 +33,76 @@ def css():
     return _asset("board.css")
 
 
+def _luminance(hex_colour: str) -> float:
+    h = hex_colour.lstrip("#")
+    channels = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    linear = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def contrast(a: str, b: str) -> float:
+    la, lb = _luminance(a), _luminance(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def _palette(css: str, selector: str) -> dict[str, str]:
+    """Tokens declared in one theme block."""
+    body = css.split(selector, 1)[1].split("}", 1)[0]
+    return dict(re.findall(r"--([\w-]+):\s*(#[0-9A-Fa-f]{6})", body))
+
+
+@pytest.mark.parametrize("selector", [":root {", ':root[data-theme="light"] {'])
+def test_secondary_text_meets_wcag_aa_on_every_surface(css, selector):
+    """--ink-dim carries notes, tier ranges and card headings at 11-12.5px.
+
+    It has to clear 4.5:1 on the darkest/lightest surface it lands on, including
+    --raise (the row hover), not just on the page ground.
+    """
+    p = _palette(css, selector)
+    for surface in ("ground", "surface", "surface-2", "raise"):
+        ratio = contrast(p["ink-dim"], p[surface])
+        assert ratio >= 4.5, f"{selector} --ink-dim on --{surface} is {ratio:.2f}:1"
+
+
+@pytest.mark.parametrize("selector", [":root {", ':root[data-theme="light"] {'])
+def test_status_colours_are_readable_on_their_own_backgrounds(css, selector):
+    p = _palette(css, selector)
+    for fg, bg in (("good", "good-bg"), ("warn", "warn-bg"), ("avoid", "avoid-bg")):
+        ratio = contrast(p[fg], p[bg])
+        assert ratio >= 4.5, f"{selector} --{fg} on --{bg} is {ratio:.2f}:1"
+    for token in ("accent", "good", "warn", "avoid"):
+        ratio = contrast(p[token], p["ground"])
+        assert ratio >= 4.5, f"{selector} --{token} on --ground is {ratio:.2f}:1"
+    ratio = contrast(p["accent-ink"], p["accent"])
+    assert ratio >= 4.5, f"{selector} --accent-ink on --accent is {ratio:.2f}:1"
+
+
+def test_both_light_palettes_stay_identical(css):
+    """The media-query palette and the [data-theme] one must not drift apart."""
+    assert _palette(css, ':root:not([data-theme="dark"]) {') == _palette(css, ':root[data-theme="light"] {')
+
+
+def test_themes_declare_color_scheme(css):
+    """Without it the UA paints number spinners and scrollbars in the wrong theme."""
+    assert "color-scheme: dark;" in css
+    # Both light palettes declare it; `prefers-color-scheme: light)` must not count.
+    assert css.count("color-scheme: light;") == 2
+
+
+def test_toggles_have_a_pressed_style(css):
+    assert '.ghost[aria-pressed="true"]' in css, "toggle buttons need a visible on-state"
+    assert ".ghost:hover { color: var(--avoid)" not in css, "only Reset should read as destructive"
+    assert "#reset:hover" in css
+
+
+def test_print_flattens_status_colours(css):
+    """Screen greens and ambers print at ~2:1 on white."""
+    block = css.split("@media print", 1)[1]
+    tokens = block.split(':root[data-theme="light"] {', 1)[1].split("}", 1)[0]
+    for token in ("--good", "--warn", "--avoid"):
+        assert f"{token}: #000" in tokens, f"{token} prints at ~2:1 on white unless flattened"
+
+
 def test_every_referenced_id_exists_in_template(js, template):
     wanted = set(re.findall(r'getElementById\("([^"]+)"\)', js))
     present = set(re.findall(r'id="([^"]+)"', template))

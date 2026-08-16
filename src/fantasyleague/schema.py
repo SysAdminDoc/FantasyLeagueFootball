@@ -157,6 +157,11 @@ def check(raw: dict) -> list[str]:
                     bad(f"{at}/{key}", "required field is missing")
             if field_name == "injuries" and row.get("severity") not in SEVERITIES:
                 bad(f"{at}/severity", f"{row.get('severity')!r} is not one of {', '.join(SEVERITIES)}")
+            if field_name == "sources" and "url" in row:
+                url = row.get("url")
+                if not isinstance(url, str) or not url.lower().startswith(("http://", "https://")):
+                    # Anything else (javascript:, data:) would be rendered as a link.
+                    bad(f"{at}/url", f"must be an http(s) URL, got {url!r}")
 
     return problems
 

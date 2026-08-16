@@ -38,9 +38,13 @@ def test_no_external_requests(html):
         assert scheme not in html.replace("https://www.", "").replace("https://sports.", "")
 
 
-def test_data_payload_round_trips(html):
+def _payload(html: str) -> dict:
     raw = re.search(r"const DATA = (\{.*?\});", html, re.DOTALL).group(1)
-    payload = json.loads(raw.replace("<\\/", "</"))
+    return json.loads(raw)
+
+
+def test_data_payload_round_trips(html):
+    payload = _payload(html)
     assert len(payload["players"]) == 200
     assert payload["season"] == 2026
     assert payload["players"][0]["name"] == "Jahmyr Gibbs"
@@ -49,13 +53,26 @@ def test_data_payload_round_trips(html):
 def test_payload_carries_tier_break_threshold(html):
     from fantasyleague.board import TIER_BREAK_THRESHOLD
 
-    raw = re.search(r"const DATA = (\{.*?\});", html, re.DOTALL).group(1)
-    assert json.loads(raw.replace("<\\/", "</"))["tier_break"] == TIER_BREAK_THRESHOLD
+    assert _payload(html)["tier_break"] == TIER_BREAK_THRESHOLD
 
 
-def test_script_tags_cannot_break_out_of_payload(html):
+def test_no_raw_angle_brackets_reach_the_inline_script(html):
+    """`</script>` is the obvious break-out; `<!--<script` is the one that blanks the page."""
     body = html.split("const DATA = ", 1)[1].split(";\n", 1)[0]
     assert "</script" not in body
+    assert "<" not in body and ">" not in body
+
+
+def test_hostile_strings_survive_as_data(tmp_path):
+    import dataclasses
+
+    data = board.load()
+    nasty = "x <!--<script> y </script> & <b>"
+    players = [dataclasses.replace(data.players[0], note=nasty), *data.players[1:]]
+    html = render.render(dataclasses.replace(data, players=players))
+    body = html.split("const DATA = ", 1)[1].split(";\n", 1)[0]
+    assert "<" not in body and ">" not in body
+    assert _payload(html)["players"][0]["note"] == nasty
 
 
 def test_both_themes_are_defined(html):

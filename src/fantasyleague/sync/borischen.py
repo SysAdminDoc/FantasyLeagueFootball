@@ -22,12 +22,13 @@ from dataclasses import replace
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 
-from ..models import Dataset
+from ..models import Dataset, Tier
 from .adp import normalise
 from .sleeper import USER_AGENT
 
 BASE = "https://s3-us-west-1.amazonaws.com/fftiers/out"
 MAX_AGE_DAYS = 14
+POSITION_ORDER = ("QB", "RB", "WR", "TE", "K", "DST")
 
 # text_ALL-HALF.txt is 403; the per-position files are the usable ones.
 FILES = {
@@ -102,16 +103,21 @@ def apply(data: Dataset, tiers_by_pos: dict[str, dict[str, int]]) -> tuple[Datas
 
     Positional tiers are mapped onto the board's tier numbers by offsetting each
     position into its own block, so a "Tier 1 RB" and a "Tier 1 WR" stay distinct.
+    Every tier is rebuilt from the import: keeping the packaged names would leave
+    a block of quarterbacks labelled "The anchors · No wrong answer. Take the
+    board." Players with no published tier land in one trailing tier of their own
+    rather than inheriting whichever imported block happens to own their old number.
     Returns the new dataset and the names that had no published tier.
     """
     offsets: dict[str, int] = {}
     base = 0
-    for pos in ("QB", "RB", "WR", "TE", "K", "DST"):
+    for pos in POSITION_ORDER:
         mapping = tiers_by_pos.get(pos)
         if not mapping:
             continue
         offsets[pos] = base
         base += max(mapping.values())
+    leftover_tier = base + 1
 
     players = []
     unmatched: list[str] = []
@@ -120,24 +126,25 @@ def apply(data: Dataset, tiers_by_pos: dict[str, dict[str, int]]) -> tuple[Datas
         tier = mapping.get(normalise(p.name)) if mapping else None
         if tier is None:
             unmatched.append(f"{p.name} ({p.pos})")
-            players.append(p)
+            players.append(replace(p, tier=leftover_tier))
         else:
             players.append(replace(p, tier=offsets[p.pos] + tier))
 
-    used = sorted({p.tier for p in players})
-    names = {t.n: t for t in data.tiers}
     rebuilt = []
-    for n in used:
+    for n in sorted({p.tier for p in players}):
         members = [p for p in players if p.tier == n]
-        old = names.get(n)
+        pos = members[0].pos
+        leftover = n == leftover_tier
         rebuilt.append(
-            replace(old, range=f"Picks {members[0].rank}-{members[-1].rank}")
-            if old
-            else type(data.tiers[0])(
+            Tier(
                 n=n,
-                name=f"{members[0].pos} tier {n - offsets.get(members[0].pos, 0)}",
+                name="Unranked by Boris Chen" if leftover else f"{pos} tier {n - offsets.get(pos, 0)}",
                 range=f"Picks {members[0].rank}-{members[-1].rank}",
-                note="Boris Chen consensus tiers",
+                note=(
+                    "No published tier for these players — board order kept."
+                    if leftover
+                    else "Boris Chen consensus tiers"
+                ),
             )
         )
     return replace(data, players=players, tiers=rebuilt), unmatched

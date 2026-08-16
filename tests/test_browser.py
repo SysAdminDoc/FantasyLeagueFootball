@@ -471,6 +471,51 @@ def test_odds_survive_past_the_sixteenth_round(browser, page_url):
     ctx.close()
 
 
+def test_html_comment_script_in_a_note_cannot_blank_the_page(browser, tmp_path):
+    """`<!--<script>` used to stop the closing tag closing anything: 0 rows, no error."""
+    import dataclasses
+
+    data = board.load()
+    players = [dataclasses.replace(data.players[0], note="x <!--<script> y"), *data.players[1:]]
+    out = tmp_path / "hostile.html"
+    render.write(dataclasses.replace(data, players=players), out)
+    ctx = browser.new_context(color_scheme="dark")
+    pg = ctx.new_page()
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    pg.goto(out.resolve().as_uri())
+    pg.wait_for_selector(".row")
+    assert pg.locator(".row").count() == 200
+    assert errors == []
+    assert "<!--<script>" in pg.locator('.row[data-rk="1"] .note').text_content()
+    ctx.close()
+
+
+def test_non_http_source_urls_are_not_links(browser, tmp_path):
+    import dataclasses
+
+    from fantasyleague.models import Source
+
+    data = board.load()
+    out = tmp_path / "srcs.html"
+    render.write(dataclasses.replace(data, sources=[Source(label="click me", url="javascript:window.x=1")]), out)
+    ctx = browser.new_context(color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(out.resolve().as_uri())
+    pg.wait_for_selector(".row")
+    assert pg.locator("#srcs a").count() == 0
+    assert "click me" in pg.locator("#srcs").text_content()
+    pg.locator("#srcs .src-flat").click()
+    assert pg.evaluate("() => window.x") is None
+    ctx.close()
+
+
+def test_http_sources_open_in_a_new_tab(page):
+    first = page.locator("#srcs a").first
+    assert first.get_attribute("target") == "_blank"
+    assert "noopener" in first.get_attribute("rel")
+
+
 def test_phone_puts_the_live_readouts_above_the_board(browser, page_url):
     """One column used to put Best available ~15,000px down, under 200 rows."""
     ctx = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True,

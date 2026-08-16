@@ -455,6 +455,8 @@ footer {
 footer a { color: var(--ink-mid); }
 footer strong { color: var(--ink); }
 .srcs { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+/* A source whose URL isn't http(s) is shown, not linked. */
+.src-flat { color: var(--ink-dim); }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }

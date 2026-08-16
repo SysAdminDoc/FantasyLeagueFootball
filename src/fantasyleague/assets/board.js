@@ -555,8 +555,14 @@
       adpEl.textContent += " Injuries and trending refreshed " + DATA.refreshed + ".";
     }
 
+    // Only http(s) becomes a link: `esc()` stops attribute breakout but not the URL
+    // scheme, and the CSP allows inline script, so a `javascript:` source in an
+    // untrusted board would run on click. Anything else shows as plain text.
+    // New tab: a mid-draft mis-click must not navigate the board away.
     document.getElementById("srcs").innerHTML = DATA.sources.map(function (s) {
-      return '<a href="' + esc(s.url) + '">' + esc(s.label) + "</a>";
+      var url = String(s.url || "");
+      if (!/^https?:\/\//i.test(url)) return '<span class="src-flat">' + esc(s.label) + "</span>";
+      return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.label) + "</a>";
     }).join("");
   }
 

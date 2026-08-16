@@ -89,8 +89,18 @@ def render(
     replacements = {
         "__CSS__": _asset("board.css"),
         "__JS__": _asset("board.js"),
-        # </script> inside a JSON string would close the host <script> tag early.
-        "__DATA__": json.dumps(payload, ensure_ascii=False).replace("</", "<\\/"),
+        # No raw angle bracket may reach the inline <script>. `</script>` closing the
+        # host tag is the obvious case, but `<!--` followed by `<script` is worse: it
+        # puts the tokenizer into the double-escaped state, the real closing tag stops
+        # closing anything, and one string in one note renders a blank page. <
+        # and friends are valid JSON *and* valid JS string escapes, so the payload
+        # parses identically.
+        "__DATA__": (
+            json.dumps(payload, ensure_ascii=False)
+            .replace("<", "\\u003c")
+            .replace(">", "\\u003e")
+            .replace("&", "\\u0026")
+        ),
         # Everything below lands in markup as text and must be escaped: --title and
         # the dataset's `updated`/`season` can come from an untrusted --data file.
         "__VERSION__": htmlmod.escape(__version__),

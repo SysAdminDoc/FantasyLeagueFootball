@@ -17,6 +17,11 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   board and late-round targets are reachable without scrolling past 200 rows.
 
 ### Fixed
+- `fantasyleague tiers` rebuilds every tier from the import instead of reusing the
+  packaged names, which used to leave a block of quarterbacks labelled "The
+  anchors · No wrong answer. Take the board." and dropped players with no
+  published tier into whichever imported block inherited their old number; they
+  now sit in one clearly named trailing tier.
 - Roster claims survive live mode. Ownership is now server state, so a reload or a
   dropped SSE connection no longer empties "Your roster" — and a pick that arrives
   from Sleeper can be claimed as yours, which was impossible before: the automatic
@@ -34,6 +39,14 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the 200-player board was built for.
 
 ### Security
+- No raw angle bracket reaches the page's inline data any more. Escaping only
+  `</` left `<!--<script>` in any dataset string able to blank the whole board:
+  it drives the HTML tokenizer into a state where the real closing tag stops
+  closing the script, so nothing rendered — from one note, with no error.
+- A source URL is only turned into a link when it is `http(s)`. `javascript:` in a
+  shared board JSON ran on click; it now shows as plain text, `validate` rejects
+  it, and real sources open in a new tab so a mis-click mid-draft cannot navigate
+  the board away.
 - `POST /state` refuses cross-origin writes. A JSON content type is now required
   (which forces a browser into a CORS preflight that cannot succeed, since no
   `Access-Control-Allow-*` header is ever sent), an `Origin` that disagrees with

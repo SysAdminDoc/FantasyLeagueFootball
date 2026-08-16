@@ -96,6 +96,39 @@ def test_apply_offsets_positions_so_tier_1s_stay_distinct():
     assert "Josh Allen (QB)" in unmatched
 
 
+def test_apply_never_reuses_the_packaged_tier_names():
+    """A block of quarterbacks must not stay labelled "The anchors"."""
+    data = board.load()
+    original = {t.name for t in data.tiers}
+    fresh, _ = borischen.apply(
+        data,
+        {
+            "QB": {borischen.normalise(p.name): 1 for p in data.players if p.pos == "QB"},
+            "RB": {borischen.normalise(p.name): (1 if p.rank < 30 else 2)
+                   for p in data.players if p.pos == "RB"},
+        },
+    )
+    assert not original & {t.name for t in fresh.tiers}
+    for tier in fresh.tiers:
+        members = [p for p in fresh.players if p.tier == tier.n]
+        if tier.name == "Unranked by Boris Chen":
+            assert all(p.pos not in ("QB", "RB") for p in members)
+            continue
+        assert len({p.pos for p in members}) == 1, f"tier {tier.n} mixes positions"
+        assert tier.name.startswith(members[0].pos)
+        assert tier.note == "Boris Chen consensus tiers"
+
+
+def test_unmatched_players_share_one_trailing_tier():
+    data = board.load()
+    fresh, unmatched = borischen.apply(data, {"RB": {"jahmyr gibbs": 1}})
+    leftovers = {p.tier for p in fresh.players if p.name != "Jahmyr Gibbs"}
+    assert len(leftovers) == 1
+    assert max(leftovers) > fresh.players[0].tier
+    assert len(unmatched) == len(data.players) - 1
+    board.validate(fresh)
+
+
 def test_apply_keeps_the_board_loadable(tmp_path):
     data = board.load()
     fresh, _ = borischen.apply(data, {"RB": borischen.parse(SAMPLE)})

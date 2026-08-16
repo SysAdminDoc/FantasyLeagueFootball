@@ -151,6 +151,33 @@ def test_cli_reports_shape_errors_without_a_traceback(tmp_path, capsys):
     assert "unknown field" in err
 
 
+def test_advisories_flag_rail_names_that_are_not_on_the_board():
+    """"R.J. Harvey" against a board listing "RJ Harvey" is a typo, not a new player."""
+    raw = base()
+    raw["do_not_draft"] = [{"name": "A", "pos": "RB", "team": "DET", "why": "x"}]
+    raw["sleepers"] = [{"name": "Nobody Here", "pos": "TE", "team": "SF", "why": "x"}]
+    notes = schema.advisories(raw)
+    assert notes == ["/sleepers/0/name: 'Nobody Here' is not on this board"]
+    assert schema.check(raw) == [], "an off-board late-round target is not an error"
+
+    # Punctuation differences are not mismatches.
+    raw["do_not_draft"] = [{"name": "A.", "pos": "RB", "team": "DET", "why": "x"}]
+    assert not [n for n in schema.advisories(raw) if "do_not_draft" in n]
+
+
+def test_packaged_board_rail_names_resolve_except_deep_sleepers():
+    raw = json.loads(cli._packaged_data_path().read_text(encoding="utf-8"))
+    notes = schema.advisories(raw)
+    assert not [n for n in notes if "/do_not_draft/" in n], "a do-not-draft name must match a row"
+    assert not [n for n in notes if "/injuries/" in n]
+
+
+def test_validate_prints_advisories_without_failing(capsys):
+    assert cli.main(["validate"]) == 0
+    out = capsys.readouterr().out
+    assert "valid" in out and "note:" in out
+
+
 def test_unknown_id_source_and_bad_numbers():
     raw = base()
     raw["players"][0]["ids"] = {"nfl": "x"}

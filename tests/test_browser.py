@@ -530,20 +530,27 @@ def test_superflex_board_plans_with_two_quarterbacks(browser, tmp_path):
     ctx.close()
 
 
+SETTLE_MS = 220     # longer than the 120ms colour transition
+
+
 def test_toggle_buttons_show_their_state(page):
     off = page.evaluate("() => getComputedStyle(document.querySelector('#liveval')).backgroundColor")
     page.locator("#liveval").click()
+    page.wait_for_timeout(SETTLE_MS)
     on = page.evaluate("() => getComputedStyle(document.querySelector('#liveval')).backgroundColor")
     assert off != on, "a pressed toggle must look pressed, not only change the rows"
     page.locator("#liveval").click()
+    page.wait_for_timeout(SETTLE_MS)
     assert page.evaluate(
         "() => getComputedStyle(document.querySelector('#liveval')).backgroundColor") == off
 
 
 def test_only_reset_reads_as_destructive(page):
     page.locator("#print").hover()
+    page.wait_for_timeout(SETTLE_MS)
     print_colour = page.evaluate("() => getComputedStyle(document.querySelector('#print')).color")
     page.locator("#reset").hover()
+    page.wait_for_timeout(SETTLE_MS)
     reset_colour = page.evaluate("() => getComputedStyle(document.querySelector('#reset')).color")
     assert print_colour != reset_colour
     assert reset_colour == "rgb(217, 97, 93)"      # --avoid
@@ -574,13 +581,26 @@ def test_toast_fits_a_phone_and_waits_while_focused(browser, page_url):
     ctx.close()
 
 
+def _search_finds(page, query: str, name: str):
+    """Type in the search box, wait out the input debounce, return the visible names."""
+    page.locator("#search").fill(query)
+    page.wait_for_function(
+        """([q, expected]) => {
+             const rows = [...document.querySelectorAll('.row:not(.hide)')];
+             return rows.length === 1 && rows[0].querySelector('.nm').textContent === expected;
+           }""",
+        arg=[query, name],
+        timeout=3000,
+    )
+
+
 def test_search_ignores_apostrophes(page):
-    page.locator("#search").fill("jamarr")
-    assert page.locator(".row:not(.hide)").count() == 1
-    assert "Ja'Marr Chase" in page.locator(".row:not(.hide)").first.text_content()
-    page.locator("#search").fill("dandre")
-    assert page.locator(".row:not(.hide)").count() == 1
+    """Nobody types the apostrophe in Ja'Marr with a draft clock running."""
+    _search_finds(page, "jamarr", "Ja'Marr Chase")
+    _search_finds(page, "dandre", "D'Andre Swift")
+    _search_finds(page, "croskey merritt", "Jacory Croskey-Merritt")
     page.locator("#search").fill("")
+    page.wait_for_function("() => document.querySelectorAll('.row:not(.hide)').length === 200")
 
 
 def test_refresh_stamp_shows_in_the_masthead(page):
@@ -605,6 +625,46 @@ def test_cli_settings_win_over_saved_ones_when_they_change(browser, tmp_path):
     pg.goto(url)
     pg.wait_for_selector(".row")
     assert pg.locator("#slot").input_value() == "6", "a changed --slot must win over the saved one"
+    ctx.close()
+
+
+def test_rail_marks_entries_that_have_no_row(page):
+    """A late-round target below the board's depth can't be crossed off — say so."""
+    tags = page.locator("#slp .offboard-tag")
+    assert tags.count() == 3
+    assert page.locator("#dnd .offboard-tag").count() == 0, "every do-not-draft name has a row"
+
+
+def test_theme_toggle_cycles_and_persists(browser, page_url):
+    """The light palette existed but was unreachable without changing the OS setting."""
+    ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    dark_bg = pg.evaluate("() => getComputedStyle(document.body).backgroundColor")
+    assert pg.locator("#theme").text_content() == "Theme: auto"
+
+    pg.locator("#theme").click()                       # auto -> dark
+    assert pg.evaluate("() => document.documentElement.dataset.theme") == "dark"
+    pg.locator("#theme").click()                       # dark -> light
+    assert pg.evaluate("() => document.documentElement.dataset.theme") == "light"
+    light_bg = pg.evaluate("() => getComputedStyle(document.body).backgroundColor")
+    assert light_bg != dark_bg, "the light palette must actually paint"
+
+    pg.reload()
+    pg.wait_for_selector(".row")
+    assert pg.evaluate("() => document.documentElement.dataset.theme") == "light"
+    assert pg.locator("#theme").text_content() == "Theme: light"
+    ctx.close()
+
+
+def test_motion_is_disabled_under_reduced_motion(browser, page_url):
+    ctx = browser.new_context(color_scheme="dark", reduced_motion="reduce")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    assert pg.evaluate(
+        "() => getComputedStyle(document.querySelector('.row')).transitionDuration") == "0s"
     ctx.close()
 
 

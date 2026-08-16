@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import http.client
+import json
 import sys
 import time
 import webbrowser
@@ -411,6 +412,11 @@ def cmd_validate(args: argparse.Namespace) -> int:
             print(f"{target}: {exc}", file=sys.stderr)
             return 1
         print(f"{target}: valid — {len(data.players)} players in {len(data.tiers)} tiers")
+        # Not failures: a late-round target may legitimately sit below the board's
+        # depth. A misspelt rail name shows up here rather than nowhere.
+        raw = json.loads(Path(target).read_text(encoding="utf-8-sig"))
+        for note in schema_mod.advisories(raw):
+            print(f"  note: {note}")
         return 0
     print(f"{target}: {len(problems)} problem{'s' if len(problems) != 1 else ''}", file=sys.stderr)
     for line in problems:

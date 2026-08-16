@@ -38,6 +38,7 @@ __CSS__
     </div>
     <button class="ghost" id="liveval" type="button" aria-pressed="false">Live value</button>
     <button class="ghost" id="keeper" type="button" aria-pressed="false">Keeper info</button>
+    <button class="ghost" id="theme" type="button" title="Switch between the dark and light palettes">Theme: auto</button>
     <button class="ghost" id="print" type="button">Print sheet</button>
     <button class="ghost" id="reset" type="button">Reset board</button>
     <div class="tally" id="tally"></div>

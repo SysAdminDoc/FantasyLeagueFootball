@@ -22,7 +22,21 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is visible rather than inferred from the rows; and hovering a harmless control
   no longer turns it the same red as Reset.
 
+### Added
+- A **Theme** toggle (auto / dark / light) that persists with your draft settings.
+  The light palette was fully built but unreachable without changing the OS
+  setting. Short colour transitions were added alongside it, all of them dropped
+  under `prefers-reduced-motion`.
+- `validate` prints advisory notes for rail entries whose names match no player —
+  how the packaged board's "R.J. Harvey" was found to be the same person as its
+  own "RJ Harvey" row. The board marks such entries "not on this board" rather
+  than leaving you looking for a row that was never there.
+
 ### Changed
+- Repainting the board is no longer quadratic. Every row did a linear scan of all
+  200 players (twice), then rewrote five spans, on every keystroke; lookups are
+  now indexed, DOM writes happen only when the value changed, rows are re-ordered
+  only when the order actually moved, and typing is debounced.
 - Nonsense arguments are refused instead of quietly producing wrong output:
   `--slot` outside `--teams`, a one-team league, a zero budget or roster size, a
   sub-second poll interval, a zero row limit. `serve --sleeper` now checks the

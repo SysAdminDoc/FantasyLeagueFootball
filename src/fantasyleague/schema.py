@@ -248,6 +248,37 @@ def check(raw: dict) -> list[str]:
     return problems
 
 
+def advisories(raw: dict) -> list[str]:
+    """Things worth knowing that are not structural errors.
+
+    A rail entry whose name matches no player is usually a typo — "R.J. Harvey"
+    against a board that lists "RJ Harvey" — and the entry then cannot be acted
+    on from the board. It is legitimate for a late-round target to sit below the
+    board's depth, so this warns rather than fails.
+    """
+    from .board import normalise_name
+
+    players = raw.get("players")
+    if not isinstance(players, list):
+        return []
+    known = {
+        normalise_name(p["name"])
+        for p in players
+        if isinstance(p, dict) and isinstance(p.get("name"), str)
+    }
+    out: list[str] = []
+    for field_name in ("do_not_draft", "injuries", "sleepers"):
+        rows = raw.get(field_name)
+        if not isinstance(rows, list):
+            continue
+        for i, row in enumerate(rows):
+            if not isinstance(row, dict) or not isinstance(row.get("name"), str):
+                continue
+            if normalise_name(row["name"]) not in known:
+                out.append(f"/{field_name}/{i}/name: {row['name']!r} is not on this board")
+    return out
+
+
 def check_file(path: str | Path) -> list[str]:
     """Structural problems in the dataset at *path*; parse errors come back as one."""
     try:

@@ -32,9 +32,16 @@
   var log = [];
   var gone = new Set();
 
+  // Derived indexes, rebuilt whenever the log changes: paint() touches every row
+  // on every keystroke, and a linear scan per row made that O(n^2).
+  var entryByRank = {};
+
   function rebuildIndex() {
     gone = new Set();
-    log.forEach(function (e) { if (e.rank != null) gone.add(String(e.rank)); });
+    entryByRank = {};
+    log.forEach(function (e) {
+      if (e.rank != null) { gone.add(String(e.rank)); entryByRank[e.rank] = e; }
+    });
   }
 
   (function load() {
@@ -136,9 +143,7 @@
   }
 
   function entryFor(rank) {
-    if (rank == null) return null;
-    for (var i = 0; i < log.length; i++) if (log[i].rank === rank) return log[i];
-    return null;
+    return rank == null ? null : entryByRank[rank] || null;
   }
 
   function setMine(rank, mine) {
@@ -198,12 +203,17 @@
     setTimeout(function () { liveEl.textContent = text; }, 0);
   }
 
+  var PLAYER_BY_RANK = {};
+  DATA.players.forEach(function (p) { PLAYER_BY_RANK[p.rank] = p; });
+
   function byRank(rank) {
-    if (rank == null) return null;                // off-board pick
-    for (var i = 0; i < DATA.players.length; i++) {
-      if (DATA.players[i].rank === rank) return DATA.players[i];
-    }
-    return null;
+    return rank == null ? null : PLAYER_BY_RANK[rank] || null;   // null = off-board pick
+  }
+
+  // Writing innerHTML unconditionally re-parsed five spans per row per paint —
+  // about a thousand DOM writes for every keystroke in the search box.
+  function setHtml(el, html) {
+    if (el.__last !== html) { el.__last = html; el.innerHTML = html; }
   }
 
   // ---- draft position: teams + slot, persisted per board; snake math mirrors draft.py ----
@@ -219,7 +229,7 @@
       var cliChanged = !dsaved.seed ||
         dsaved.seed.teams !== seed.teams || dsaved.seed.slot !== seed.slot;
       draft = cliChanged ? { teams: seed.teams, slot: seed.slot, keeper: dsaved.keeper,
-                             liveval: dsaved.liveval } : dsaved;
+                             liveval: dsaved.liveval, theme: dsaved.theme } : dsaved;
     }
   } catch (e) { /* storage already reported */ }
   var keeperMode = !!draft.keeper;
@@ -227,6 +237,7 @@
     draft.keeper = keeperMode;
     draft.liveval = liveMode;
     draft.seed = seed;
+    // draft.theme is set by the theme toggle and carried through here.
     try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {}
   }
 
@@ -630,9 +641,13 @@
       return '<div class="plan-cell"><h3>' + esc(p.position) + "</h3><p>" + emph(p.guidance) + "</p></div>";
     }).join("");
 
+    var dndOnBoard = {};
+    DATA.players.forEach(function (p) { dndOnBoard[normName(p.name)] = true; });
     document.getElementById("dnd").innerHTML = DATA.do_not_draft.map(function (e) {
+      var off = dndOnBoard[normName(e.name)]
+        ? "" : ' <span class="offboard-tag">not on this board</span>';
       return '<li><span class="l-nm">' + esc(e.name) +
-        ' <span class="p">' + esc(e.pos) + " " + esc(e.team) + "</span></span>" +
+        ' <span class="p">' + esc(e.pos) + " " + esc(e.team) + "</span>" + off + "</span>" +
         '<span class="l-why">' + esc(e.why) + "</span></li>";
     }).join("");
 
@@ -643,9 +658,18 @@
         String(i.status == null ? "" : i.status).split("|").map(esc).join("<br>") + "</span></div>";
     }).join("");
 
+    // A rail name that isn't on the board can't be crossed off; say so rather
+    // than leaving the reader hunting for a row that was never there.
+    var onBoard = {};
+    DATA.players.forEach(function (p) { onBoard[normName(p.name)] = true; });
+    var offBoardTag = function (name) {
+      return onBoard[normName(name)] ? "" : ' <span class="offboard-tag">not on this board</span>';
+    };
+
     document.getElementById("slp").innerHTML = DATA.sleepers.map(function (e) {
       var tag = e.team ? esc(e.pos) + " " + esc(e.team) : esc(e.pos);
-      return '<li><span class="l-nm">' + esc(e.name) + ' <span class="p">' + tag + "</span></span>" +
+      return '<li><span class="l-nm">' + esc(e.name) + ' <span class="p">' + tag + "</span>" +
+        offBoardTag(e.name) + "</span>" +
         '<span class="l-why">' + esc(e.why) + "</span></li>";
     }).join("");
 
@@ -789,29 +813,29 @@
       r.classList.toggle("hide", !(okPos && okQ));
       var pl = byRank(Number(r.dataset.rk));
       r.classList.toggle("mine", !!(isGone && (entryFor(pl.rank) || {}).mine));
-      r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(pl, mine);
-      r.querySelector(".vorslot").innerHTML = liveMode && vor[pl.rank] != null && !isGone
+      setHtml(r.querySelector(".oddsslot"), isGone ? "" : oddsHtml(pl, mine));
+      setHtml(r.querySelector(".vorslot"), liveMode && vor[pl.rank] != null && !isGone
         ? '<span class="vor" title="Points above the replacement still available">+' +
           vor[pl.rank] + "</span>"
-        : "";
-      r.querySelector(".ageslot").innerHTML = keeperMode && pl.age
+        : "");
+      setHtml(r.querySelector(".ageslot"), keeperMode && pl.age
         ? '<span class="age ' + ageClass(pl) + '" title="' + esc(ageTitle(pl)) + '">' +
           pl.age + "y</span>"
-        : "";
-      r.querySelector(".valslot").innerHTML = pl.value
+        : "");
+      setHtml(r.querySelector(".valslot"), pl.value
         ? '<span class="val" title="Auction value">$' + pl.value + "</span>"
-        : "";
-      r.querySelector(".byeslot").innerHTML = pl.bye
+        : "");
+      setHtml(r.querySelector(".byeslot"), pl.bye
         ? '<span class="bye' + (myByeWeeks[pl.bye] >= 2 && !isGone ? " clash" : "") + '" title="Bye week ' +
           pl.bye + '">B' + pl.bye + "</span>"
-        : "";
+        : "");
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".tier"), function (sec) {
       sec.classList.toggle("resorted", liveMode);
       var host = sec.querySelector(".rows");
       var rows = Array.prototype.slice.call(host.querySelectorAll(".row"));
-      rows.sort(function (a, b) {
+      var sorted = rows.slice().sort(function (a, b) {
         if (liveMode) {
           var va = vor[Number(a.dataset.rk)], vb = vor[Number(b.dataset.rk)];
           if (va != null && vb != null && va !== vb) return vb - va;
@@ -820,7 +844,10 @@
         }
         return Number(a.dataset.rk) - Number(b.dataset.rk);
       });
-      rows.forEach(function (r) { host.appendChild(r); });
+      // Re-appending 200 nodes on every keystroke is wasted work when the order
+      // hasn't moved, which is the common case.
+      var moved = sorted.some(function (r, i) { return r !== rows[i]; });
+      if (moved) sorted.forEach(function (r) { host.appendChild(r); });
     });
 
     var filtered = posFilter !== "ALL" || !!q;
@@ -876,8 +903,10 @@
   function crossOffSearchMatch() {
     var q = normName(document.getElementById("search").value);
     if (!q) return;
-    var matches = Array.prototype.filter.call(document.querySelectorAll(".row:not(.hide)"), function (r) {
-      return r.dataset.nm.indexOf(q) !== -1;
+    // Match against the data, not the painted `.hide` state: the input handler is
+    // debounced, so the classes can be one keystroke behind what was typed.
+    var matches = Array.prototype.filter.call(document.querySelectorAll(".row"), function (r) {
+      return (posFilter === "ALL" || r.dataset.pos === posFilter) && r.dataset.nm.indexOf(q) !== -1;
     });
     if (matches.length === 1) {
       toggle(Number(matches[0].dataset.rk));
@@ -903,9 +932,19 @@
     paint();
   });
 
-  document.getElementById("search").addEventListener("input", paint);
+  // Typing fires per character; one paint per burst is enough and keeps the main
+  // thread free on the phones live mode targets.
+  var searchTimer = null;
+  document.getElementById("search").addEventListener("input", function () {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(paint, 60);
+  });
   document.getElementById("search").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); crossOffSearchMatch(); }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      clearTimeout(searchTimer);          // this path paints for itself
+      crossOffSearchMatch();
+    }
   });
 
   var liveBtn = document.getElementById("liveval");
@@ -927,6 +966,24 @@
     saveDraft();
     say(keeperMode ? "Showing age and experience." : "Age hidden.");
     paint();
+  });
+
+  // The light palette was fully implemented but unreachable without changing the
+  // OS setting. Auto keeps following prefers-color-scheme.
+  var THEMES = ["auto", "dark", "light"];
+  var themeBtn = document.getElementById("theme");
+  function applyTheme(name) {
+    if (name === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", name);
+    themeBtn.textContent = "Theme: " + name;
+  }
+  applyTheme(THEMES.indexOf(draft.theme) === -1 ? "auto" : draft.theme);
+  themeBtn.addEventListener("click", function () {
+    var next = THEMES[(THEMES.indexOf(draft.theme || "auto") + 1) % THEMES.length];
+    draft.theme = next;
+    applyTheme(next);
+    saveDraft();
+    say("Theme set to " + next + ".");
   });
 
   document.getElementById("print").addEventListener("click", function () { window.print(); });

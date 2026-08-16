@@ -38,6 +38,11 @@ __CSS__
     <button class="ghost" id="print" type="button">Print sheet</button>
     <button class="ghost" id="reset">Reset board</button>
     <div class="tally" id="tally"></div>
+    <div class="draftbar">
+      <label class="numfield">Teams <input id="teams" type="number" min="2" max="24" inputmode="numeric"></label>
+      <label class="numfield">Your slot <input id="slot" type="number" min="1" max="24" inputmode="numeric" placeholder="—"></label>
+      <div class="pickinfo" id="pickinfo"></div>
+    </div>
     <div class="storenote" id="storenote" hidden></div>
   </div>
   <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
@@ -75,6 +80,7 @@ __CSS__
   <footer>
     <div class="howto"><strong>How to use this.</strong> Click any player to cross them off as they're taken — the board saves itself, so a refresh won't lose your draft. Best available and the tier-break warnings update as you go. When a tier drops to two players left, that's your cue to reach rather than wait for the turn.</div>
     <div>Ranks follow the Rotoworld/NBC Sports top-200 consensus. Value and reach flags compare Yahoo ADP against Yahoo's projected finish. Data current through __UPDATED__ — recheck the injury board before you draft.</div>
+    <div id="adpnote"></div>
     <div class="srcs" id="srcs"></div>
     <div>FantasyLeagueFootball v__VERSION__</div>
   </footer>

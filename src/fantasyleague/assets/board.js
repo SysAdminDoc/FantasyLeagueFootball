@@ -94,6 +94,49 @@
     return null;
   }
 
+  // ---- draft position: teams + slot, persisted per board; snake math mirrors draft.py ----
+  var DKEY = KEY + "-draft";
+  var draft = { teams: (DATA.draft && DATA.draft.teams) || 12, slot: (DATA.draft && DATA.draft.slot) || null };
+  try {
+    var dsaved = JSON.parse(localStorage.getItem(DKEY) || "null");
+    if (dsaved && dsaved.teams) draft = dsaved;
+  } catch (e) { /* storage already reported */ }
+  function saveDraft() { try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {} }
+
+  function snakePicks(teams, slot, rounds) {
+    var out = [];
+    for (var r = 0; r < (rounds || 16); r++) {
+      out.push(r * teams + (r % 2 === 0 ? slot : teams - slot + 1));
+    }
+    return out;
+  }
+  function nextPicks(current, count) {
+    if (!draft.slot || draft.slot < 1 || draft.slot > draft.teams) return [];
+    return snakePicks(draft.teams, draft.slot).filter(function (p) { return p >= current; }).slice(0, count || 2);
+  }
+  // Abramowitz–Stegun 7.1.26 erf; error < 1.5e-7 — plenty for a percentage.
+  function erf(x) {
+    var s = x < 0 ? -1 : 1; x = Math.abs(x);
+    var t = 1 / (1 + 0.3275911 * x);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return s * y;
+  }
+  function phi(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
+  function availability(adp, sd, pick) {
+    var sigma = Math.max(sd == null ? adp / 4 : sd, 0.5);
+    return 1 - phi((pick - adp) / sigma);
+  }
+  function bandOf(pr) { return pr >= 0.6 ? "wait" : pr <= 0.3 ? "now" : "toss-up"; }
+  function oddsHtml(p, picks) {
+    if (p.adp == null || !picks.length) return "";
+    var pr = picks.map(function (k) { return availability(p.adp, p.adp_sd, k); });
+    var cls = "odds " + bandOf(pr[0]);
+    var t = "Chance " + p.name + " is still there at pick " + picks[0] +
+      (pr[1] != null ? " / pick " + picks[1] : "") + " (ADP " + p.adp + ")";
+    return '<span class="' + cls + '" title="' + esc(t) + '"><b>' + Math.round(pr[0] * 100) + "%</b>" +
+      (pr[1] != null ? " · " + Math.round(pr[1] * 100) + "%" : "") + "</span>";
+  }
+
   // ---- toast with Undo (the safety net; there are no confirm dialogs) ----
   var toastEl = document.getElementById("toast");
   var toastMsg = document.getElementById("toastMsg");
@@ -191,6 +234,14 @@
         '<span class="l-why">' + esc(e.why) + "</span></li>";
     }).join("");
 
+    var adpEl = document.getElementById("adpnote");
+    if (DATA.adp) {
+      adpEl.textContent = "ADP and bye weeks: " + DATA.adp.source + " — " + DATA.adp.format +
+        ", " + DATA.adp.window + ". Survival odds assume a normal draft position with that spread.";
+    } else {
+      adpEl.textContent = "";
+    }
+
     document.getElementById("srcs").innerHTML = DATA.sources.map(function (s) {
       return '<a href="' + esc(s.url) + '">' + esc(s.label) + "</a>";
     }).join("");
@@ -231,7 +282,7 @@
           '<span class="who"><span class="nm">' + esc(p.name) + "</span>" +
           '<span class="pos">' + esc(p.pos) + " · " + esc(p.team) + "</span>" +
           (p.note ? '<span class="note">' + esc(p.note) + "</span>" : "") + "</span>" +
-          '<span class="flags">' +
+          '<span class="flags"><span class="oddsslot"></span>' +
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
         b.addEventListener("click", function () {
@@ -248,8 +299,24 @@
 
   /* ---------- live state ---------- */
 
+  function paintPickInfo(current, mine) {
+    var el = document.getElementById("pickinfo");
+    el.classList.remove("mine");
+    if (!draft.slot) { el.textContent = "Set your slot for pick odds"; return; }
+    if (!mine.length) { el.innerHTML = "Pick <b>" + current + "</b> · no picks left"; return; }
+    if (mine[0] === current) {
+      el.classList.add("mine");
+      el.innerHTML = "Pick <b>" + current + "</b> · <b>your pick</b>";
+    } else {
+      el.innerHTML = "Pick <b>" + current + "</b> · yours in <b>" + (mine[0] - current) + "</b> (#" + mine[0] + ")";
+    }
+  }
+
   function paint() {
     var q = document.getElementById("search").value.trim().toLowerCase();
+    var current = log.length + 1;                 // every taken player crossed off => this is the pick on the clock
+    var mine = nextPicks(current, 2);
+    paintPickInfo(current, mine);
 
     Array.prototype.forEach.call(document.querySelectorAll(".row"), function (r) {
       var isGone = gone.has(r.dataset.rk);
@@ -258,6 +325,7 @@
       var okPos = posFilter === "ALL" || r.dataset.pos === posFilter;
       var okQ = !q || r.dataset.nm.indexOf(q) !== -1;
       r.classList.toggle("hide", !(okPos && okQ));
+      r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(byRank(Number(r.dataset.rk)), mine);
     });
 
     var filtered = posFilter !== "ALL" || !!q;
@@ -291,7 +359,7 @@
       ? avail.slice(0, 8).map(function (p) {
           return '<div class="ba-item"><span class="n">' + p.rank + "</span>" +
             '<span class="nm2">' + esc(p.name) + "</span>" +
-            '<span class="p">' + esc(p.pos) + " " + esc(p.team) + "</span></div>";
+            '<span class="p">' + esc(p.pos) + " " + esc(p.team) + " " + oddsHtml(p, mine.slice(0, 1)) + "</span></div>";
         }).join("")
       : '<div class="ba-item"><span class="nm2" style="color:var(--ink-dim)">Board cleared.</span></div>';
 
@@ -346,6 +414,22 @@
   });
 
   document.getElementById("print").addEventListener("click", function () { window.print(); });
+
+  var teamsIn = document.getElementById("teams");
+  var slotIn = document.getElementById("slot");
+  teamsIn.value = draft.teams;
+  if (draft.slot) slotIn.value = draft.slot;
+  function onDraftInput() {
+    var t = parseInt(teamsIn.value, 10);
+    var s = parseInt(slotIn.value, 10);
+    draft.teams = t >= 2 ? t : 12;
+    draft.slot = s >= 1 && s <= draft.teams ? s : null;
+    slotIn.max = draft.teams;
+    saveDraft();
+    paint();
+  }
+  teamsIn.addEventListener("input", onDraftInput);
+  slotIn.addEventListener("input", onDraftInput);
 
   document.getElementById("reset").addEventListener("click", function () {
     var before = log.slice();

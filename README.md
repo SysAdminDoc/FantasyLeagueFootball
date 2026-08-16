@@ -26,6 +26,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Run detection.** Three of the last four picks at one position marks that position's chip with *run* — the moment to decide whether to join it or let it pass.
 - **Tier-break warnings.** Each tier header shows how many are left and lights up at two.
 - **Best available** updates as you go, overall or filtered to one position.
+- **Will he last?** Enter your league size and slot and every player shows the odds of surviving to your next two picks (`73% · 4%`), banded *wait* / *toss-up* / *now*. The controls bar tracks the pick on the clock and how far away yours is.
 - **Position filters (QB/RB/WR/TE/K/DST) + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, late-round targets.
@@ -64,10 +65,10 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 
 | Command | What it does |
 |---|---|
-| `fantasyleague build [-o PATH] [--title T] [--league NAME] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser. |
+| `fantasyleague build [-o PATH] [--title T] [--league NAME] [--teams N] [--slot S] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser; `--teams`/`--slot` pre-fill the pick-odds settings (editable on the page). |
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|K\|DST\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
-| `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. |
+| `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
 
@@ -77,12 +78,13 @@ Examples:
 fantasyleague list --pos RB
 fantasyleague list --flag value
 fantasyleague next --drafted gibbs bijan chase 5 8 --pos WR --limit 5
+fantasyleague next --teams 12 --slot 5 --drafted 1 2 3 4     # odds at picks 5 and 20
 fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursday League"
 ```
 
 ## The 2026 board
 
-**Format assumptions:** Yahoo defaults — half-PPR, single QB, 1 K, 1 DEF. Ranks 1–75 follow the Rotoworld/NBC Sports top-200 consensus; kickers (76–87) follow FantasyPros' 2026-08-14 tiers and defenses (88–99) FantasyLife's 2026-08-08 rankings; flags compare Yahoo ADP against Yahoo's projected finish; the injury board is compiled from Yahoo's training-camp report. Player teams and external ids come from Sleeper's public player database. Data is current through **August 16, 2026**. Fantasy data goes stale fast — recheck the injury board before you draft.
+**Format assumptions:** Yahoo defaults — half-PPR, single QB, 1 K, 1 DEF. Ranks 1–75 follow the Rotoworld/NBC Sports top-200 consensus; kickers (76–87) follow FantasyPros' 2026-08-14 tiers and defenses (88–99) FantasyLife's 2026-08-08 rankings; flags compare Yahoo ADP against Yahoo's projected finish; the injury board is compiled from Yahoo's training-camp report. Player teams and external ids come from Sleeper's public player database; ADP, ADP spread, and bye weeks from Fantasy Football Calculator's half-PPR 12-team ADP (2026-08-11 → 2026-08-16). Data is current through **August 16, 2026**. Fantasy data goes stale fast — recheck the injury board before you draft.
 
 ### Tiers
 
@@ -106,6 +108,10 @@ fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursd
 | **Reach** | ADP is earlier than the projection — let someone else pay that price. |
 | **Watch** | Draftable, but carrying an active injury note. |
 
+### How the odds work
+
+A player's draft position is modelled as normal with mean = ADP and σ = the market's spread (or ADP/4 when none is on file); the chance he's still there at your pick *X* is `1 − Φ((X − ADP)/σ)`. It's the method DraftKick published, and it's a rough model — spreads widen late — but it's honest and explainable. Guidance: **wait** at ≥ 60 %, **now** at ≤ 30 %.
+
 ### The plan the board is built around
 
 - **RB:** three by the Jaylen Warren / Tony Pollard range (~end of round 5). The position thins hard after that.
@@ -128,7 +134,8 @@ The shape is [`players_2026.json`](src/fantasyleague/data/players_2026.json). Th
   "season": 2026, "scoring": "half_ppr", "format": "…", "updated": "2026-08-16",
   "tiers":   [{ "n": 1, "name": "The anchors", "range": "Picks 1–5", "note": "…" }],
   "players": [{ "rank": 1, "name": "Jahmyr Gibbs", "pos": "RB", "team": "DET", "tier": 1,
-                "flag": null, "note": "", "ids": { "sleeper": "4984", "yahoo": 30977, "espn": 3918298 } }],
+                "flag": null, "note": "", "ids": { "sleeper": "4984", "yahoo": 30977, "espn": 3918298 },
+                "adp": 1.5, "adp_sd": 0.7, "bye": 6 }],
   "plan":         [{ "position": "Running back", "guidance": "…" }],
   "do_not_draft": [{ "name": "…", "pos": "QB", "team": "LAC", "why": "…" }],
   "injuries":     [{ "name": "…", "team": "SF", "severity": "out|risk|ok", "status": "line one|line two" }],

@@ -14,6 +14,16 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Snake-draft awareness. Set **Teams** and **Your slot** on the board (or `build --teams N
+  --slot S`) and the controls bar shows the pick on the clock and how far away yours is;
+  every undrafted player shows the odds of still being there at your next two picks,
+  colour-banded wait / toss-up / now. `next --slot S [--teams N] [--pick P]` prints the
+  same table in the terminal. Odds use `1 − Φ((pick − ADP)/σ)` with the market's own
+  spread when known (else ADP/4) — the method DraftKick published.
+- ADP, ADP spread, and bye weeks on 97 of 99 players from Fantasy Football Calculator's
+  half-PPR 12-team ADP (2,364 drafts, 2026-08-11 → 2026-08-16); provenance is stored in the
+  dataset and printed in the page footer.
+- CLI smoke tests (`tests/test_cli.py`) — `cli.py` was previously never imported by the suite.
 - Undo. Every cross-off, restore, and Reset shows a toast with an Undo button for six
   seconds — the safety net in place of confirmation dialogs. Reset undo restores the whole
   log and persists.

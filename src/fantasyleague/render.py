@@ -48,12 +48,20 @@ def board_id(data: Dataset, league: str | None = None) -> str:
     return f"{digest}-{_slug(league)}" if league else digest
 
 
-def render(data: Dataset, title: str | None = None, league: str | None = None) -> str:
+def render(
+    data: Dataset,
+    title: str | None = None,
+    league: str | None = None,
+    teams: int | None = None,
+    slot: int | None = None,
+) -> str:
     """Return the complete HTML document for *data*."""
     payload = {
         "tier_break": TIER_BREAK_THRESHOLD,
         "board_id": board_id(data, league),
         "league": league or "",
+        "draft": {"teams": teams or 12, "slot": slot},
+        "adp": data.adp,
         "season": data.season,
         "scoring": data.scoring,
         "format": data.format,
@@ -90,10 +98,15 @@ def render(data: Dataset, title: str | None = None, league: str | None = None) -
 
 
 def write(
-    data: Dataset, out: str | Path, title: str | None = None, league: str | None = None
+    data: Dataset,
+    out: str | Path,
+    title: str | None = None,
+    league: str | None = None,
+    teams: int | None = None,
+    slot: int | None = None,
 ) -> Path:
     """Render *data* and write it to *out*, creating parent directories."""
     path = Path(out)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(render(data, title=title, league=league), encoding="utf-8")
+    path.write_text(render(data, title=title, league=league, teams=teams, slot=slot), encoding="utf-8")
     return path

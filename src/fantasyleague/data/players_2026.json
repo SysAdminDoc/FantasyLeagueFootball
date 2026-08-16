@@ -72,7 +72,10 @@
         "sleeper": "9221",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 1.5,
+      "adp_sd": 0.7,
+      "bye": 6
     },
     {
       "rank": 2,
@@ -86,7 +89,10 @@
         "sleeper": "9509",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 2.1,
+      "adp_sd": 0.7,
+      "bye": 11
     },
     {
       "rank": 3,
@@ -100,7 +106,10 @@
         "sleeper": "7564",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 4.1,
+      "adp_sd": 1.0,
+      "bye": 6
     },
     {
       "rank": 4,
@@ -114,7 +123,10 @@
         "sleeper": "9493",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 2.9,
+      "adp_sd": 0.5,
+      "bye": 11
     },
     {
       "rank": 5,
@@ -128,7 +140,10 @@
         "sleeper": "9488",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 5.4,
+      "adp_sd": 1.3,
+      "bye": 11
     },
     {
       "rank": 6,
@@ -142,7 +157,10 @@
         "sleeper": "4034",
         "yahoo": 30121,
         "espn": 3117251
-      }
+      },
+      "adp": 6.7,
+      "adp_sd": 1.5,
+      "bye": 8
     },
     {
       "rank": 7,
@@ -156,7 +174,10 @@
         "sleeper": "7547",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 7.6,
+      "adp_sd": 1.5,
+      "bye": 6
     },
     {
       "rank": 8,
@@ -170,7 +191,10 @@
         "sleeper": "6813",
         "yahoo": 32711,
         "espn": 4242335
-      }
+      },
+      "adp": 5.9,
+      "adp_sd": 1.3,
+      "bye": 13
     },
     {
       "rank": 9,
@@ -184,7 +208,10 @@
         "sleeper": "6794",
         "yahoo": 32692,
         "espn": 4262921
-      }
+      },
+      "adp": 14.4,
+      "adp_sd": 2.5,
+      "bye": 6
     },
     {
       "rank": 10,
@@ -198,7 +225,10 @@
         "sleeper": "6786",
         "yahoo": 32687,
         "espn": 4241389
-      }
+      },
+      "adp": 12.6,
+      "adp_sd": 2.3,
+      "bye": 14
     },
     {
       "rank": 11,
@@ -212,7 +242,10 @@
         "sleeper": "8138",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 9.7,
+      "adp_sd": 2.7,
+      "bye": 7
     },
     {
       "rank": 12,
@@ -226,7 +259,10 @@
         "sleeper": "4866",
         "yahoo": 30972,
         "espn": 3929630
-      }
+      },
+      "adp": 18.1,
+      "adp_sd": 3.3,
+      "bye": 10
     },
     {
       "rank": 13,
@@ -240,7 +276,10 @@
         "sleeper": "9226",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 11.4,
+      "adp_sd": 2.1,
+      "bye": 6
     },
     {
       "rank": 14,
@@ -254,7 +293,10 @@
         "sleeper": "8112",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 11.3,
+      "adp_sd": 1.9,
+      "bye": 11
     },
     {
       "rank": 15,
@@ -268,7 +310,10 @@
         "sleeper": "12527",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 15.6,
+      "adp_sd": 2.9,
+      "bye": 13
     },
     {
       "rank": 16,
@@ -282,7 +327,10 @@
         "sleeper": "7569",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 21.9,
+      "adp_sd": 2.7,
+      "bye": 8
     },
     {
       "rank": 17,
@@ -296,7 +344,10 @@
         "sleeper": "11604",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 42.5,
+      "adp_sd": 10.1,
+      "bye": 13
     },
     {
       "rank": 18,
@@ -310,7 +361,10 @@
         "sleeper": "3198",
         "yahoo": 29279,
         "espn": 3043078
-      }
+      },
+      "adp": 10.5,
+      "adp_sd": 1.5,
+      "bye": 13
     },
     {
       "rank": 19,
@@ -324,7 +378,10 @@
         "sleeper": "8151",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 23.5,
+      "adp_sd": 4.5,
+      "bye": 5
     },
     {
       "rank": 20,
@@ -338,7 +395,10 @@
         "sleeper": "9224",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 14.9,
+      "adp_sd": 2.6,
+      "bye": 6
     },
     {
       "rank": 21,
@@ -352,7 +412,10 @@
         "sleeper": "5859",
         "yahoo": 31883,
         "espn": 4047646
-      }
+      },
+      "adp": 18.8,
+      "adp_sd": 2.8,
+      "bye": 11
     },
     {
       "rank": 22,
@@ -366,7 +429,10 @@
         "sleeper": "11632",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 27.9,
+      "adp_sd": 3.5,
+      "bye": 8
     },
     {
       "rank": 23,
@@ -380,7 +446,10 @@
         "sleeper": "10229",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 15.6,
+      "adp_sd": 2.5,
+      "bye": 5
     },
     {
       "rank": 24,
@@ -394,7 +463,10 @@
         "sleeper": "8137",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 19.3,
+      "adp_sd": 2.2,
+      "bye": 14
     },
     {
       "rank": 25,
@@ -408,7 +480,10 @@
         "sleeper": "12507",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 22.1,
+      "adp_sd": 4.0,
+      "bye": 7
     },
     {
       "rank": 26,
@@ -422,7 +497,10 @@
         "sleeper": "8130",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 40.5,
+      "adp_sd": 7.7,
+      "bye": 14
     },
     {
       "rank": 27,
@@ -436,7 +514,10 @@
         "sleeper": "13287",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 32.1,
+      "adp_sd": 4.7,
+      "bye": 14
     },
     {
       "rank": 28,
@@ -450,7 +531,10 @@
         "sleeper": "8155",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 28.5,
+      "adp_sd": 2.8,
+      "bye": 13
     },
     {
       "rank": 29,
@@ -464,7 +548,10 @@
         "sleeper": "8150",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 28.5,
+      "adp_sd": 3.6,
+      "bye": 11
     },
     {
       "rank": 30,
@@ -478,7 +565,10 @@
         "sleeper": "7543",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 42.7,
+      "adp_sd": 5.3,
+      "bye": 8
     },
     {
       "rank": 31,
@@ -492,7 +582,10 @@
         "sleeper": "4984",
         "yahoo": 30977,
         "espn": 3918298
-      }
+      },
+      "adp": 29.5,
+      "adp_sd": 6.6,
+      "bye": 7
     },
     {
       "rank": 32,
@@ -506,7 +599,10 @@
         "sleeper": "5850",
         "yahoo": 31856,
         "espn": 4047365
-      }
+      },
+      "adp": 25.8,
+      "adp_sd": 3.2,
+      "bye": 11
     },
     {
       "rank": 33,
@@ -520,7 +616,10 @@
         "sleeper": "7588",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 35.1,
+      "adp_sd": 4.3,
+      "bye": 14
     },
     {
       "rank": 34,
@@ -534,7 +633,10 @@
         "sleeper": "12526",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 35.0,
+      "adp_sd": 4.2,
+      "bye": 5
     },
     {
       "rank": 35,
@@ -548,7 +650,10 @@
         "sleeper": "12517",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 60.2,
+      "adp_sd": 8.0,
+      "bye": 10
     },
     {
       "rank": 36,
@@ -562,7 +667,10 @@
         "sleeper": "6801",
         "yahoo": 32703,
         "espn": 4239993
-      }
+      },
+      "adp": 35.3,
+      "adp_sd": 4.5,
+      "bye": 6
     },
     {
       "rank": 37,
@@ -576,7 +684,10 @@
         "sleeper": "8144",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 24.1,
+      "adp_sd": 2.7,
+      "bye": 8
     },
     {
       "rank": 38,
@@ -590,7 +701,10 @@
         "sleeper": "11584",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 48.1,
+      "adp_sd": 5.7,
+      "bye": 10
     },
     {
       "rank": 39,
@@ -604,7 +718,10 @@
         "sleeper": "4881",
         "yahoo": 31002,
         "espn": 3916387
-      }
+      },
+      "adp": 55.1,
+      "adp_sd": 8.8,
+      "bye": 13
     },
     {
       "rank": 40,
@@ -618,7 +735,10 @@
         "sleeper": "9997",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 24.5,
+      "adp_sd": 2.5,
+      "bye": 13
     },
     {
       "rank": 41,
@@ -632,7 +752,10 @@
         "sleeper": "11635",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 41.8,
+      "adp_sd": 4.8,
+      "bye": 7
     },
     {
       "rank": 42,
@@ -646,7 +769,10 @@
         "sleeper": "12514",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 36.7,
+      "adp_sd": 5.3,
+      "bye": 10
     },
     {
       "rank": 43,
@@ -660,7 +786,10 @@
         "sleeper": "12481",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 34.9,
+      "adp_sd": 4.1,
+      "bye": 8
     },
     {
       "rank": 44,
@@ -674,7 +803,10 @@
         "sleeper": "5892",
         "yahoo": 31905,
         "espn": 4035538
-      }
+      },
+      "adp": 57.6,
+      "adp_sd": 6.8,
+      "bye": 8
     },
     {
       "rank": 45,
@@ -688,7 +820,10 @@
         "sleeper": "7525",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 31.2,
+      "adp_sd": 3.6,
+      "bye": 10
     },
     {
       "rank": 46,
@@ -702,7 +837,10 @@
         "sleeper": "8146",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 30.8,
+      "adp_sd": 3.2,
+      "bye": 13
     },
     {
       "rank": 47,
@@ -716,7 +854,10 @@
         "sleeper": "6790",
         "yahoo": 32705,
         "espn": 4259545
-      }
+      },
+      "adp": 43.3,
+      "adp_sd": 6.7,
+      "bye": 10
     },
     {
       "rank": 48,
@@ -730,7 +871,10 @@
         "sleeper": "11566",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 72.2,
+      "adp_sd": 10.5,
+      "bye": 7
     },
     {
       "rank": 49,
@@ -744,7 +888,10 @@
         "sleeper": "12512",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 52.0,
+      "adp_sd": 5.8,
+      "bye": 11
     },
     {
       "rank": 50,
@@ -758,7 +905,10 @@
         "sleeper": "2216",
         "yahoo": 27535,
         "espn": 16737
-      }
+      },
+      "adp": 53.4,
+      "adp_sd": 6.6,
+      "bye": 8
     },
     {
       "rank": 51,
@@ -772,7 +922,10 @@
         "sleeper": "7526",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 46.9,
+      "adp_sd": 6.0,
+      "bye": 10
     },
     {
       "rank": 52,
@@ -786,7 +939,10 @@
         "sleeper": "12490",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 53.3,
+      "adp_sd": 5.5,
+      "bye": 7
     },
     {
       "rank": 53,
@@ -800,7 +956,10 @@
         "sleeper": "12529",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 58.5,
+      "adp_sd": 5.4,
+      "bye": 11
     },
     {
       "rank": 54,
@@ -814,7 +973,10 @@
         "sleeper": "6770",
         "yahoo": 32671,
         "espn": 3915511
-      }
+      },
+      "adp": 55.1,
+      "adp_sd": 9.1,
+      "bye": 6
     },
     {
       "rank": 55,
@@ -828,7 +990,10 @@
         "sleeper": "2133",
         "yahoo": 27581,
         "espn": 16800
-      }
+      },
+      "adp": 37.4,
+      "adp_sd": 3.6,
+      "bye": 11
     },
     {
       "rank": 56,
@@ -842,7 +1007,10 @@
         "sleeper": "13286",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 76.6,
+      "adp_sd": 11.9,
+      "bye": 11
     },
     {
       "rank": 57,
@@ -856,7 +1024,10 @@
         "sleeper": "11564",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 50.3,
+      "adp_sd": 8.0,
+      "bye": 11
     },
     {
       "rank": 58,
@@ -870,7 +1041,10 @@
         "sleeper": "5927",
         "yahoo": 31908,
         "espn": 3121422
-      }
+      },
+      "adp": 43.9,
+      "adp_sd": 4.1,
+      "bye": 7
     },
     {
       "rank": 59,
@@ -884,7 +1058,10 @@
         "sleeper": "8148",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 39.4,
+      "adp_sd": 4.2,
+      "bye": 6
     },
     {
       "rank": 60,
@@ -898,7 +1075,10 @@
         "sleeper": "12518",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 69.9,
+      "adp_sd": 9.3,
+      "bye": 13
     },
     {
       "rank": 61,
@@ -912,7 +1092,10 @@
         "sleeper": "12519",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 58.3,
+      "adp_sd": 6.5,
+      "bye": 10
     },
     {
       "rank": 62,
@@ -926,7 +1109,10 @@
         "sleeper": "13279",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 74.0,
+      "adp_sd": 7.3,
+      "bye": 9
     },
     {
       "rank": 63,
@@ -940,7 +1126,10 @@
         "sleeper": "6904",
         "yahoo": 32723,
         "espn": 4040715
-      }
+      },
+      "adp": 76.8,
+      "adp_sd": 10.5,
+      "bye": 10
     },
     {
       "rank": 64,
@@ -954,7 +1143,10 @@
         "sleeper": "8167",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 58.5,
+      "adp_sd": 6.6,
+      "bye": 11
     },
     {
       "rank": 65,
@@ -968,7 +1160,10 @@
         "sleeper": "11620",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 45.5,
+      "adp_sd": 4.9,
+      "bye": 10
     },
     {
       "rank": 66,
@@ -982,7 +1177,10 @@
         "sleeper": "4983",
         "yahoo": 30994,
         "espn": 3915416
-      }
+      },
+      "adp": 50.0,
+      "adp_sd": 5.7,
+      "bye": 7
     },
     {
       "rank": 67,
@@ -996,7 +1194,10 @@
         "sleeper": "8228",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 68.0,
+      "adp_sd": 6.7,
+      "bye": 9
     },
     {
       "rank": 68,
@@ -1010,7 +1211,10 @@
         "sleeper": "11586",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 121.5,
+      "adp_sd": 14.8,
+      "bye": 11
     },
     {
       "rank": 69,
@@ -1024,7 +1228,10 @@
         "sleeper": "11631",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 70.3,
+      "adp_sd": 8.0,
+      "bye": 7
     },
     {
       "rank": 70,
@@ -1038,7 +1245,10 @@
         "sleeper": "9487",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 65.6,
+      "adp_sd": 6.7,
+      "bye": 7
     },
     {
       "rank": 71,
@@ -1052,7 +1262,10 @@
         "sleeper": "3294",
         "yahoo": 29369,
         "espn": 2577417
-      }
+      },
+      "adp": 66.1,
+      "adp_sd": 8.1,
+      "bye": 14
     },
     {
       "rank": 72,
@@ -1066,7 +1279,10 @@
         "sleeper": "11628",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 62.6,
+      "adp_sd": 7.3,
+      "bye": 14
     },
     {
       "rank": 73,
@@ -1080,7 +1296,10 @@
         "sleeper": "5967",
         "yahoo": 31960,
         "espn": 3916148
-      }
+      },
+      "adp": 66.4,
+      "adp_sd": 6.2,
+      "bye": 9
     },
     {
       "rank": 74,
@@ -1094,7 +1313,10 @@
         "sleeper": "12534",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 110.7,
+      "adp_sd": 15.7,
+      "bye": 10
     },
     {
       "rank": 75,
@@ -1108,7 +1330,10 @@
         "sleeper": "12506",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 81.1,
+      "adp_sd": 6.5,
+      "bye": 11
     },
     {
       "rank": 76,
@@ -1122,7 +1347,10 @@
         "sleeper": "11533",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 128.8,
+      "adp_sd": 21.4,
+      "bye": 14
     },
     {
       "rank": 77,
@@ -1136,7 +1364,10 @@
         "sleeper": "3451",
         "yahoo": 29792,
         "espn": 2971573
-      }
+      },
+      "adp": 135.9,
+      "adp_sd": 19.8,
+      "bye": 8
     },
     {
       "rank": 78,
@@ -1150,7 +1381,10 @@
         "sleeper": "8259",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 142.2,
+      "adp_sd": 15.9,
+      "bye": 7
     },
     {
       "rank": 79,
@@ -1164,7 +1398,10 @@
         "sleeper": "2747",
         "yahoo": 28378,
         "espn": 2473037
-      }
+      },
+      "adp": 140.6,
+      "adp_sd": 19.7,
+      "bye": 11
     },
     {
       "rank": 80,
@@ -1178,7 +1415,10 @@
         "sleeper": "11786",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 157.6,
+      "adp_sd": 18.1,
+      "bye": 7
     },
     {
       "rank": 81,
@@ -1192,7 +1432,10 @@
         "sleeper": "5189",
         "yahoo": 31482,
         "espn": 4034949
-      }
+      },
+      "adp": null,
+      "adp_sd": null,
+      "bye": null
     },
     {
       "rank": 82,
@@ -1206,7 +1449,10 @@
         "sleeper": "12711",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 151.2,
+      "adp_sd": 15.4,
+      "bye": 13
     },
     {
       "rank": 83,
@@ -1220,7 +1466,10 @@
         "sleeper": "7839",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 175.0,
+      "adp_sd": 20.1,
+      "bye": 6
     },
     {
       "rank": 84,
@@ -1234,7 +1483,10 @@
         "sleeper": "11539",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 154.5,
+      "adp_sd": 23.2,
+      "bye": 6
     },
     {
       "rank": 85,
@@ -1248,7 +1500,10 @@
         "sleeper": "2020",
         "yahoo": 28227,
         "espn": 17427
-      }
+      },
+      "adp": 164.3,
+      "adp_sd": 19.5,
+      "bye": 10
     },
     {
       "rank": 86,
@@ -1262,7 +1517,10 @@
         "sleeper": "12713",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 179.6,
+      "adp_sd": 23.0,
+      "bye": 11
     },
     {
       "rank": 87,
@@ -1276,7 +1534,10 @@
         "sleeper": "12015",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 141.5,
+      "adp_sd": 26.8,
+      "bye": 11
     },
     {
       "rank": 88,
@@ -1290,7 +1551,10 @@
         "sleeper": "HOU",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 101.5,
+      "adp_sd": 10.2,
+      "bye": 8
     },
     {
       "rank": 89,
@@ -1304,7 +1568,10 @@
         "sleeper": "DEN",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 87.6,
+      "adp_sd": 9.1,
+      "bye": 10
     },
     {
       "rank": 90,
@@ -1318,7 +1585,10 @@
         "sleeper": "SEA",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 91.5,
+      "adp_sd": 12.0,
+      "bye": 11
     },
     {
       "rank": 91,
@@ -1332,7 +1602,10 @@
         "sleeper": "LAR",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 116.0,
+      "adp_sd": 19.9,
+      "bye": 11
     },
     {
       "rank": 92,
@@ -1346,7 +1619,10 @@
         "sleeper": "PHI",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 126.0,
+      "adp_sd": 12.5,
+      "bye": 10
     },
     {
       "rank": 93,
@@ -1360,7 +1636,10 @@
         "sleeper": "MIN",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 117.7,
+      "adp_sd": 7.2,
+      "bye": 6
     },
     {
       "rank": 94,
@@ -1374,7 +1653,10 @@
         "sleeper": "LAC",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 143.1,
+      "adp_sd": 14.5,
+      "bye": 7
     },
     {
       "rank": 95,
@@ -1388,7 +1670,10 @@
         "sleeper": "BAL",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 160.9,
+      "adp_sd": 14.4,
+      "bye": 13
     },
     {
       "rank": 96,
@@ -1402,7 +1687,10 @@
         "sleeper": "NE",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 125.3,
+      "adp_sd": 17.4,
+      "bye": 11
     },
     {
       "rank": 97,
@@ -1416,7 +1704,10 @@
         "sleeper": "PIT",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 145.0,
+      "adp_sd": 13.5,
+      "bye": 9
     },
     {
       "rank": 98,
@@ -1430,7 +1721,10 @@
         "sleeper": "JAX",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": 151.5,
+      "adp_sd": 15.7,
+      "bye": 7
     },
     {
       "rank": 99,
@@ -1444,7 +1738,10 @@
         "sleeper": "GB",
         "yahoo": null,
         "espn": null
-      }
+      },
+      "adp": null,
+      "adp_sd": null,
+      "bye": null
     }
   ],
   "plan": [
@@ -1720,5 +2017,11 @@
       "label": "Sleeper players API (ids)",
       "url": "https://docs.sleeper.com/"
     }
-  ]
+  ],
+  "adp": {
+    "source": "Fantasy Football Calculator",
+    "format": "Half-PPR · 12-team · 2364 drafts",
+    "window": "2026-08-11 to 2026-08-16",
+    "url": "https://fantasyfootballcalculator.com/adp/half-ppr/12-team/all"
+  }
 }

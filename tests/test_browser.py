@@ -145,6 +145,44 @@ def test_enter_in_search_crosses_off_single_match(page):
     assert "No player matches" in _live(page)
 
 
+def test_pick_counter_and_odds_follow_slot(page):
+    info = page.locator("#pickinfo")
+    assert info.inner_text() == "Set your slot for pick odds"
+    assert page.locator(".odds").count() == 0
+    page.locator("#slot").fill("5")
+    assert info.inner_text() == "Pick 1 · yours in 4 (#5)"
+    # Every undrafted player with an ADP shows odds at picks 5 and 20.
+    first = page.locator('.row[data-rk="1"] .odds')
+    assert first.count() == 1
+    txt = first.inner_text()
+    assert "%" in txt and "·" in txt
+    # Gibbs (ADP ~1.5, sd .7) is essentially gone by pick 5.
+    assert txt.startswith("0%")
+    for rk in (1, 2, 3, 4):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    assert info.inner_text() == "Pick 5 · your pick"
+    assert "mine" in info.get_attribute("class")
+    # Odds recompute for picks 20 and 29 now; rail shows odds too.
+    assert page.locator("#bestAvail .odds").count() >= 1
+    page.reload()
+    page.wait_for_selector(".row")
+    assert page.locator("#slot").input_value() == "5", "slot persists per board"
+
+
+def test_odds_match_python_math(page):
+    from fantasyleague import board as board_mod
+    from fantasyleague import draft
+
+    page.locator("#slot").fill("5")  # next pick 5, then 20
+    data = board_mod.load()
+    p = next(x for x in data.players if x.adp is not None and 15 <= x.adp <= 25)
+    shown = page.locator(f'.row[data-rk="{p.rank}"] .odds').inner_text()
+    a5 = round(draft.availability(p.adp, p.adp_sd, 5) * 100)
+    a20 = round(draft.availability(p.adp, p.adp_sd, 20) * 100)
+    want = f"{a5}% · {a20}%"
+    assert shown == want
+
+
 def test_toast_offers_undo_for_cross_off(page):
     page.locator('.row[data-rk="1"]').click()
     toast = page.locator("#toast")

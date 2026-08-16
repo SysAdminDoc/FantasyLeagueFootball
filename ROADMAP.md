@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P1
 
-- [ ] P1 — Snake-draft awareness: your next pick and projected availability
-  Why: the board answers "who's best" but not "who survives to my turn" — the one question every commercial tool answers (DraftKick, FantasyPros Pick Predictor, Draft Caddie survival odds).
-  Evidence: draftkick.com/blog/projected-availability (mean = ADP, σ ≈ ADP/4, `1 − Φ(next_pick)`, show next two picks; wait ≥60–70 %, draft ≤20–30 %); FantasyPros API `rank_std` as a better σ when available.
-  Touches: `cli.py` (`--teams N --slot S` on `build`/`next`), `board.py` (`next_picks(teams, slot, current_pick)`, `availability(adp, sd, pick)` using stdlib `math.erf`), `board.js` (pick counter in controls: "Pick 17 · yours in 8"; per-row % at next pick + next-next pick; colour by DraftKick bands), tests.
-  Acceptance: 12-team slot 5 → next picks 5, 20, 29, 44…; a player with ADP 20 at your pick 29 shows ≈4 %; at pick 17 shows ≈73 %; values match `1 − Φ((pick − adp)/(adp/4))` to 1 pp.
-  Complexity: M — depends on **Live ADP fetch** (existing) for the `adp` field; ship with hand-entered `adp` in the JSON first.
-
 - [ ] P1 — `fantasyleague serve`: local HTTP + Server-Sent Events
   Why: a stable `http://localhost` origin fixes storage, enables Screen Wake Lock, lets a phone on the LAN be the second screen, and is the transport for live sync without a browser extension.
   Evidence: MDN Screen Wake Lock (needs secure context; localhost qualifies; ≥94 % support); Draft Caddie/BeatADP/DraftKick are all desktop-only Chrome extensions — the gap is a phone-friendly board.

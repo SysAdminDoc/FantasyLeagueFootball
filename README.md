@@ -1,4 +1,4 @@
-# FantasyLeageFootball
+# FantasyLeagueFootball
 
 [![Version](https://img.shields.io/badge/version-0.0.1-E8963C.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -21,8 +21,8 @@ the turn: take the guy now, or gamble he's there in eleven picks.
 ## Install
 
 ```bash
-git clone https://github.com/SysAdminDoc/FantasyLeageFootball
-cd FantasyLeageFootball
+git clone https://github.com/SysAdminDoc/FantasyLeagueFootball
+cd FantasyLeagueFootball
 pip install -e .
 ```
 

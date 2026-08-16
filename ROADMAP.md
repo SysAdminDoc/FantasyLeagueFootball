@@ -1,6 +1,6 @@
 # Roadmap
 
-Single task tracker for FantasyLeageFootball. Drain top to bottom. Shipped work lives in CHANGELOG.md.
+Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work lives in CHANGELOG.md.
 
 ## Next
 
@@ -171,7 +171,7 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 - [ ] P2 — README screenshot and GitHub publish + v0.0.1 release
   Why: repo rules require a screenshot on any UI change and a GitHub release for milestones; the repo currently has no remote and the README shows no image.
   Evidence: `README.md` (no `![…]`); `git remote -v` empty; global rules "Screenshots for READMEs", "GitHub Release on significant work".
-  Touches: `README.md` (`docs/screenshot-dark.png`, `docs/screenshot-light.png` captured at 125 % DPI with `SetProcessDPIAware`), `gh repo create SysAdminDoc/FantasyLeageFootball`, branch protection, `gh release create v0.0.1` with wheel + `draft-board.html`.
+  Touches: `README.md` (`docs/screenshot-dark.png`, `docs/screenshot-light.png` captured at 125 % DPI with `SetProcessDPIAware`), `gh repo create SysAdminDoc/FantasyLeagueFootball`, branch protection, `gh release create v0.0.1` with wheel + `draft-board.html`.
   Acceptance: release page shows three assets; README renders both screenshots; `git log` shows no AI authorship.
   Complexity: S
 

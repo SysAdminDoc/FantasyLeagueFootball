@@ -24,4 +24,4 @@ Initial release.
 - 36 tests covering data integrity, draft-time queries, render self-containment, and the
   template/script DOM contract.
 
-[0.0.1]: https://github.com/SysAdminDoc/FantasyLeageFootball/releases/tag/v0.0.1
+[0.0.1]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.0.1

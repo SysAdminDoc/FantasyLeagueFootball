@@ -58,7 +58,7 @@ def test_both_themes_are_defined(html):
 
 
 def test_version_is_stamped(html):
-    assert f"FantasyLeageFootball v{__version__}" in html
+    assert f"FantasyLeagueFootball v{__version__}" in html
 
 
 def test_write_creates_parent_dirs(tmp_path):

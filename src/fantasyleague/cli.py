@@ -77,7 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="fantasyleague",
         description="Draft-day board for Yahoo half-PPR fantasy football.",
     )
-    p.add_argument("--version", action="version", version=f"FantasyLeageFootball v{__version__}")
+    p.add_argument("--version", action="version", version=f"FantasyLeagueFootball v{__version__}")
     p.add_argument("--data", metavar="PATH", help="alternate dataset JSON (default: packaged board)")
 
     sub = p.add_subparsers(dest="command", required=True)

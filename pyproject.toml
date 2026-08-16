@@ -28,7 +28,7 @@ dev = ["pytest>=8", "ruff==0.8.2"]
 fantasyleague = "fantasyleague.cli:main"
 
 [project.urls]
-Repository = "https://github.com/SysAdminDoc/FantasyLeageFootball"
+Repository = "https://github.com/SysAdminDoc/FantasyLeagueFootball"
 
 [tool.hatch.build.targets.wheel]
 # assets/ and data/ live inside the package, so they come along automatically.

@@ -59,13 +59,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Acceptance: import refuses stale files with the date in the message; when fresh, `list` shows tiers matching the text file for every matched player and lists unmatched names.
   Complexity: S — needs live validation once the 2026 files publish.
 
-- [ ] P2 — Mobile touch pass
-  Why: the phone-at-the-table case (via `serve`) needs rows that are comfortably tappable; rows are ~40 px tall as of v0.0.1.
-  Evidence: `board.css` `.row` padding 9 px; Apple HIG 44 pt; WCAG 2.5.8 min 24 px.
-  Touches: `board.css` (`@media (pointer: coarse)` → `.row` min-height 44 px, larger chips, sticky controls height), Playwright mobile viewport test.
-  Acceptance: iPhone-width viewport: no horizontal scroll, every row ≥44 px, chips reachable one-handed.
-  Complexity: S
-
 ### P3
 
 - [ ] P3 — Opponent roster-need tracking

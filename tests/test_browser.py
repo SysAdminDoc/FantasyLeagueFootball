@@ -390,6 +390,31 @@ def test_sleeper_sync_reaches_the_browser(browser, monkeypatch):
         ctx.close()
 
 
+def test_touch_targets_are_large_enough_on_a_phone(browser, page_url):
+    """WCAG 2.5.8 wants 24px minimum; rows are the primary target and get 44."""
+    ctx = browser.new_context(
+        viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, device_scale_factor=3
+    )
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+
+    assert not pg.evaluate(
+        "document.documentElement.scrollWidth > document.documentElement.clientWidth"
+    ), "the page must never scroll sideways on a phone"
+
+    heights = pg.locator(".row").evaluate_all("els => els.map(e => e.getBoundingClientRect().height)")
+    assert min(heights) >= 44, f"smallest row is {min(heights)}px"
+
+    for sel in (".chip", ".ghost", "#search"):
+        box = pg.locator(sel).first.bounding_box()
+        assert box["height"] >= 34, f"{sel} is only {box['height']}px tall"
+
+    # 16px inputs stop iOS zooming the whole page on focus.
+    assert pg.evaluate("getComputedStyle(document.querySelector('#search')).fontSize") == "16px"
+    ctx.close()
+
+
 def test_light_theme_paints_its_own_ground(browser, page_url):
     ctx = browser.new_context(color_scheme="light")
     pg = ctx.new_page()

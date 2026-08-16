@@ -7,6 +7,8 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Fixed
+- The position-chip row overflowed a 390px phone once K and DST were added, scrolling the
+  whole page sideways; chips now wrap.
 - Injury board rebuilt from live data: the hand-typed list is replaced by 11 current
   designations, and stale `watch` flags on healthy players are cleared.
 - A.J. Brown listed as PHI; he was traded to New England this offseason (caught by the
@@ -83,6 +85,9 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   promoted after escaping, so an untrusted `--data` file cannot inject markup.
 
 ### Changed
+- Touch pass: on coarse pointers rows are at least 44px tall, chips/buttons/inputs grow,
+  inputs use 16px so iOS stops zooming on focus, the toast spans the screen, and the
+  controls bar stops being sticky (it ate too much of a phone screen).
 - Linting moves to ruff >= 0.16 (413 default rules, up from 59) plus RUF/PTH/C4/PIE/RET.
   Fixed what it surfaced: a no-op dict copy in `board.save`, `__enter__` annotated with the
   concrete class instead of `Self`, `re.S` aliases, single-element slices, and list

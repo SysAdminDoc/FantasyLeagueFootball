@@ -23,14 +23,30 @@ def page_url(tmp_path_factory):
 
 
 @pytest.fixture(scope="module")
-def browser():
+def playwright_ctx():
+    """One sync_playwright context per module — the sync API forbids nesting them."""
     with playwright.sync_playwright() as p:
-        try:
-            b = p.chromium.launch()
-        except Exception as exc:  # noqa: BLE001 - any launch failure means skip
-            pytest.skip(f"chromium unavailable: {exc}")
-        yield b
-        b.close()
+        yield p
+
+
+@pytest.fixture(scope="module")
+def browser(playwright_ctx):
+    try:
+        b = playwright_ctx.chromium.launch()
+    except Exception as exc:  # noqa: BLE001 - any launch failure means skip
+        pytest.skip(f"chromium unavailable: {exc}")
+    yield b
+    b.close()
+
+
+@pytest.fixture(scope="module")
+def firefox(playwright_ctx):
+    try:
+        b = playwright_ctx.firefox.launch()
+    except Exception as exc:  # noqa: BLE001 - not installed is a skip, not a failure
+        pytest.skip(f"firefox unavailable: {exc}")
+    yield b
+    b.close()
 
 
 @pytest.fixture
@@ -628,6 +644,18 @@ def test_cli_settings_win_over_saved_ones_when_they_change(browser, tmp_path):
     ctx.close()
 
 
+def test_opponent_rail_leads_with_demand_and_caps_the_list(page):
+    """Twelve near-identical "needs QB, RB, RB, WR" lines is noise, not signal."""
+    page.locator("#slot").fill("4")
+    for rk in range(1, 9):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    page.wait_for_selector("#opponentcard:not([hidden])")
+    summary = page.locator("#opponents .oppsum").text_content()
+    assert "before yours" in summary
+    assert page.locator("#opponents .oppline").count() <= 6
+    assert page.locator("#opponents .oppmore").count() == 1
+
+
 def test_rail_marks_entries_that_have_no_row(page):
     """A late-round target below the board's depth can't be crossed off — say so."""
     tags = page.locator("#slp .offboard-tag")
@@ -795,32 +823,51 @@ def test_rail_clears_the_controls_and_scrolls_to_its_last_card(browser, page_url
     ctx.close()
 
 
-def test_board_works_in_a_second_engine(page_url):
+def test_board_works_in_a_second_engine(firefox, page_url):
     """Chromium-only testing would miss engine-specific breakage; Firefox is the check."""
-    with playwright.sync_playwright() as p:
-        try:
-            fx = p.firefox.launch()
-        except Exception as exc:  # noqa: BLE001 - not installed is a skip, not a failure
-            pytest.skip(f"firefox unavailable: {exc}")
-        ctx = fx.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+    ctx = firefox.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+    pg = ctx.new_page()
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    assert pg.locator(".row").count() == 200
+    pg.locator('.row[data-rk="1"]').click()
+    assert pg.locator(".row.gone").count() == 1
+    assert "Bijan" in pg.locator("#bestAvail").text_content()
+    pg.locator("#theme").click()
+    pg.locator("#theme").click()
+    assert pg.evaluate("() => document.documentElement.dataset.theme") == "light"
+    pg.reload()
+    pg.wait_for_selector(".row")
+    assert pg.locator(".row.gone").count() == 1, "state must survive a reload here too"
+    assert errors == []
+    ctx.close()
+
+
+def test_live_sync_works_in_a_second_engine(firefox):
+    """SSE and the same-origin POST guard, in an engine that always sends Origin."""
+    from fantasyleague import serve
+
+    with serve.BoardServer(board.load(), port=0, teams=12, slot=5) as s:
+        ctx = firefox.new_context(color_scheme="dark")
         pg = ctx.new_page()
         errors: list[str] = []
         pg.on("pageerror", lambda e: errors.append(str(e)))
-        pg.goto(page_url)
+        pg.goto(f"http://127.0.0.1:{s.port}/")
         pg.wait_for_selector(".row")
-        assert pg.locator(".row").count() == 200
-        pg.locator('.row[data-rk="1"]').click()
-        assert pg.locator(".row.gone").count() == 1
-        assert "Bijan" in pg.locator("#bestAvail").text_content()
-        pg.locator("#theme").click()
-        pg.locator("#theme").click()
-        assert pg.evaluate("() => document.documentElement.dataset.theme") == "light"
-        pg.reload()
-        pg.wait_for_selector(".row")
-        assert pg.locator(".row.gone").count() == 1, "state must survive a reload here too"
+        pg.wait_for_selector("#livepill:not([hidden])", timeout=5000)
+        s.bus.pick(3, source="sleeper")
+        pg.wait_for_selector('.row[data-rk="3"].gone', timeout=5000)
+        pg.locator('.row[data-rk="9"]').click()
+        pg.wait_for_function("() => true")
+        for _ in range(50):
+            if any(p["rank"] == 9 for p in s.bus.state()["picks"]):
+                break
+            pg.wait_for_timeout(100)
+        assert any(p["rank"] == 9 for p in s.bus.state()["picks"]), "same-origin POST was refused"
         assert errors == []
         ctx.close()
-        fx.close()
 
 
 def _mine_label(page) -> str:

@@ -1,15 +1,15 @@
 # FantasyLeagueFootball
 
-[![Version](https://img.shields.io/badge/version-0.1.0-E8963C.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.2.0-E8963C.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](pyproject.toml)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](#install)
-[![Tests](https://img.shields.io/badge/tests-191%20passing-6FBF73.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-282%20passing-6FBF73.svg)](tests/)
 [![Dependencies](https://img.shields.io/badge/runtime%20deps-0-6FBF73.svg)](pyproject.toml)
 
 A draft-day board for **Yahoo half-PPR fantasy football**. Renders one self-contained HTML page you keep open on a second screen while you draft — click players off as they go, watch tiers drain, and get warned the moment a tier is about to break.
 
-Ships with a ranked 2026 board — 200 players in 12 tiers — with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies. No account, no network calls, no telemetry — the page works from `file://` with the Wi-Fi off.
+Ships with a ranked 2026 board — 200 players in 12 tiers — with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies, no account, no telemetry. The rendered page makes no network calls at all — it works from `file://` with the Wi-Fi off. Only the commands that fetch data (`refresh`, `tiers`, `variant`, `serve --sleeper`) talk to the internet, and all of them use public APIs with no key.
 
 ![Draft board, dark theme](docs/screenshot-dark.png)
 
@@ -19,26 +19,31 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 
 ![Mid-draft: live value, keeper ages, auction prices, and the managers picking before you](docs/screenshot-mid-draft.png)
 
+On a phone the readouts you need on the clock — best available, your roster, who picks before you — sit above the board rather than below two hundred rows:
+
+![The board on a phone](docs/screenshot-phone.png)
+
 ## Features
 
-- **One file, works offline.** `fantasyleague build` writes `dist/draft-board.html` (~37 KB) with all CSS/JS inlined and the dataset embedded. Open it anywhere.
+- **One file, works offline.** `fantasyleague build` writes `dist/draft-board.html` (~140 KB) with all CSS/JS inlined and the dataset embedded. Open it anywhere.
 - **Click to cross off.** Every row is a button. State is saved in the browser as an ordered pick log, so a refresh mid-draft doesn't lose your place. Every action — including Reset — shows a toast with **Undo**.
-- **Your roster.** Claim your picks (automatic once the board knows your slot) and a rail card fills Yahoo's default lineup, tells you what's still open, and warns when three of your players share a bye week.
+- **Your roster.** Claim your picks (automatic once the board knows your slot) and a rail card fills the lineup your board is built for — Yahoo's default, or two QB slots on a superflex board — tells you what's still open, and warns when three of your players share a bye week. In live mode the claim lives on the server, so a reload or a dropped connection doesn't lose it.
 - **Run detection.** Three of the last four picks at one position marks that position's chip with *run* — the moment to decide whether to join it or let it pass.
 - **Tier-break warnings.** Each tier header shows how many are left and lights up at two.
 - **Best available** updates as you go, overall or filtered to one position.
 - **Will he last?** Enter your league size and slot and every player shows the odds of surviving to your next two picks (`73% · 4%`), banded *wait* / *toss-up* / *now*. The controls bar tracks the pick on the clock and how far away yours is.
-- **Position filters (QB/RB/WR/TE/K/DST) + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
+- **Position filters (QB/RB/WR/TE/K/DST) + name search** so you can answer "best RB left?" in one tap. Punctuation is ignored, so "jamarr" finds Ja'Marr Chase. Type a name and press Enter to cross off the match without touching the mouse.
 - **Live value.** One toggle re-sorts each tier by value over replacement against the remaining pool — the number that actually moves when a position dries up.
 - **Before your next pick.** Every manager drafting ahead of you, and the slots they still need. Two of them needing the same position is your warning.
 - **Keeper info** toggle showing age and experience, coloured against each position's age cliff — the context a keeper or dynasty league drafts on.
 - **Auction values** on every row, priced from real projections against your budget — VBD over a bench-depth baseline so the money spreads the way a real auction does.
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, trending adds from the last 24 hours, late-round targets.
-- **Refreshable.** `fantasyleague refresh` pulls current ADP, bye weeks, injury designations, and trending adds — no key, cached for a day, degrades to cache offline.
-- **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
+- **Refreshable.** `fantasyleague refresh` pulls current ADP, bye weeks, season projections, auction values, injury designations, keeper ages and trending adds — no key, cached for a day, degrades to cache offline.
+- **Off-board picks.** When someone takes a player this board doesn't rank, one button keeps the pick count — and therefore "your pick", the odds and the opponent rail — honest. Sleeper sync records them automatically.
+- **Dark-first, light-aware.** A **Theme** button switches auto / dark / light and is remembered; the palette also follows `prefers-color-scheme` and an explicit `data-theme`. Both themes meet WCAG AA on every surface. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
 - **Print sheet.** One button (or Ctrl+P) turns the board into a compact three-column greyscale cheat sheet — flags as glyphs, crossed-off players struck through.
-- **Second screen on your phone.** `fantasyleague serve --host 0.0.0.0` puts the board on your LAN; every tab and device stays in sync, and the screen won't sleep mid-draft.
+- **Second screen on your phone.** `fantasyleague serve --host 0.0.0.0` puts the board on your LAN; every tab and device stays in sync, the screen won't sleep mid-draft, and the phone layout leads with the readouts you need on the clock. A pick that fails to reach the server is reported and replayed rather than silently lost.
 - **Terminal CLI** over the same data: `list`, `values`, `next --drafted …` for best available and tier breaks without a browser.
 - **Bring your own board.** Any JSON matching the packaged file works; it's validated on load so a bad edit fails loudly instead of rendering holes.
 
@@ -75,7 +80,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague build [-o PATH] [--title T] [--league NAME] [--teams N] [--slot S] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser; `--teams`/`--slot` pre-fill the pick-odds settings (editable on the page). |
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|K\|DST\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
-| `fantasyleague refresh [-o PATH] [--force] [--reflag] [--no-adp] [--no-trending]` | Pull current ADP + spread + byes (Fantasy Football Calculator) and rebuild the injury board and trending rail (Sleeper). Caches for 24h; works offline from cache. |
+| `fantasyleague refresh [-o PATH] [--force] [--reflag] [--no-adp] [--no-projections] [--no-trending] [--adp-format F] [--teams N] [--budget N] [--roster-size N] [--hours N] [--trending-limit N] [--limit N]` | Pull current ADP + spread + byes (Fantasy Football Calculator), season projections and auction values (Sleeper), then rebuild the injury board, keeper ages and trending rail. Caches for 24h; works offline from cache. Without `-o` it rewrites the dataset in place. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
 | `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
 | `fantasyleague export [-o PATH] [--pos …] [--flag …]` | Write the board as CSV — stdout by default. |
@@ -199,14 +204,14 @@ Validation on load rejects: ranks that aren't exactly `1..N` (gaps or duplicates
 
 ## Theming
 
-Dark is the default. The page defines a complete light palette too and picks one three ways: the OS setting via `prefers-color-scheme`, or an explicit `data-theme="dark"|"light"` on `<html>` if a host page sets one. Every color is a token; nothing is defined only inside a media query, so neither theme can end up with the other theme's text.
+Dark is the default. The page defines a complete light palette too and picks one three ways: the **Theme** button on the board (auto / dark / light, remembered with your draft settings), the OS setting via `prefers-color-scheme`, or an explicit `data-theme="dark"|"light"` on `<html>` if a host page sets one. Every color is a token; nothing is defined only inside a media query, so neither theme can end up with the other theme's text. Both palettes meet WCAG AA for text on every surface, and a test fails if either drifts below it.
 
 ## Development
 
 ```bash
 pip install -e ".[dev]"
 python -m playwright install chromium   # only needed for the browser tests
-pytest                                  # 191 tests
+pytest                                  # 282 tests
 ruff check .
 python -m build                         # wheel + sdist into dist/
 ```
@@ -217,7 +222,7 @@ What the tests cover:
 - **Draft-time queries** — best available skips drafted players and respects position; tier breaks fire at the threshold and ignore empty tiers.
 - **Render** — output is a complete document, fully inlined, no external requests, both themes defined, no leftover template tokens, `</script>` in the data can't break the page, version stamped.
 - **DOM contract** — every element ID `board.js` queries exists in the template; every flag has a label; every severity has a style; the tier-break threshold matches between Python and JS.
-- **Real browser** (Playwright, skipped if unavailable) — 75 rows render with zero JS errors, click toggles `aria-pressed` and updates best available, tier break appears at two left, state survives a reload, position filter and reset work, light theme paints its own background.
+- **Real browser** (Playwright, skipped if unavailable) — 200 rows render with zero JS errors in both Chromium and Firefox; click toggles `aria-pressed` and updates best available; tier breaks fire at two left; state and roster claims survive a reload, including in live mode; the phone layout puts the live readouts above the board; the toast keeps Undo reachable; contrast tokens meet AA; a `<!--<script>` in the data cannot blank the page.
 
 Project layout:
 
@@ -229,17 +234,15 @@ src/fantasyleague/
   render.py                  token replacement into the HTML template
   cli.py                     argparse front end
   assets/board.{html.template,css,js}
-tests/                       42 tests across data, queries, render, DOM contract, browser
+tests/                       282 tests across data, queries, render, DOM contract, browser
 docs/                        README screenshots
 ```
 
-## Roadmap
+## Known limitations
 
-[ROADMAP.md](ROADMAP.md) is the single task tracker. Headline items: snake-draft awareness (your next pick + odds a player survives to it), a local `serve` mode with live sync from Sleeper's public API and Yahoo's OAuth draft results, K/DST and bye weeks, roster tracking, a print stylesheet, and four P0 fixes queued from the 2026-08-16 research pass.
-
-## Known limitations (v0.0.1)
-
-- Yahoo live sync isn't wired up yet (Sleeper is) — it needs a Yahoo Developer app.
+- Yahoo live sync isn't wired up (Sleeper is) — it needs a Yahoo Developer app.
+- `refresh` without `-o` writes back into the installed package, so a `pip install --upgrade` replaces your refreshed data with the packaged board. Pass `-o my-board.json` and use `--data my-board.json` to keep it.
+- The screen-reader announcements and iOS Safari behaviour are built to spec but have not been verified on real assistive tech or a physical iPhone.
 
 ## License
 

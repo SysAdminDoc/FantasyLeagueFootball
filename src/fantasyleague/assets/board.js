@@ -347,24 +347,42 @@
     var rows = opponentNeeds(current, mine[0]);
     if (!rows.length) { card.hidden = true; return; }
     card.hidden = false;
-    // A position two or more managers still need is the one that will not last.
-    // Early on everyone needs everything, so a slot every listed manager wants
-    // says nothing — the warning is for contention, not for round one.
+    // What matters is how much competition there is for a position before your
+    // turn, not a dozen near-identical lineup dumps. Lead with the demand count;
+    // a position everyone still needs is round-one noise, so it is not a threat.
     var counts = {};
     rows.forEach(function (r) {
       r.open.forEach(function (slot) { counts[slot] = (counts[slot] || 0) + 1; });
     });
-    var contested = function (slot) { return counts[slot] >= 2 && counts[slot] < rows.length; };
-    document.getElementById("opponents").innerHTML = rows.map(function (r) {
+    var demand = Object.keys(counts)
+      .filter(function (slot) { return counts[slot] >= 2 && counts[slot] < rows.length; })
+      .sort(function (a, b) { return counts[b] - counts[a]; });
+    var contested = function (slot) { return demand.indexOf(slot) !== -1; };
+
+    var summary = '<div class="oppsum">' + rows.length + " pick" + (rows.length === 1 ? "" : "s") +
+      " before yours" +
+      (demand.length
+        ? " · " + demand.slice(0, 3).map(function (slot) {
+            return '<b class="hot">' + counts[slot] + " need " + slot + "</b>";
+          }).join(", ")
+        : "") +
+      "</div>";
+
+    var SHOWN = 6;
+    var lines = rows.slice(0, SHOWN).map(function (r) {
       var threat = r.open.some(contested);
       var shown = r.open.slice(0, 4).join("</b>, <b>");
-      var more = r.open.length > 4 ? " +" + (r.open.length - 4) + " more" : "";
+      var more = r.open.length > 4 ? " +" + (r.open.length - 4) : "";
       return '<div class="oppline' + (threat ? " threat" : "") + '">' +
         '<span class="who2">#' + r.pick + " · T" + r.slot + "</span>" +
         '<span class="needs2">' +
         (r.open.length ? "needs <b>" + shown + "</b>" + more : "lineup full") +
         "</span></div>";
-    }).join("");
+    });
+    if (rows.length > SHOWN) {
+      lines.push('<div class="oppmore">… and ' + (rows.length - SHOWN) + " more before your turn</div>");
+    }
+    document.getElementById("opponents").innerHTML = summary + lines.join("");
   }
 
   // Keeper value tracks the age curve: backs fall off a cliff around 28, receivers

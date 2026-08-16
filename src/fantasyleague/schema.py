@@ -116,6 +116,12 @@ def check(raw: dict) -> list[str]:
             v = p.get(numeric)
             if v is not None and (not isinstance(v, int | float) or v <= low):
                 bad(f"{at}/{numeric}", f"must be a positive number or null, got {v!r}")
+        age = p.get("age")
+        if age is not None and (not isinstance(age, int) or not 18 <= age <= 50):
+            bad(f"{at}/age", f"must be an age between 18 and 50 or null, got {age!r}")
+        exp = p.get("exp")
+        if exp is not None and (not isinstance(exp, int) or exp < 0):
+            bad(f"{at}/exp", f"must be a non-negative number of seasons or null, got {exp!r}")
         bye = p.get("bye")
         if bye is not None and (not isinstance(bye, int) or not 1 <= bye <= 18):
             bad(f"{at}/bye", f"must be a week between 1 and 18 or null, got {bye!r}")

@@ -29,6 +29,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Best available** updates as you go, overall or filtered to one position.
 - **Will he last?** Enter your league size and slot and every player shows the odds of surviving to your next two picks (`73% · 4%`), banded *wait* / *toss-up* / *now*. The controls bar tracks the pick on the clock and how far away yours is.
 - **Position filters (QB/RB/WR/TE/K/DST) + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
+- **Keeper info** toggle showing age and experience, coloured against each position's age cliff — the context a keeper or dynasty league drafts on.
 - **Auction values** on every row, priced from real projections against your budget — VBD over a bench-depth baseline so the money spreads the way a real auction does.
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, trending adds from the last 24 hours, late-round targets.

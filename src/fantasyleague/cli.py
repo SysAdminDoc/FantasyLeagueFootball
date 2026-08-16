@@ -213,6 +213,9 @@ def cmd_refresh(args: argparse.Namespace) -> int:
         except (OSError, ValueError) as exc:
             print(f"  projections unavailable ({exc}); keeping the stored numbers")
 
+    data, profiled = players_mod.apply_profile(data, players)
+    print(f"Profiles: age and experience for {profiled} players")
+
     data, updated = players_mod.apply_status(data, players)
     print(f"Injury board: {len(data.injuries)} players carrying a designation")
     for line in updated[: args.limit]:
@@ -237,7 +240,10 @@ def cmd_refresh(args: argparse.Namespace) -> int:
     return 0
 
 
-CSV_COLUMNS = ("rank", "name", "pos", "team", "tier", "flag", "adp", "adp_sd", "bye", "note")
+CSV_COLUMNS = (
+    "rank", "name", "pos", "team", "tier", "flag", "adp", "adp_sd", "bye",
+    "projected", "value", "age", "exp", "note",
+)
 
 
 def cmd_export(args: argparse.Namespace) -> int:

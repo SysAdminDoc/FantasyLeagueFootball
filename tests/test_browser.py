@@ -542,3 +542,22 @@ def test_auction_values_show_on_rows(page):
     assert val.inner_text().startswith("$")
     assert val.get_attribute("title") == "Auction value"
     assert "Auction values assume $200" in page.locator("#adpnote").inner_text()
+
+
+def test_keeper_toggle_shows_age_and_persists(page):
+    btn = page.locator("#keeper")
+    assert btn.get_attribute("aria-pressed") == "false"
+    assert page.locator(".age").count() == 0
+
+    btn.click()
+    assert btn.get_attribute("aria-pressed") == "true"
+    ages = page.locator(".age")
+    assert ages.count() > 100
+    first = page.locator('.row[data-rk="1"] .age')
+    assert first.inner_text().endswith("y")
+    assert "years old" in first.get_attribute("title")
+
+    page.reload()
+    page.wait_for_selector(".row")
+    assert page.locator("#keeper").get_attribute("aria-pressed") == "true"
+    assert page.locator(".age").count() > 100

@@ -232,6 +232,12 @@ h1 {
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .bye.clash { color: var(--warn); font-weight: 700; }
+.age {
+  font-family: var(--f-data); font-size: 11px; color: var(--ink-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.age.young { color: var(--good); }
+.age.old { color: var(--warn); }
 .val {
   font-family: var(--f-data); font-size: 11.5px; color: var(--good);
   font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 700;

@@ -22,6 +22,11 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Keeper/dynasty context. `refresh` attaches age and completed seasons from Sleeper
+  (188 of 200 players), and a **Keeper info** toggle puts age on every row — green below
+  the position's age cliff, amber at or past it (RB 27, WR 29, TE 30, QB 34), with the
+  full "29 years old · 7 seasons" on hover. The setting persists with your draft settings.
+- CSV export gains `projected`, `value`, `age` and `exp` columns.
 - `fantasyleague variant {half-ppr,ppr,standard,2qb,dynasty}` builds a board for another
   scoring format: re-ranked by that format's own ADP, re-projected in its scoring, re-tiered,
   and re-priced. Superflex prices off a two-QB lineup — with QB24 as replacement instead of

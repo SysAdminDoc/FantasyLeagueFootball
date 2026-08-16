@@ -31,6 +31,9 @@ class Player:
     # dollar value derived from them. Both None until `refresh` fills them in.
     projected: float | None = None
     value: int | None = None
+    # Keeper/dynasty context: age in years and completed NFL seasons.
+    age: int | None = None
+    exp: int | None = None
 
     def __post_init__(self) -> None:
         if self.pos not in POSITIONS:
@@ -52,6 +55,10 @@ class Player:
             raise ValueError(f"{self.name}: projected points cannot be negative")
         if self.value is not None and self.value < 1:
             raise ValueError(f"{self.name}: auction value must be at least $1")
+        if self.age is not None and not 18 <= self.age <= 50:
+            raise ValueError(f"{self.name}: age {self.age} is out of range")
+        if self.exp is not None and self.exp < 0:
+            raise ValueError(f"{self.name}: experience cannot be negative")
 
     def id_for(self, source: str) -> str | None:
         """External id as a string, or None when the source has none for this player."""

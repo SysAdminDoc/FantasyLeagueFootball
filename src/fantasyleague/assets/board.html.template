@@ -36,6 +36,7 @@ __CSS__
       <button class="chip" data-pos="K" aria-pressed="false">K</button>
       <button class="chip" data-pos="DST" aria-pressed="false">DST</button>
     </div>
+    <button class="ghost" id="keeper" type="button" aria-pressed="false">Keeper info</button>
     <button class="ghost" id="print" type="button">Print sheet</button>
     <button class="ghost" id="reset">Reset board</button>
     <div class="tally" id="tally"></div>

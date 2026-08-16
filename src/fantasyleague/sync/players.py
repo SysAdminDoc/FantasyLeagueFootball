@@ -95,6 +95,26 @@ def describe(record: dict) -> str | None:
     return f"{line}|{practice}" if practice else line
 
 
+def apply_profile(data: Dataset, players: dict) -> tuple[Dataset, int]:
+    """Attach age and completed seasons — the context keeper and dynasty leagues need."""
+    out, hits = [], 0
+    for p in data.players:
+        rec = players.get(p.id_for("sleeper") or "") or {}
+        age, exp = rec.get("age"), rec.get("years_exp")
+        if isinstance(age, int | float) or isinstance(exp, int | float):
+            hits += 1
+            out.append(
+                replace(
+                    p,
+                    age=int(age) if isinstance(age, int | float) else p.age,
+                    exp=int(exp) if isinstance(exp, int | float) else p.exp,
+                )
+            )
+        else:
+            out.append(p)
+    return replace(data, players=out), hits
+
+
 def apply_status(data: Dataset, players: dict) -> tuple[Dataset, list[str]]:
     """Return *data* with injuries rebuilt from Sleeper and `watch` flags refreshed.
 

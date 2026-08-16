@@ -134,7 +134,11 @@
     var dsaved = JSON.parse(localStorage.getItem(DKEY) || "null");
     if (dsaved && dsaved.teams) draft = dsaved;
   } catch (e) { /* storage already reported */ }
-  function saveDraft() { try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {} }
+  var keeperMode = !!draft.keeper;
+  function saveDraft() {
+    draft.keeper = keeperMode;
+    try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {}
+  }
 
   function snakePicks(teams, slot, rounds) {
     var out = [];
@@ -159,6 +163,21 @@
     var sigma = Math.max(sd == null ? adp / 4 : sd, 0.5);
     return 1 - phi((pick - adp) / sigma);
   }
+  // Keeper value tracks the age curve: backs fall off a cliff around 28, receivers
+  // and tight ends hold value later, quarterbacks longest of all.
+  var AGE_CLIFF = { RB: 27, WR: 29, TE: 30, QB: 34, K: 99, DST: 99 };
+  function ageClass(p) {
+    if (!p.age) return "";
+    var cliff = AGE_CLIFF[p.pos] || 30;
+    if (p.age <= cliff - 3) return "young";
+    return p.age >= cliff ? "old" : "";
+  }
+  function ageTitle(p) {
+    var bits = [p.age + " years old"];
+    if (p.exp != null) bits.push(p.exp === 0 ? "rookie" : p.exp + " seasons");
+    return bits.join(" · ");
+  }
+
   function bandOf(pr) { return pr >= 0.6 ? "wait" : pr <= 0.3 ? "now" : "toss-up"; }
   function oddsHtml(p, picks) {
     if (p.adp == null || !picks.length) return "";
@@ -447,7 +466,7 @@
           '<span class="who"><span class="nm">' + esc(p.name) + "</span>" +
           '<span class="pos">' + esc(p.pos) + " · " + esc(p.team) + "</span>" +
           (p.note ? '<span class="note">' + esc(p.note) + "</span>" : "") + "</span>" +
-          '<span class="flags"><span class="valslot"></span><span class="byeslot"></span><span class="oddsslot"></span>' +
+          '<span class="flags"><span class="ageslot"></span><span class="valslot"></span><span class="byeslot"></span><span class="oddsslot"></span>' +
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
         b.addEventListener("click", function () {
@@ -494,6 +513,10 @@
       var pl = byRank(Number(r.dataset.rk));
       r.classList.toggle("mine", !!(isGone && (entryFor(pl.rank) || {}).mine));
       r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(pl, mine);
+      r.querySelector(".ageslot").innerHTML = keeperMode && pl.age
+        ? '<span class="age ' + ageClass(pl) + '" title="' + esc(ageTitle(pl)) + '">' +
+          pl.age + "y</span>"
+        : "";
       r.querySelector(".valslot").innerHTML = pl.value
         ? '<span class="val" title="Auction value">$' + pl.value + "</span>"
         : "";
@@ -586,6 +609,16 @@
   document.getElementById("search").addEventListener("input", paint);
   document.getElementById("search").addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); crossOffSearchMatch(); }
+  });
+
+  var keeperBtn = document.getElementById("keeper");
+  keeperBtn.setAttribute("aria-pressed", keeperMode ? "true" : "false");
+  keeperBtn.addEventListener("click", function () {
+    keeperMode = !keeperMode;
+    keeperBtn.setAttribute("aria-pressed", keeperMode ? "true" : "false");
+    saveDraft();
+    say(keeperMode ? "Showing age and experience." : "Age hidden.");
+    paint();
   });
 
   document.getElementById("print").addEventListener("click", function () { window.print(); });

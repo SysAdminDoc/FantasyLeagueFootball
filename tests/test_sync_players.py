@@ -134,3 +134,38 @@ def test_save_round_trips(tmp_path):
     assert again.refreshed == data.refreshed
     assert again.trending == data.trending
     assert [i.status for i in again.injuries] == [i.status for i in data.injuries]
+
+
+def test_apply_profile_attaches_age_and_experience(data):
+    from dataclasses import replace
+
+    # Start from a board with no profile data, so a partial record is visible as partial.
+    data = replace(data, players=[replace(p, age=None, exp=None) for p in data.players])
+    db = {
+        "4984": {"age": 30, "years_exp": 8},
+        "9221": {"age": 24},                 # age only
+        "5859": {"years_exp": 7},            # experience only
+    }
+    fresh, hits = players_mod.apply_profile(data, db)
+    by_name = {p.name: p for p in fresh.players}
+    assert hits == 3
+    assert by_name["Josh Allen"].age == 30 and by_name["Josh Allen"].exp == 8
+    assert by_name["Jahmyr Gibbs"].age == 24
+    assert by_name["A.J. Brown"].exp == 7 and by_name["A.J. Brown"].age is None
+
+
+def test_apply_profile_leaves_unknown_players_alone(data):
+    """An empty database must not wipe profile data the board already has."""
+    before = [(p.age, p.exp) for p in data.players]
+    fresh, hits = players_mod.apply_profile(data, {})
+    assert hits == 0
+    assert [(p.age, p.exp) for p in fresh.players] == before
+
+
+def test_packaged_board_carries_keeper_context():
+    d = board.load()
+    aged = [p for p in d.players if p.age]
+    assert len(aged) >= 150
+    assert all(18 <= p.age <= 50 for p in aged)
+    rookies = [p for p in d.players if p.exp == 0]
+    assert rookies, "expected some rookies on a 200-player board"

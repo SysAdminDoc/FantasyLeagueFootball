@@ -6,6 +6,8 @@ import pytest
 
 from fantasyleague import __version__, cli
 
+HEADER_COLUMNS = cli.CSV_COLUMNS
+
 
 def run(capsys, *argv) -> tuple[int, str, str]:
     code = cli.main(list(argv))
@@ -73,7 +75,7 @@ def test_export_writes_csv_to_stdout(capsys):
     code, out, _ = run(capsys, "export", "--pos", "TE", "--limit", "2")
     assert code == 0
     lines = [ln for ln in out.splitlines() if ln.strip()]
-    assert lines[0] == "rank,name,pos,team,tier,flag,adp,adp_sd,bye,note"
+    assert lines[0] == "rank,name,pos,team,tier,flag,adp,adp_sd,bye,projected,value,age,exp,note"
     assert lines[1].startswith("17,Brock Bowers,TE,LV,3,")
     assert len(lines) == 3
 
@@ -83,12 +85,13 @@ def test_export_writes_a_file_and_quotes_commas(capsys, tmp_path):
     code, out, _ = run(capsys, "export", "-o", str(out_path))
     assert code == 0 and "Wrote" in out
     text = out_path.read_text(encoding="utf-8")
-    assert text.startswith("rank,name,pos,team,tier,flag,adp,adp_sd,bye,note")
+    assert text.startswith("rank,name,pos,team,tier,flag,adp,adp_sd,bye,projected,value,age,exp,note")
     # A note containing a comma must be quoted, not split into extra columns.
     import csv as _csv
 
     rows = list(_csv.reader(text.splitlines()))
-    assert all(len(r) == 10 for r in rows), "every row must have exactly 10 columns"
+    width = len(HEADER_COLUMNS)
+    assert all(len(r) == width for r in rows), f"every row must have exactly {width} columns"
     assert len(rows) == 201  # header + 200 players
 
 

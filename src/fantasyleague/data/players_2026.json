@@ -96,7 +96,9 @@
       "adp_sd": 0.7,
       "bye": 6,
       "projected": 299.9,
-      "value": 63
+      "value": 63,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 2,
@@ -115,7 +117,9 @@
       "adp_sd": 0.7,
       "bye": 11,
       "projected": 292.9,
-      "value": 61
+      "value": 61,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 3,
@@ -134,7 +138,9 @@
       "adp_sd": 1.0,
       "bye": 6,
       "projected": 256.6,
-      "value": 32
+      "value": 32,
+      "age": 26,
+      "exp": 5
     },
     {
       "rank": 4,
@@ -153,7 +159,9 @@
       "adp_sd": 0.5,
       "bye": 11,
       "projected": 259.0,
-      "value": 33
+      "value": 33,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 5,
@@ -172,7 +180,9 @@
       "adp_sd": 1.3,
       "bye": 11,
       "projected": 235.1,
-      "value": 27
+      "value": 27,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 6,
@@ -191,7 +201,9 @@
       "adp_sd": 1.5,
       "bye": 8,
       "projected": 256.0,
-      "value": 51
+      "value": 51,
+      "age": 30,
+      "exp": 9
     },
     {
       "rank": 7,
@@ -210,7 +222,9 @@
       "adp_sd": 1.5,
       "bye": 6,
       "projected": 227.5,
-      "value": 25
+      "value": 25,
+      "age": 26,
+      "exp": 5
     },
     {
       "rank": 8,
@@ -229,7 +243,9 @@
       "adp_sd": 1.3,
       "bye": 13,
       "projected": 254.3,
-      "value": 51
+      "value": 51,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 9,
@@ -248,7 +264,9 @@
       "adp_sd": 2.5,
       "bye": 6,
       "projected": 205.4,
-      "value": 19
+      "value": 19,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 10,
@@ -267,7 +285,9 @@
       "adp_sd": 2.3,
       "bye": 14,
       "projected": 222.5,
-      "value": 23
+      "value": 23,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 11,
@@ -286,7 +306,9 @@
       "adp_sd": 2.7,
       "bye": 7,
       "projected": 245.3,
-      "value": 49
+      "value": 49,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 12,
@@ -305,7 +327,9 @@
       "adp_sd": 3.3,
       "bye": 10,
       "projected": 228.2,
-      "value": 44
+      "value": 44,
+      "age": 29,
+      "exp": 8
     },
     {
       "rank": 13,
@@ -324,7 +348,9 @@
       "adp_sd": 2.1,
       "bye": 6,
       "projected": 217.9,
-      "value": 42
+      "value": 42,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 14,
@@ -343,7 +369,9 @@
       "adp_sd": 1.9,
       "bye": 11,
       "projected": 205.2,
-      "value": 19
+      "value": 19,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 15,
@@ -362,7 +390,9 @@
       "adp_sd": 2.9,
       "bye": 13,
       "projected": 234.5,
-      "value": 46
+      "value": 46,
+      "age": 22,
+      "exp": 1
     },
     {
       "rank": 16,
@@ -381,7 +411,9 @@
       "adp_sd": 2.7,
       "bye": 8,
       "projected": 210.5,
-      "value": 20
+      "value": 20,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 17,
@@ -400,7 +432,9 @@
       "adp_sd": 10.1,
       "bye": 13,
       "projected": 202.5,
-      "value": 25
+      "value": 25,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 18,
@@ -419,7 +453,9 @@
       "adp_sd": 1.5,
       "bye": 13,
       "projected": 238.4,
-      "value": 47
+      "value": 47,
+      "age": 32,
+      "exp": 10
     },
     {
       "rank": 19,
@@ -438,7 +474,9 @@
       "adp_sd": 4.5,
       "bye": 5,
       "projected": 225.5,
-      "value": 44
+      "value": 44,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 20,
@@ -457,7 +495,9 @@
       "adp_sd": 2.6,
       "bye": 6,
       "projected": 226.7,
-      "value": 44
+      "value": 44,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 21,
@@ -476,7 +516,9 @@
       "adp_sd": 2.8,
       "bye": 11,
       "projected": 207.7,
-      "value": 20
+      "value": 20,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 22,
@@ -495,7 +537,9 @@
       "adp_sd": 3.5,
       "bye": 8,
       "projected": 186.3,
-      "value": 14
+      "value": 14,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 23,
@@ -514,7 +558,9 @@
       "adp_sd": 2.5,
       "bye": 5,
       "projected": 185.3,
-      "value": 14
+      "value": 14,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 24,
@@ -533,7 +579,9 @@
       "adp_sd": 2.2,
       "bye": 14,
       "projected": 205.7,
-      "value": 19
+      "value": 19,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 25,
@@ -552,7 +600,9 @@
       "adp_sd": 4.0,
       "bye": 7,
       "projected": 218.9,
-      "value": 42
+      "value": 42,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 26,
@@ -571,7 +621,9 @@
       "adp_sd": 7.7,
       "bye": 14,
       "projected": 186.9,
-      "value": 21
+      "value": 21,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 27,
@@ -590,7 +642,9 @@
       "adp_sd": 4.7,
       "bye": 14,
       "projected": 212.0,
-      "value": 40
+      "value": 40,
+      "age": 21,
+      "exp": 0
     },
     {
       "rank": 28,
@@ -609,7 +663,9 @@
       "adp_sd": 2.8,
       "bye": 13,
       "projected": 195.6,
-      "value": 36
+      "value": 36,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 29,
@@ -628,7 +684,9 @@
       "adp_sd": 3.6,
       "bye": 11,
       "projected": 192.0,
-      "value": 35
+      "value": 35,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 30,
@@ -647,7 +705,9 @@
       "adp_sd": 5.3,
       "bye": 8,
       "projected": 189.7,
-      "value": 34
+      "value": 34,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 31,
@@ -666,7 +726,9 @@
       "adp_sd": 6.6,
       "bye": 7,
       "projected": 361.5,
-      "value": 24
+      "value": 24,
+      "age": 30,
+      "exp": 8
     },
     {
       "rank": 32,
@@ -685,7 +747,9 @@
       "adp_sd": 3.2,
       "bye": 11,
       "projected": 186.1,
-      "value": 34
+      "value": 34,
+      "age": 28,
+      "exp": 7
     },
     {
       "rank": 33,
@@ -704,7 +768,9 @@
       "adp_sd": 4.3,
       "bye": 14,
       "projected": 188.8,
-      "value": 34
+      "value": 34,
+      "age": 26,
+      "exp": 5
     },
     {
       "rank": 34,
@@ -723,7 +789,9 @@
       "adp_sd": 4.2,
       "bye": 5,
       "projected": 184.5,
-      "value": 14
+      "value": 14,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 35,
@@ -742,7 +810,9 @@
       "adp_sd": 8.0,
       "bye": 10,
       "projected": 173.4,
-      "value": 17
+      "value": 17,
+      "age": 22,
+      "exp": 1
     },
     {
       "rank": 36,
@@ -761,7 +831,9 @@
       "adp_sd": 4.5,
       "bye": 6,
       "projected": 186.9,
-      "value": 14
+      "value": 14,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 37,
@@ -780,7 +852,9 @@
       "adp_sd": 2.7,
       "bye": 8,
       "projected": 194.9,
-      "value": 16
+      "value": 16,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 38,
@@ -799,7 +873,9 @@
       "adp_sd": 5.7,
       "bye": 10,
       "projected": 179.3,
-      "value": 32
+      "value": 32,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 39,
@@ -818,7 +894,9 @@
       "adp_sd": 8.8,
       "bye": 13,
       "projected": 326.0,
-      "value": 15
+      "value": 15,
+      "age": 29,
+      "exp": 8
     },
     {
       "rank": 40,
@@ -837,7 +915,9 @@
       "adp_sd": 2.5,
       "bye": 13,
       "projected": 187.7,
-      "value": 14
+      "value": 14,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 41,
@@ -856,7 +936,9 @@
       "adp_sd": 4.8,
       "bye": 7,
       "projected": 187.7,
-      "value": 14
+      "value": 14,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 42,
@@ -875,7 +957,9 @@
       "adp_sd": 5.3,
       "bye": 10,
       "projected": 185.5,
-      "value": 14
+      "value": 14,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 43,
@@ -894,7 +978,9 @@
       "adp_sd": 4.1,
       "bye": 8,
       "projected": 187.5,
-      "value": 34
+      "value": 34,
+      "age": 24,
+      "exp": 1
     },
     {
       "rank": 44,
@@ -913,7 +999,9 @@
       "adp_sd": 6.8,
       "bye": 8,
       "projected": 185.6,
-      "value": 33
+      "value": 33,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 45,
@@ -932,7 +1020,9 @@
       "adp_sd": 3.6,
       "bye": 10,
       "projected": 189.2,
-      "value": 15
+      "value": 15,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 46,
@@ -951,7 +1041,9 @@
       "adp_sd": 3.2,
       "bye": 13,
       "projected": 183.4,
-      "value": 13
+      "value": 13,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 47,
@@ -970,7 +1062,9 @@
       "adp_sd": 6.7,
       "bye": 10,
       "projected": 187.2,
-      "value": 34
+      "value": 34,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 48,
@@ -989,7 +1083,9 @@
       "adp_sd": 10.5,
       "bye": 7,
       "projected": 308.72,
-      "value": 11
+      "value": 11,
+      "age": 25,
+      "exp": 2
     },
     {
       "rank": 49,
@@ -1008,7 +1104,9 @@
       "adp_sd": 5.8,
       "bye": 11,
       "projected": 180.0,
-      "value": 32
+      "value": 32,
+      "age": 22,
+      "exp": 1
     },
     {
       "rank": 50,
@@ -1027,7 +1125,9 @@
       "adp_sd": 6.6,
       "bye": 8,
       "projected": 187.2,
-      "value": 14
+      "value": 14,
+      "age": 32,
+      "exp": 12
     },
     {
       "rank": 51,
@@ -1046,7 +1146,9 @@
       "adp_sd": 6.0,
       "bye": 10,
       "projected": 182.5,
-      "value": 13
+      "value": 13,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 52,
@@ -1065,7 +1167,9 @@
       "adp_sd": 5.5,
       "bye": 7,
       "projected": 158.8,
-      "value": 27
+      "value": 27,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 53,
@@ -1084,7 +1188,9 @@
       "adp_sd": 5.4,
       "bye": 11,
       "projected": 162.0,
-      "value": 27
+      "value": 27,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 54,
@@ -1103,7 +1209,9 @@
       "adp_sd": 9.1,
       "bye": 6,
       "projected": 306.12,
-      "value": 10
+      "value": 10,
+      "age": 29,
+      "exp": 6
     },
     {
       "rank": 55,
@@ -1122,7 +1230,9 @@
       "adp_sd": 3.6,
       "bye": 11,
       "projected": 161.0,
-      "value": 8
+      "value": 8,
+      "age": 33,
+      "exp": 12
     },
     {
       "rank": 56,
@@ -1141,7 +1251,9 @@
       "adp_sd": 11.9,
       "bye": 11,
       "projected": 160.5,
-      "value": 27
+      "value": 27,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 57,
@@ -1160,7 +1272,9 @@
       "adp_sd": 8.0,
       "bye": 11,
       "projected": 320.76,
-      "value": 14
+      "value": 14,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 58,
@@ -1179,7 +1293,9 @@
       "adp_sd": 4.1,
       "bye": 7,
       "projected": 176.8,
-      "value": 12
+      "value": 12,
+      "age": 30,
+      "exp": 7
     },
     {
       "rank": 59,
@@ -1198,7 +1314,9 @@
       "adp_sd": 4.2,
       "bye": 6,
       "projected": 176.2,
-      "value": 12
+      "value": 12,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 60,
@@ -1217,7 +1335,9 @@
       "adp_sd": 9.3,
       "bye": 13,
       "projected": 159.6,
-      "value": 14
+      "value": 14,
+      "age": 24,
+      "exp": 1
     },
     {
       "rank": 61,
@@ -1236,7 +1356,9 @@
       "adp_sd": 6.5,
       "bye": 10,
       "projected": 173.0,
-      "value": 11
+      "value": 11,
+      "age": 22,
+      "exp": 1
     },
     {
       "rank": 62,
@@ -1255,7 +1377,9 @@
       "adp_sd": 7.3,
       "bye": 9,
       "projected": 154.8,
-      "value": 6
+      "value": 6,
+      "age": 21,
+      "exp": 0
     },
     {
       "rank": 63,
@@ -1274,7 +1398,9 @@
       "adp_sd": 10.5,
       "bye": 10,
       "projected": 310.54,
-      "value": 11
+      "value": 11,
+      "age": 28,
+      "exp": 6
     },
     {
       "rank": 64,
@@ -1293,7 +1419,9 @@
       "adp_sd": 6.6,
       "bye": 11,
       "projected": 176.1,
-      "value": 12
+      "value": 12,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 65,
@@ -1312,7 +1440,9 @@
       "adp_sd": 4.9,
       "bye": 10,
       "projected": 173.9,
-      "value": 11
+      "value": 11,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 66,
@@ -1331,7 +1461,9 @@
       "adp_sd": 5.7,
       "bye": 7,
       "projected": 147.5,
-      "value": 4
+      "value": 4,
+      "age": 29,
+      "exp": 8
     },
     {
       "rank": 67,
@@ -1350,7 +1482,9 @@
       "adp_sd": 6.7,
       "bye": 9,
       "projected": 152.6,
-      "value": 25
+      "value": 25,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 68,
@@ -1369,7 +1503,9 @@
       "adp_sd": 14.8,
       "bye": 11,
       "projected": 127.8,
-      "value": 19
+      "value": 19,
+      "age": 25,
+      "exp": 2
     },
     {
       "rank": 69,
@@ -1388,7 +1524,9 @@
       "adp_sd": 8.0,
       "bye": 7,
       "projected": 164.4,
-      "value": 9
+      "value": 9,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 70,
@@ -1407,7 +1545,9 @@
       "adp_sd": 6.7,
       "bye": 7,
       "projected": 176.4,
-      "value": 12
+      "value": 12,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 71,
@@ -1426,7 +1566,9 @@
       "adp_sd": 8.1,
       "bye": 14,
       "projected": 303.88,
-      "value": 10
+      "value": 10,
+      "age": 33,
+      "exp": 10
     },
     {
       "rank": 72,
@@ -1445,7 +1587,9 @@
       "adp_sd": 7.3,
       "bye": 14,
       "projected": 155.2,
-      "value": 6
+      "value": 6,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 73,
@@ -1464,7 +1608,9 @@
       "adp_sd": 6.2,
       "bye": 9,
       "projected": 146.1,
-      "value": 23
+      "value": 23,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 74,
@@ -1483,7 +1629,9 @@
       "adp_sd": 15.7,
       "bye": 10,
       "projected": 143.1,
-      "value": 23
+      "value": 23,
+      "age": 24,
+      "exp": 1
     },
     {
       "rank": 75,
@@ -1502,7 +1650,9 @@
       "adp_sd": 6.5,
       "bye": 11,
       "projected": 143.4,
-      "value": 10
+      "value": 10,
+      "age": 22,
+      "exp": 1
     },
     {
       "rank": 76,
@@ -1521,7 +1671,9 @@
       "adp_sd": 4.7,
       "bye": 13,
       "projected": 150.9,
-      "value": 5
+      "value": 5,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 77,
@@ -1540,7 +1692,9 @@
       "adp_sd": 6.3,
       "bye": 10,
       "projected": 144.8,
-      "value": 4
+      "value": 4,
+      "age": 30,
+      "exp": 8
     },
     {
       "rank": 78,
@@ -1559,7 +1713,9 @@
       "adp_sd": 7.4,
       "bye": 9,
       "projected": 152.3,
-      "value": 5
+      "value": 5,
+      "age": 28,
+      "exp": 7
     },
     {
       "rank": 79,
@@ -1578,7 +1734,9 @@
       "adp_sd": 6.7,
       "bye": 11,
       "projected": 151.8,
-      "value": 25
+      "value": 25,
+      "age": 28,
+      "exp": 5
     },
     {
       "rank": 80,
@@ -1597,7 +1755,9 @@
       "adp_sd": 6.4,
       "bye": 5,
       "projected": 148.4,
-      "value": 24
+      "value": 24,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 81,
@@ -1616,7 +1776,9 @@
       "adp_sd": 12.5,
       "bye": 11,
       "projected": 280.22,
-      "value": 4
+      "value": 4,
+      "age": 38,
+      "exp": 17
     },
     {
       "rank": 82,
@@ -1635,7 +1797,9 @@
       "adp_sd": 9.4,
       "bye": 14,
       "projected": 136.5,
-      "value": 1
+      "value": 1,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 83,
@@ -1654,7 +1818,9 @@
       "adp_sd": 8.4,
       "bye": 9,
       "projected": 142.1,
-      "value": 22
+      "value": 22,
+      "age": 28,
+      "exp": 6
     },
     {
       "rank": 84,
@@ -1673,7 +1839,9 @@
       "adp_sd": 10.1,
       "bye": 10,
       "projected": 139.6,
-      "value": 2
+      "value": 2,
+      "age": 30,
+      "exp": 9
     },
     {
       "rank": 85,
@@ -1692,7 +1860,9 @@
       "adp_sd": 7.4,
       "bye": 9,
       "projected": 136.4,
-      "value": 1
+      "value": 1,
+      "age": 28,
+      "exp": 6
     },
     {
       "rank": 86,
@@ -1711,7 +1881,9 @@
       "adp_sd": 6.9,
       "bye": 11,
       "projected": 138.6,
-      "value": 8
+      "value": 8,
+      "age": 25,
+      "exp": 5
     },
     {
       "rank": 87,
@@ -1730,7 +1902,9 @@
       "adp_sd": 7.9,
       "bye": 7,
       "projected": 134.9,
-      "value": null
+      "value": null,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 88,
@@ -1749,7 +1923,9 @@
       "adp_sd": 12.0,
       "bye": 8,
       "projected": 303.2,
-      "value": 9
+      "value": 9,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 89,
@@ -1768,7 +1944,9 @@
       "adp_sd": 11.6,
       "bye": 10,
       "projected": 125.6,
-      "value": 18
+      "value": 18,
+      "age": 25,
+      "exp": 1
     },
     {
       "rank": 90,
@@ -1787,7 +1965,9 @@
       "adp_sd": 10.4,
       "bye": 13,
       "projected": 143.4,
-      "value": 3
+      "value": 3,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 91,
@@ -1806,7 +1986,9 @@
       "adp_sd": 9.1,
       "bye": 7,
       "projected": 137.3,
-      "value": 2
+      "value": 2,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 92,
@@ -1825,7 +2007,9 @@
       "adp_sd": 13.6,
       "bye": 6,
       "projected": 158.5,
-      "value": 14
+      "value": 14,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 93,
@@ -1844,7 +2028,9 @@
       "adp_sd": 7.2,
       "bye": 11,
       "projected": 162.6,
-      "value": 8
+      "value": 8,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 94,
@@ -1863,7 +2049,9 @@
       "adp_sd": 10.2,
       "bye": 10,
       "projected": 147.2,
-      "value": 24
+      "value": 24,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 95,
@@ -1882,7 +2070,9 @@
       "adp_sd": 9.1,
       "bye": 6,
       "projected": 141.7,
-      "value": 3
+      "value": 3,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 96,
@@ -1901,7 +2091,9 @@
       "adp_sd": 9.7,
       "bye": 9,
       "projected": 130.1,
-      "value": null
+      "value": null,
+      "age": 25,
+      "exp": 4
     },
     {
       "rank": 97,
@@ -1920,7 +2112,9 @@
       "adp_sd": 10.0,
       "bye": 8,
       "projected": 133.8,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 98,
@@ -1939,7 +2133,9 @@
       "adp_sd": 17.0,
       "bye": 10,
       "projected": 299.34,
-      "value": 8
+      "value": 8,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 99,
@@ -1958,7 +2154,9 @@
       "adp_sd": 13.0,
       "bye": 7,
       "projected": 303.42,
-      "value": 10
+      "value": 10,
+      "age": 26,
+      "exp": 5
     },
     {
       "rank": 100,
@@ -1977,7 +2175,9 @@
       "adp_sd": 15.9,
       "bye": 11,
       "projected": 140.9,
-      "value": 9
+      "value": 9,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 101,
@@ -1996,7 +2196,9 @@
       "adp_sd": 10.3,
       "bye": 7,
       "projected": 125.3,
-      "value": null
+      "value": null,
+      "age": 32,
+      "exp": 11
     },
     {
       "rank": 102,
@@ -2015,7 +2217,9 @@
       "adp_sd": 13.0,
       "bye": 6,
       "projected": 120.1,
-      "value": 17
+      "value": 17,
+      "age": 31,
+      "exp": 9
     },
     {
       "rank": 103,
@@ -2034,7 +2238,9 @@
       "adp_sd": 13.1,
       "bye": 5,
       "projected": 286.68,
-      "value": 5
+      "value": 5,
+      "age": 30,
+      "exp": 9
     },
     {
       "rank": 104,
@@ -2053,7 +2259,9 @@
       "adp_sd": 8.5,
       "bye": 5,
       "projected": 134.0,
-      "value": null
+      "value": null,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 105,
@@ -2072,7 +2280,9 @@
       "adp_sd": 12.7,
       "bye": 10,
       "projected": 128.8,
-      "value": 19
+      "value": 19,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 106,
@@ -2091,7 +2301,9 @@
       "adp_sd": 13.4,
       "bye": 8,
       "projected": 127.7,
-      "value": null
+      "value": null,
+      "age": 30,
+      "exp": 7
     },
     {
       "rank": 107,
@@ -2110,7 +2322,9 @@
       "adp_sd": 8.4,
       "bye": 7,
       "projected": 132.0,
-      "value": null
+      "value": null,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 108,
@@ -2129,7 +2343,9 @@
       "adp_sd": 10.0,
       "bye": 10,
       "projected": 138.5,
-      "value": 2
+      "value": 2,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 109,
@@ -2148,7 +2364,9 @@
       "adp_sd": 12.9,
       "bye": 6,
       "projected": 283.46,
-      "value": 4
+      "value": 4,
+      "age": 31,
+      "exp": 10
     },
     {
       "rank": 110,
@@ -2167,7 +2385,9 @@
       "adp_sd": 14.1,
       "bye": 7,
       "projected": 295.48,
-      "value": 7
+      "value": 7,
+      "age": 28,
+      "exp": 6
     },
     {
       "rank": 111,
@@ -2186,7 +2406,9 @@
       "adp_sd": 7.1,
       "bye": 11,
       "projected": 132.7,
-      "value": null
+      "value": null,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 112,
@@ -2205,7 +2427,9 @@
       "adp_sd": 13.8,
       "bye": 7,
       "projected": 118.4,
-      "value": 16
+      "value": 16,
+      "age": 25,
+      "exp": 1
     },
     {
       "rank": 113,
@@ -2224,7 +2448,9 @@
       "adp_sd": 13.1,
       "bye": 7,
       "projected": 111.1,
-      "value": 14
+      "value": 14,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 114,
@@ -2243,7 +2469,9 @@
       "adp_sd": 18.0,
       "bye": 5,
       "projected": 108.5,
-      "value": 14
+      "value": 14,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 115,
@@ -2262,7 +2490,9 @@
       "adp_sd": 9.6,
       "bye": 11,
       "projected": 141.1,
-      "value": 3
+      "value": 3,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 116,
@@ -2281,7 +2511,9 @@
       "adp_sd": 1.9,
       "bye": 8,
       "projected": null,
-      "value": null
+      "value": null,
+      "age": 25,
+      "exp": 2
     },
     {
       "rank": 117,
@@ -2300,7 +2532,9 @@
       "adp_sd": 17.5,
       "bye": 10,
       "projected": 109.5,
-      "value": null
+      "value": null,
+      "age": 31,
+      "exp": 8
     },
     {
       "rank": 118,
@@ -2319,7 +2553,9 @@
       "adp_sd": 16.3,
       "bye": 6,
       "projected": 143.7,
-      "value": 23
+      "value": 23,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 119,
@@ -2338,7 +2574,9 @@
       "adp_sd": 11.0,
       "bye": 5,
       "projected": 135.9,
-      "value": 1
+      "value": 1,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 120,
@@ -2357,7 +2595,9 @@
       "adp_sd": 16.9,
       "bye": 8,
       "projected": 296.54,
-      "value": 8
+      "value": 8,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 121,
@@ -2376,7 +2616,9 @@
       "adp_sd": 19.4,
       "bye": 8,
       "projected": 138.3,
-      "value": 8
+      "value": 8,
+      "age": 32,
+      "exp": 9
     },
     {
       "rank": 122,
@@ -2395,7 +2637,9 @@
       "adp_sd": 14.2,
       "bye": 10,
       "projected": 295.72,
-      "value": 8
+      "value": 8,
+      "age": 26,
+      "exp": 2
     },
     {
       "rank": 123,
@@ -2414,7 +2658,9 @@
       "adp_sd": 12.4,
       "bye": 8,
       "projected": 136.9,
-      "value": 2
+      "value": 2,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 124,
@@ -2433,7 +2679,9 @@
       "adp_sd": 9.3,
       "bye": 11,
       "projected": 115.6,
-      "value": null
+      "value": null,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 125,
@@ -2452,7 +2700,9 @@
       "adp_sd": 18.6,
       "bye": 5,
       "projected": 136.4,
-      "value": 8
+      "value": 8,
+      "age": 36,
+      "exp": 13
     },
     {
       "rank": 126,
@@ -2471,7 +2721,9 @@
       "adp_sd": 9.5,
       "bye": 11,
       "projected": 127.4,
-      "value": null
+      "value": null,
+      "age": 21,
+      "exp": 0
     },
     {
       "rank": 127,
@@ -2490,7 +2742,9 @@
       "adp_sd": 20.7,
       "bye": 13,
       "projected": 70.1,
-      "value": null
+      "value": null,
+      "age": 26,
+      "exp": 5
     },
     {
       "rank": 128,
@@ -2509,7 +2763,9 @@
       "adp_sd": 18.6,
       "bye": 11,
       "projected": 61.7,
-      "value": 2
+      "value": 2,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 129,
@@ -2528,7 +2784,9 @@
       "adp_sd": 10.9,
       "bye": 10,
       "projected": 274.88,
-      "value": 2
+      "value": 2,
+      "age": 31,
+      "exp": 8
     },
     {
       "rank": 130,
@@ -2547,7 +2805,9 @@
       "adp_sd": 9.8,
       "bye": 11,
       "projected": 98.1,
-      "value": null
+      "value": null,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 131,
@@ -2566,7 +2826,9 @@
       "adp_sd": 20.0,
       "bye": 13,
       "projected": 132.5,
-      "value": 7
+      "value": 7,
+      "age": 30,
+      "exp": 8
     },
     {
       "rank": 132,
@@ -2585,7 +2847,9 @@
       "adp_sd": 10.3,
       "bye": 10,
       "projected": 105.4,
-      "value": null
+      "value": null,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 133,
@@ -2604,7 +2868,9 @@
       "adp_sd": 12.1,
       "bye": 8,
       "projected": 270.94,
-      "value": 1
+      "value": 1,
+      "age": 26,
+      "exp": 1
     },
     {
       "rank": 134,
@@ -2623,7 +2889,9 @@
       "adp_sd": 6.9,
       "bye": 13,
       "projected": 91.8,
-      "value": null
+      "value": null,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 135,
@@ -2642,7 +2910,9 @@
       "adp_sd": 10.2,
       "bye": 9,
       "projected": 63.8,
-      "value": null
+      "value": null,
+      "age": 31,
+      "exp": 8
     },
     {
       "rank": 136,
@@ -2661,7 +2931,9 @@
       "adp_sd": 19.3,
       "bye": 8,
       "projected": 126.3,
-      "value": 5
+      "value": 5,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 137,
@@ -2680,7 +2952,9 @@
       "adp_sd": 13.8,
       "bye": 6,
       "projected": 55.1,
-      "value": null
+      "value": null,
+      "age": 25,
+      "exp": 1
     },
     {
       "rank": 138,
@@ -2699,7 +2973,9 @@
       "adp_sd": 8.6,
       "bye": 6,
       "projected": 86.2,
-      "value": null
+      "value": null,
+      "age": 29,
+      "exp": 6
     },
     {
       "rank": 139,
@@ -2718,7 +2994,9 @@
       "adp_sd": 15.8,
       "bye": 13,
       "projected": 107.6,
-      "value": null
+      "value": null,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 140,
@@ -2737,7 +3015,9 @@
       "adp_sd": 17.3,
       "bye": 6,
       "projected": 265.2,
-      "value": null
+      "value": null,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 141,
@@ -2756,7 +3036,9 @@
       "adp_sd": 16.0,
       "bye": 11,
       "projected": 99.9,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 142,
@@ -2775,7 +3057,9 @@
       "adp_sd": 21.7,
       "bye": 7,
       "projected": 130.6,
-      "value": 6
+      "value": 6,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 143,
@@ -2794,7 +3078,9 @@
       "adp_sd": 17.9,
       "bye": 8,
       "projected": 105.4,
-      "value": null
+      "value": null,
+      "age": 23,
+      "exp": 0
     },
     {
       "rank": 144,
@@ -2813,7 +3099,9 @@
       "adp_sd": 21.5,
       "bye": 11,
       "projected": 124.5,
-      "value": 5
+      "value": 5,
+      "age": 31,
+      "exp": 10
     },
     {
       "rank": 145,
@@ -2832,7 +3120,9 @@
       "adp_sd": 19.8,
       "bye": 11,
       "projected": 262.74,
-      "value": null
+      "value": null,
+      "age": 29,
+      "exp": 8
     },
     {
       "rank": 146,
@@ -2851,7 +3141,9 @@
       "adp_sd": 15.7,
       "bye": 9,
       "projected": 97.1,
-      "value": 11
+      "value": 11,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 147,
@@ -2870,7 +3162,9 @@
       "adp_sd": 13.5,
       "bye": 8,
       "projected": 74.3,
-      "value": 5
+      "value": 5,
+      "age": 25,
+      "exp": 1
     },
     {
       "rank": 148,
@@ -2889,7 +3183,9 @@
       "adp_sd": 16.8,
       "bye": 14,
       "projected": 124.8,
-      "value": 5
+      "value": 5,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 149,
@@ -2908,7 +3204,9 @@
       "adp_sd": 24.6,
       "bye": 6,
       "projected": 48.6,
-      "value": null
+      "value": null,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 150,
@@ -2927,7 +3225,9 @@
       "adp_sd": 20.7,
       "bye": 8,
       "projected": 53.0,
-      "value": null
+      "value": null,
+      "age": 31,
+      "exp": 9
     },
     {
       "rank": 151,
@@ -2946,7 +3246,9 @@
       "adp_sd": 12.7,
       "bye": 11,
       "projected": 278.52,
-      "value": 3
+      "value": 3,
+      "age": 27,
+      "exp": 6
     },
     {
       "rank": 152,
@@ -2965,7 +3267,9 @@
       "adp_sd": 13.1,
       "bye": 6,
       "projected": 82.2,
-      "value": null
+      "value": null,
+      "age": 25,
+      "exp": 2
     },
     {
       "rank": 153,
@@ -2984,7 +3288,9 @@
       "adp_sd": 23.3,
       "bye": 7,
       "projected": 87.9,
-      "value": 8
+      "value": 8,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 154,
@@ -3003,7 +3309,9 @@
       "adp_sd": 18.5,
       "bye": 11,
       "projected": 70.4,
-      "value": null
+      "value": null,
+      "age": 33,
+      "exp": 9
     },
     {
       "rank": 155,
@@ -3022,7 +3330,9 @@
       "adp_sd": 18.1,
       "bye": 8,
       "projected": 100.8,
-      "value": 12
+      "value": 12,
+      "age": 26,
+      "exp": 2
     },
     {
       "rank": 156,
@@ -3041,7 +3351,9 @@
       "adp_sd": 15.0,
       "bye": 10,
       "projected": 58.9,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 157,
@@ -3060,7 +3372,9 @@
       "adp_sd": 17.3,
       "bye": 7,
       "projected": 125.0,
-      "value": 18
+      "value": 18,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 158,
@@ -3079,7 +3393,9 @@
       "adp_sd": 2.0,
       "bye": 5,
       "projected": 235.58,
-      "value": null
+      "value": null,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 159,
@@ -3098,7 +3414,9 @@
       "adp_sd": 17.1,
       "bye": 7,
       "projected": 83.1,
-      "value": null
+      "value": null,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 160,
@@ -3117,7 +3435,9 @@
       "adp_sd": 14.0,
       "bye": 8,
       "projected": 57.4,
-      "value": null
+      "value": null,
+      "age": 26,
+      "exp": 3
     },
     {
       "rank": 161,
@@ -3136,7 +3456,9 @@
       "adp_sd": 20.2,
       "bye": 7,
       "projected": 129.5,
-      "value": 6
+      "value": 6,
+      "age": 25,
+      "exp": 3
     },
     {
       "rank": 162,
@@ -3155,7 +3477,9 @@
       "adp_sd": 20.4,
       "bye": 14,
       "projected": 65.4,
-      "value": 3
+      "value": 3,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 163,
@@ -3174,7 +3498,9 @@
       "adp_sd": 17.8,
       "bye": 13,
       "projected": 47.2,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 2
     },
     {
       "rank": 164,
@@ -3193,7 +3519,9 @@
       "adp_sd": 18.4,
       "bye": 8,
       "projected": 39.3,
-      "value": null
+      "value": null,
+      "age": 24,
+      "exp": 0
     },
     {
       "rank": 165,
@@ -3212,7 +3540,9 @@
       "adp_sd": 12.8,
       "bye": 13,
       "projected": 80.8,
-      "value": null
+      "value": null,
+      "age": 23,
+      "exp": 2
     },
     {
       "rank": 166,
@@ -3231,7 +3561,9 @@
       "adp_sd": 20.8,
       "bye": 13,
       "projected": 74.1,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 167,
@@ -3250,7 +3582,9 @@
       "adp_sd": 12.3,
       "bye": 14,
       "projected": 97.7,
-      "value": null
+      "value": null,
+      "age": 26,
+      "exp": 2
     },
     {
       "rank": 168,
@@ -3269,7 +3603,9 @@
       "adp_sd": 9.2,
       "bye": 13,
       "projected": 104.6,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 0
     },
     {
       "rank": 169,
@@ -3288,7 +3624,9 @@
       "adp_sd": 13.4,
       "bye": 6,
       "projected": 270.12,
-      "value": null
+      "value": null,
+      "age": 27,
+      "exp": 4
     },
     {
       "rank": 170,
@@ -3307,7 +3645,9 @@
       "adp_sd": 11.9,
       "bye": 13,
       "projected": 223.54,
-      "value": null
+      "value": null,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 171,
@@ -3326,7 +3666,9 @@
       "adp_sd": 22.7,
       "bye": 6,
       "projected": 122.0,
-      "value": 4
+      "value": 4,
+      "age": 29,
+      "exp": 7
     },
     {
       "rank": 172,
@@ -3345,7 +3687,9 @@
       "adp_sd": 19.0,
       "bye": 13,
       "projected": 57.5,
-      "value": null
+      "value": null,
+      "age": 23,
+      "exp": 0
     },
     {
       "rank": 173,
@@ -3364,7 +3708,9 @@
       "adp_sd": 10.1,
       "bye": 8,
       "projected": 238.2,
-      "value": null
+      "value": null,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 174,
@@ -3383,7 +3729,9 @@
       "adp_sd": 9.4,
       "bye": 8,
       "projected": 54.2,
-      "value": null
+      "value": null,
+      "age": 22,
+      "exp": 1
     },
     {
       "rank": 175,
@@ -3402,7 +3750,9 @@
       "adp_sd": 16.9,
       "bye": 11,
       "projected": 79.1,
-      "value": null
+      "value": null,
+      "age": 24,
+      "exp": 3
     },
     {
       "rank": 176,
@@ -3421,7 +3771,9 @@
       "adp_sd": 22.7,
       "bye": 10,
       "projected": 61.2,
-      "value": 2
+      "value": 2,
+      "age": 23,
+      "exp": 3
     },
     {
       "rank": 177,
@@ -3440,7 +3792,9 @@
       "adp_sd": 21.4,
       "bye": 14,
       "projected": 116.0,
-      "value": 6
+      "value": 6,
+      "age": 31,
+      "exp": 3
     },
     {
       "rank": 178,
@@ -3459,7 +3813,9 @@
       "adp_sd": 19.8,
       "bye": 8,
       "projected": 113.0,
-      "value": 5
+      "value": 5,
+      "age": 32,
+      "exp": 10
     },
     {
       "rank": 179,
@@ -3478,7 +3834,9 @@
       "adp_sd": 15.9,
       "bye": 7,
       "projected": 106.0,
-      "value": 4
+      "value": 4,
+      "age": 26,
+      "exp": 4
     },
     {
       "rank": 180,
@@ -3497,7 +3855,9 @@
       "adp_sd": 19.7,
       "bye": 11,
       "projected": 111.0,
-      "value": 5
+      "value": 5,
+      "age": 35,
+      "exp": 11
     },
     {
       "rank": 181,
@@ -3516,7 +3876,9 @@
       "adp_sd": 18.1,
       "bye": 7,
       "projected": 112.0,
-      "value": 5
+      "value": 5,
+      "age": 22,
+      "exp": 2
     },
     {
       "rank": 182,
@@ -3535,7 +3897,9 @@
       "adp_sd": null,
       "bye": null,
       "projected": 101.0,
-      "value": 2
+      "value": 2,
+      "age": 30,
+      "exp": 8
     },
     {
       "rank": 183,
@@ -3554,7 +3918,9 @@
       "adp_sd": 15.4,
       "bye": 13,
       "projected": 106.0,
-      "value": 4
+      "value": 4,
+      "age": 25,
+      "exp": 1
     },
     {
       "rank": 184,
@@ -3573,7 +3939,9 @@
       "adp_sd": 20.1,
       "bye": 6,
       "projected": 106.0,
-      "value": 4
+      "value": 4,
+      "age": 27,
+      "exp": 5
     },
     {
       "rank": 185,
@@ -3592,7 +3960,9 @@
       "adp_sd": 23.2,
       "bye": 6,
       "projected": 105.0,
-      "value": 3
+      "value": 3,
+      "age": 27,
+      "exp": 3
     },
     {
       "rank": 186,
@@ -3611,7 +3981,9 @@
       "adp_sd": 19.5,
       "bye": 10,
       "projected": 100.0,
-      "value": 2
+      "value": 2,
+      "age": 34,
+      "exp": 12
     },
     {
       "rank": 187,
@@ -3630,7 +4002,9 @@
       "adp_sd": 23.0,
       "bye": 11,
       "projected": 96.0,
-      "value": null
+      "value": null,
+      "age": 23,
+      "exp": 1
     },
     {
       "rank": 188,
@@ -3649,7 +4023,9 @@
       "adp_sd": 26.8,
       "bye": 11,
       "projected": 106.0,
-      "value": 4
+      "value": 4,
+      "age": 24,
+      "exp": 2
     },
     {
       "rank": 189,
@@ -3668,7 +4044,9 @@
       "adp_sd": 10.2,
       "bye": 8,
       "projected": 104.0,
-      "value": 6
+      "value": 6,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 190,
@@ -3687,7 +4065,9 @@
       "adp_sd": 9.1,
       "bye": 10,
       "projected": 96.0,
-      "value": 4
+      "value": 4,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 191,
@@ -3706,7 +4086,9 @@
       "adp_sd": 12.0,
       "bye": 11,
       "projected": 103.0,
-      "value": 5
+      "value": 5,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 192,
@@ -3725,7 +4107,9 @@
       "adp_sd": 19.9,
       "bye": 11,
       "projected": 106.0,
-      "value": 6
+      "value": 6,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 193,
@@ -3744,7 +4128,9 @@
       "adp_sd": 12.5,
       "bye": 10,
       "projected": 98.0,
-      "value": 4
+      "value": 4,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 194,
@@ -3763,7 +4149,9 @@
       "adp_sd": 7.2,
       "bye": 6,
       "projected": 92.0,
-      "value": 3
+      "value": 3,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 195,
@@ -3782,7 +4170,9 @@
       "adp_sd": 14.5,
       "bye": 7,
       "projected": 86.0,
-      "value": null
+      "value": null,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 196,
@@ -3801,7 +4191,9 @@
       "adp_sd": 14.4,
       "bye": 13,
       "projected": 95.0,
-      "value": 3
+      "value": 3,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 197,
@@ -3820,7 +4212,9 @@
       "adp_sd": 17.4,
       "bye": 11,
       "projected": 92.0,
-      "value": 3
+      "value": 3,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 198,
@@ -3839,7 +4233,9 @@
       "adp_sd": 13.5,
       "bye": 9,
       "projected": 88.0,
-      "value": 2
+      "value": 2,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 199,
@@ -3858,7 +4254,9 @@
       "adp_sd": 15.7,
       "bye": 7,
       "projected": 91.0,
-      "value": 2
+      "value": 2,
+      "age": null,
+      "exp": null
     },
     {
       "rank": 200,
@@ -3877,7 +4275,9 @@
       "adp_sd": null,
       "bye": null,
       "projected": 86.0,
-      "value": null
+      "value": null,
+      "age": null,
+      "exp": null
     }
   ],
   "plan": [
@@ -4293,5 +4693,5 @@
       "count": 10773
     }
   ],
-  "refreshed": "2026-08-16 19:35 UTC"
+  "refreshed": "2026-08-16 19:41 UTC"
 }

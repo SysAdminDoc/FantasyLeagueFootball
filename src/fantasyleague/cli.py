@@ -17,9 +17,11 @@ from . import draft as draft_mod
 from . import render as render_mod
 from . import schema as schema_mod
 from . import serve as serve_mod
+from .models import DEFAULT_LINEUP, DEFAULT_ROSTER_SIZE
 from .sync import adp as adp_mod
 from .sync import borischen as borischen_mod
 from .sync import players as players_mod
+from .sync import projections as proj_mod
 from .sync import sleeper as sleeper_mod
 
 DEFAULT_OUT = Path("dist/draft-board.html")
@@ -186,6 +188,29 @@ def cmd_refresh(args: argparse.Namespace) -> int:
                 print(f"  flags recomputed: {flags.get('value', 0)} value, {flags.get('avoid', 0)} reach")
         except (OSError, ValueError) as exc:
             print(f"  ADP unavailable ({exc}); keeping the stored numbers")
+
+    if not args.no_projections:
+        try:
+            rows = proj_mod.fetch(season=data.season)
+            scoring = data.scoring if data.scoring in proj_mod.POINTS_KEY else "half_ppr"
+            points = proj_mod.points_by_id(rows, scoring=scoring)
+            data, hits = proj_mod.apply(data, points)
+            print(f"Projections: {hits} of {len(data.players)} players ({scoring})")
+
+            values = proj_mod.auction_values(
+                data, DEFAULT_LINEUP, args.teams, budget=args.budget, roster_size=args.roster_size
+            )
+            data = replace(
+                data,
+                players=[replace(p, value=values.get(p.rank)) for p in data.players],
+                auction={"budget": args.budget, "roster_size": args.roster_size, "teams": args.teams},
+            )
+            priced = [p for p in data.players if p.value]
+            print(f"Auction: {len(priced)} players priced on a ${args.budget} budget")
+            for p in priced[:5]:
+                print(f"  ${p.value:>3}  {p.name} ({p.pos} {p.team})")
+        except (OSError, ValueError) as exc:
+            print(f"  projections unavailable ({exc}); keeping the stored numbers")
 
     data, updated = players_mod.apply_status(data, players)
     print(f"Injury board: {len(data.injuries)} players carrying a designation")
@@ -377,6 +402,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="recompute value/reach from ADP vs this board's rank (skill positions only); "
         "off by default so curated flags are not silently replaced",
+    )
+    rf.add_argument("--no-projections", action="store_true", help="skip projections and auction values")
+    rf.add_argument("--budget", type=int, default=200, help="auction budget per team (default 200)")
+    rf.add_argument(
+        "--roster-size", type=int, default=DEFAULT_ROSTER_SIZE, help="roster size for auction maths"
     )
     rf.set_defaults(func=cmd_refresh)
 

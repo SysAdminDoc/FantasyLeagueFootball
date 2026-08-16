@@ -65,6 +65,7 @@ def render(
         "league": league or "",
         "draft": {"teams": teams or 12, "slot": slot},
         "adp": data.adp,
+        "auction": data.auction,
         "trending": data.trending,
         "refreshed": data.refreshed,
         "season": data.season,

@@ -232,6 +232,10 @@ h1 {
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .bye.clash { color: var(--warn); font-weight: 700; }
+.val {
+  font-family: var(--f-data); font-size: 11.5px; color: var(--good);
+  font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 700;
+}
 .row.mine { background: var(--good-bg); }
 .row.mine .rk::after { content: "\2713"; margin-left: 3px; color: var(--good); }
 .row.mine.gone { opacity: .6; }

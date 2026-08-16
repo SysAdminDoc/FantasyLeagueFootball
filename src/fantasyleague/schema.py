@@ -112,7 +112,7 @@ def check(raw: dict) -> list[str]:
         if "tier" in p and tier_numbers and p.get("tier") not in tier_numbers:
             bad(f"{at}/tier", f"{p['tier']!r} is not a defined tier ({sorted(tier_numbers)})")
 
-        for numeric, low in (("adp", 0.0), ("adp_sd", -0.001)):
+        for numeric, low in (("adp", 0.0), ("adp_sd", -0.001), ("projected", -0.001), ("value", 0.0)):
             v = p.get(numeric)
             if v is not None and (not isinstance(v, int | float) or v <= low):
                 bad(f"{at}/{numeric}", f"must be a positive number or null, got {v!r}")

@@ -10,10 +10,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 - [ ] Superflex and full-PPR variants of the ranking set.
 - [ ] Keeper/dynasty mode — age and contract context on each row.
       *Research 2026-08-16:* Sleeper picks carry `is_keeper`; Sleeper players carry `age`, `years_exp`.
-- [ ] Auction values as an alternate mode ($200 budget default).
-      *Research 2026-08-16:* standard method is VBD points-over-replacement → share of total budget
-      (FantasyPros calculator; DraftExpert publishes Fair/Target/Max). Yahoo `settings.is_auction_draft`
-      and `draft_analysis.average_cost` exist for later sync.
 
 ## Research-Driven Additions
 

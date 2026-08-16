@@ -94,7 +94,9 @@
       },
       "adp": 1.5,
       "adp_sd": 0.7,
-      "bye": 6
+      "bye": 6,
+      "projected": 299.9,
+      "value": 63
     },
     {
       "rank": 2,
@@ -111,7 +113,9 @@
       },
       "adp": 2.1,
       "adp_sd": 0.7,
-      "bye": 11
+      "bye": 11,
+      "projected": 292.9,
+      "value": 61
     },
     {
       "rank": 3,
@@ -128,7 +132,9 @@
       },
       "adp": 4.1,
       "adp_sd": 1.0,
-      "bye": 6
+      "bye": 6,
+      "projected": 256.6,
+      "value": 32
     },
     {
       "rank": 4,
@@ -145,7 +151,9 @@
       },
       "adp": 2.9,
       "adp_sd": 0.5,
-      "bye": 11
+      "bye": 11,
+      "projected": 259.0,
+      "value": 33
     },
     {
       "rank": 5,
@@ -162,7 +170,9 @@
       },
       "adp": 5.4,
       "adp_sd": 1.3,
-      "bye": 11
+      "bye": 11,
+      "projected": 235.1,
+      "value": 27
     },
     {
       "rank": 6,
@@ -179,7 +189,9 @@
       },
       "adp": 6.7,
       "adp_sd": 1.5,
-      "bye": 8
+      "bye": 8,
+      "projected": 256.0,
+      "value": 51
     },
     {
       "rank": 7,
@@ -196,7 +208,9 @@
       },
       "adp": 7.6,
       "adp_sd": 1.5,
-      "bye": 6
+      "bye": 6,
+      "projected": 227.5,
+      "value": 25
     },
     {
       "rank": 8,
@@ -213,7 +227,9 @@
       },
       "adp": 5.9,
       "adp_sd": 1.3,
-      "bye": 13
+      "bye": 13,
+      "projected": 254.3,
+      "value": 51
     },
     {
       "rank": 9,
@@ -230,7 +246,9 @@
       },
       "adp": 14.4,
       "adp_sd": 2.5,
-      "bye": 6
+      "bye": 6,
+      "projected": 205.4,
+      "value": 19
     },
     {
       "rank": 10,
@@ -247,7 +265,9 @@
       },
       "adp": 12.6,
       "adp_sd": 2.3,
-      "bye": 14
+      "bye": 14,
+      "projected": 222.5,
+      "value": 23
     },
     {
       "rank": 11,
@@ -264,7 +284,9 @@
       },
       "adp": 9.7,
       "adp_sd": 2.7,
-      "bye": 7
+      "bye": 7,
+      "projected": 245.3,
+      "value": 49
     },
     {
       "rank": 12,
@@ -281,7 +303,9 @@
       },
       "adp": 18.1,
       "adp_sd": 3.3,
-      "bye": 10
+      "bye": 10,
+      "projected": 228.2,
+      "value": 44
     },
     {
       "rank": 13,
@@ -298,7 +322,9 @@
       },
       "adp": 11.4,
       "adp_sd": 2.1,
-      "bye": 6
+      "bye": 6,
+      "projected": 217.9,
+      "value": 42
     },
     {
       "rank": 14,
@@ -315,7 +341,9 @@
       },
       "adp": 11.3,
       "adp_sd": 1.9,
-      "bye": 11
+      "bye": 11,
+      "projected": 205.2,
+      "value": 19
     },
     {
       "rank": 15,
@@ -332,7 +360,9 @@
       },
       "adp": 15.6,
       "adp_sd": 2.9,
-      "bye": 13
+      "bye": 13,
+      "projected": 234.5,
+      "value": 46
     },
     {
       "rank": 16,
@@ -349,7 +379,9 @@
       },
       "adp": 21.9,
       "adp_sd": 2.7,
-      "bye": 8
+      "bye": 8,
+      "projected": 210.5,
+      "value": 20
     },
     {
       "rank": 17,
@@ -366,7 +398,9 @@
       },
       "adp": 42.5,
       "adp_sd": 10.1,
-      "bye": 13
+      "bye": 13,
+      "projected": 202.5,
+      "value": 25
     },
     {
       "rank": 18,
@@ -383,7 +417,9 @@
       },
       "adp": 10.5,
       "adp_sd": 1.5,
-      "bye": 13
+      "bye": 13,
+      "projected": 238.4,
+      "value": 47
     },
     {
       "rank": 19,
@@ -400,7 +436,9 @@
       },
       "adp": 23.5,
       "adp_sd": 4.5,
-      "bye": 5
+      "bye": 5,
+      "projected": 225.5,
+      "value": 44
     },
     {
       "rank": 20,
@@ -417,7 +455,9 @@
       },
       "adp": 14.9,
       "adp_sd": 2.6,
-      "bye": 6
+      "bye": 6,
+      "projected": 226.7,
+      "value": 44
     },
     {
       "rank": 21,
@@ -434,7 +474,9 @@
       },
       "adp": 18.8,
       "adp_sd": 2.8,
-      "bye": 11
+      "bye": 11,
+      "projected": 207.7,
+      "value": 20
     },
     {
       "rank": 22,
@@ -451,7 +493,9 @@
       },
       "adp": 27.9,
       "adp_sd": 3.5,
-      "bye": 8
+      "bye": 8,
+      "projected": 186.3,
+      "value": 14
     },
     {
       "rank": 23,
@@ -468,7 +512,9 @@
       },
       "adp": 15.6,
       "adp_sd": 2.5,
-      "bye": 5
+      "bye": 5,
+      "projected": 185.3,
+      "value": 14
     },
     {
       "rank": 24,
@@ -485,7 +531,9 @@
       },
       "adp": 19.3,
       "adp_sd": 2.2,
-      "bye": 14
+      "bye": 14,
+      "projected": 205.7,
+      "value": 19
     },
     {
       "rank": 25,
@@ -502,7 +550,9 @@
       },
       "adp": 22.1,
       "adp_sd": 4.0,
-      "bye": 7
+      "bye": 7,
+      "projected": 218.9,
+      "value": 42
     },
     {
       "rank": 26,
@@ -519,7 +569,9 @@
       },
       "adp": 40.5,
       "adp_sd": 7.7,
-      "bye": 14
+      "bye": 14,
+      "projected": 186.9,
+      "value": 21
     },
     {
       "rank": 27,
@@ -536,7 +588,9 @@
       },
       "adp": 32.1,
       "adp_sd": 4.7,
-      "bye": 14
+      "bye": 14,
+      "projected": 212.0,
+      "value": 40
     },
     {
       "rank": 28,
@@ -553,7 +607,9 @@
       },
       "adp": 28.5,
       "adp_sd": 2.8,
-      "bye": 13
+      "bye": 13,
+      "projected": 195.6,
+      "value": 36
     },
     {
       "rank": 29,
@@ -570,7 +626,9 @@
       },
       "adp": 28.5,
       "adp_sd": 3.6,
-      "bye": 11
+      "bye": 11,
+      "projected": 192.0,
+      "value": 35
     },
     {
       "rank": 30,
@@ -587,7 +645,9 @@
       },
       "adp": 42.7,
       "adp_sd": 5.3,
-      "bye": 8
+      "bye": 8,
+      "projected": 189.7,
+      "value": 34
     },
     {
       "rank": 31,
@@ -604,7 +664,9 @@
       },
       "adp": 29.5,
       "adp_sd": 6.6,
-      "bye": 7
+      "bye": 7,
+      "projected": 361.5,
+      "value": 24
     },
     {
       "rank": 32,
@@ -621,7 +683,9 @@
       },
       "adp": 25.8,
       "adp_sd": 3.2,
-      "bye": 11
+      "bye": 11,
+      "projected": 186.1,
+      "value": 34
     },
     {
       "rank": 33,
@@ -638,7 +702,9 @@
       },
       "adp": 35.1,
       "adp_sd": 4.3,
-      "bye": 14
+      "bye": 14,
+      "projected": 188.8,
+      "value": 34
     },
     {
       "rank": 34,
@@ -655,7 +721,9 @@
       },
       "adp": 35.0,
       "adp_sd": 4.2,
-      "bye": 5
+      "bye": 5,
+      "projected": 184.5,
+      "value": 14
     },
     {
       "rank": 35,
@@ -672,7 +740,9 @@
       },
       "adp": 60.2,
       "adp_sd": 8.0,
-      "bye": 10
+      "bye": 10,
+      "projected": 173.4,
+      "value": 17
     },
     {
       "rank": 36,
@@ -689,7 +759,9 @@
       },
       "adp": 35.3,
       "adp_sd": 4.5,
-      "bye": 6
+      "bye": 6,
+      "projected": 186.9,
+      "value": 14
     },
     {
       "rank": 37,
@@ -706,7 +778,9 @@
       },
       "adp": 24.1,
       "adp_sd": 2.7,
-      "bye": 8
+      "bye": 8,
+      "projected": 194.9,
+      "value": 16
     },
     {
       "rank": 38,
@@ -723,7 +797,9 @@
       },
       "adp": 48.1,
       "adp_sd": 5.7,
-      "bye": 10
+      "bye": 10,
+      "projected": 179.3,
+      "value": 32
     },
     {
       "rank": 39,
@@ -740,7 +816,9 @@
       },
       "adp": 55.1,
       "adp_sd": 8.8,
-      "bye": 13
+      "bye": 13,
+      "projected": 326.0,
+      "value": 15
     },
     {
       "rank": 40,
@@ -757,7 +835,9 @@
       },
       "adp": 24.5,
       "adp_sd": 2.5,
-      "bye": 13
+      "bye": 13,
+      "projected": 187.7,
+      "value": 14
     },
     {
       "rank": 41,
@@ -774,7 +854,9 @@
       },
       "adp": 41.8,
       "adp_sd": 4.8,
-      "bye": 7
+      "bye": 7,
+      "projected": 187.7,
+      "value": 14
     },
     {
       "rank": 42,
@@ -791,7 +873,9 @@
       },
       "adp": 36.7,
       "adp_sd": 5.3,
-      "bye": 10
+      "bye": 10,
+      "projected": 185.5,
+      "value": 14
     },
     {
       "rank": 43,
@@ -808,7 +892,9 @@
       },
       "adp": 34.9,
       "adp_sd": 4.1,
-      "bye": 8
+      "bye": 8,
+      "projected": 187.5,
+      "value": 34
     },
     {
       "rank": 44,
@@ -825,7 +911,9 @@
       },
       "adp": 57.6,
       "adp_sd": 6.8,
-      "bye": 8
+      "bye": 8,
+      "projected": 185.6,
+      "value": 33
     },
     {
       "rank": 45,
@@ -842,7 +930,9 @@
       },
       "adp": 31.2,
       "adp_sd": 3.6,
-      "bye": 10
+      "bye": 10,
+      "projected": 189.2,
+      "value": 15
     },
     {
       "rank": 46,
@@ -859,7 +949,9 @@
       },
       "adp": 30.8,
       "adp_sd": 3.2,
-      "bye": 13
+      "bye": 13,
+      "projected": 183.4,
+      "value": 13
     },
     {
       "rank": 47,
@@ -876,7 +968,9 @@
       },
       "adp": 43.3,
       "adp_sd": 6.7,
-      "bye": 10
+      "bye": 10,
+      "projected": 187.2,
+      "value": 34
     },
     {
       "rank": 48,
@@ -893,7 +987,9 @@
       },
       "adp": 72.2,
       "adp_sd": 10.5,
-      "bye": 7
+      "bye": 7,
+      "projected": 308.72,
+      "value": 11
     },
     {
       "rank": 49,
@@ -910,7 +1006,9 @@
       },
       "adp": 52.0,
       "adp_sd": 5.8,
-      "bye": 11
+      "bye": 11,
+      "projected": 180.0,
+      "value": 32
     },
     {
       "rank": 50,
@@ -927,7 +1025,9 @@
       },
       "adp": 53.4,
       "adp_sd": 6.6,
-      "bye": 8
+      "bye": 8,
+      "projected": 187.2,
+      "value": 14
     },
     {
       "rank": 51,
@@ -944,7 +1044,9 @@
       },
       "adp": 46.9,
       "adp_sd": 6.0,
-      "bye": 10
+      "bye": 10,
+      "projected": 182.5,
+      "value": 13
     },
     {
       "rank": 52,
@@ -961,7 +1063,9 @@
       },
       "adp": 53.3,
       "adp_sd": 5.5,
-      "bye": 7
+      "bye": 7,
+      "projected": 158.8,
+      "value": 27
     },
     {
       "rank": 53,
@@ -978,7 +1082,9 @@
       },
       "adp": 58.5,
       "adp_sd": 5.4,
-      "bye": 11
+      "bye": 11,
+      "projected": 162.0,
+      "value": 27
     },
     {
       "rank": 54,
@@ -995,7 +1101,9 @@
       },
       "adp": 55.1,
       "adp_sd": 9.1,
-      "bye": 6
+      "bye": 6,
+      "projected": 306.12,
+      "value": 10
     },
     {
       "rank": 55,
@@ -1012,7 +1120,9 @@
       },
       "adp": 37.4,
       "adp_sd": 3.6,
-      "bye": 11
+      "bye": 11,
+      "projected": 161.0,
+      "value": 8
     },
     {
       "rank": 56,
@@ -1029,7 +1139,9 @@
       },
       "adp": 76.6,
       "adp_sd": 11.9,
-      "bye": 11
+      "bye": 11,
+      "projected": 160.5,
+      "value": 27
     },
     {
       "rank": 57,
@@ -1046,7 +1158,9 @@
       },
       "adp": 50.3,
       "adp_sd": 8.0,
-      "bye": 11
+      "bye": 11,
+      "projected": 320.76,
+      "value": 14
     },
     {
       "rank": 58,
@@ -1063,7 +1177,9 @@
       },
       "adp": 43.9,
       "adp_sd": 4.1,
-      "bye": 7
+      "bye": 7,
+      "projected": 176.8,
+      "value": 12
     },
     {
       "rank": 59,
@@ -1080,7 +1196,9 @@
       },
       "adp": 39.4,
       "adp_sd": 4.2,
-      "bye": 6
+      "bye": 6,
+      "projected": 176.2,
+      "value": 12
     },
     {
       "rank": 60,
@@ -1097,7 +1215,9 @@
       },
       "adp": 69.9,
       "adp_sd": 9.3,
-      "bye": 13
+      "bye": 13,
+      "projected": 159.6,
+      "value": 14
     },
     {
       "rank": 61,
@@ -1114,7 +1234,9 @@
       },
       "adp": 58.3,
       "adp_sd": 6.5,
-      "bye": 10
+      "bye": 10,
+      "projected": 173.0,
+      "value": 11
     },
     {
       "rank": 62,
@@ -1131,7 +1253,9 @@
       },
       "adp": 74.0,
       "adp_sd": 7.3,
-      "bye": 9
+      "bye": 9,
+      "projected": 154.8,
+      "value": 6
     },
     {
       "rank": 63,
@@ -1148,7 +1272,9 @@
       },
       "adp": 76.8,
       "adp_sd": 10.5,
-      "bye": 10
+      "bye": 10,
+      "projected": 310.54,
+      "value": 11
     },
     {
       "rank": 64,
@@ -1165,7 +1291,9 @@
       },
       "adp": 58.5,
       "adp_sd": 6.6,
-      "bye": 11
+      "bye": 11,
+      "projected": 176.1,
+      "value": 12
     },
     {
       "rank": 65,
@@ -1182,7 +1310,9 @@
       },
       "adp": 45.5,
       "adp_sd": 4.9,
-      "bye": 10
+      "bye": 10,
+      "projected": 173.9,
+      "value": 11
     },
     {
       "rank": 66,
@@ -1199,7 +1329,9 @@
       },
       "adp": 50.0,
       "adp_sd": 5.7,
-      "bye": 7
+      "bye": 7,
+      "projected": 147.5,
+      "value": 4
     },
     {
       "rank": 67,
@@ -1216,7 +1348,9 @@
       },
       "adp": 68.0,
       "adp_sd": 6.7,
-      "bye": 9
+      "bye": 9,
+      "projected": 152.6,
+      "value": 25
     },
     {
       "rank": 68,
@@ -1233,7 +1367,9 @@
       },
       "adp": 121.5,
       "adp_sd": 14.8,
-      "bye": 11
+      "bye": 11,
+      "projected": 127.8,
+      "value": 19
     },
     {
       "rank": 69,
@@ -1250,7 +1386,9 @@
       },
       "adp": 70.3,
       "adp_sd": 8.0,
-      "bye": 7
+      "bye": 7,
+      "projected": 164.4,
+      "value": 9
     },
     {
       "rank": 70,
@@ -1267,7 +1405,9 @@
       },
       "adp": 65.6,
       "adp_sd": 6.7,
-      "bye": 7
+      "bye": 7,
+      "projected": 176.4,
+      "value": 12
     },
     {
       "rank": 71,
@@ -1284,7 +1424,9 @@
       },
       "adp": 66.1,
       "adp_sd": 8.1,
-      "bye": 14
+      "bye": 14,
+      "projected": 303.88,
+      "value": 10
     },
     {
       "rank": 72,
@@ -1301,7 +1443,9 @@
       },
       "adp": 62.6,
       "adp_sd": 7.3,
-      "bye": 14
+      "bye": 14,
+      "projected": 155.2,
+      "value": 6
     },
     {
       "rank": 73,
@@ -1318,7 +1462,9 @@
       },
       "adp": 66.4,
       "adp_sd": 6.2,
-      "bye": 9
+      "bye": 9,
+      "projected": 146.1,
+      "value": 23
     },
     {
       "rank": 74,
@@ -1335,7 +1481,9 @@
       },
       "adp": 110.7,
       "adp_sd": 15.7,
-      "bye": 10
+      "bye": 10,
+      "projected": 143.1,
+      "value": 23
     },
     {
       "rank": 75,
@@ -1352,13 +1500,17 @@
       },
       "adp": 81.1,
       "adp_sd": 6.5,
-      "bye": 11
+      "bye": 11,
+      "projected": 143.4,
+      "value": 10
     },
     {
+      "rank": 76,
       "name": "Alec Pierce",
       "pos": "WR",
       "team": "IND",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "8142",
@@ -1368,13 +1520,15 @@
       "adp": 55.0,
       "adp_sd": 4.7,
       "bye": 13,
-      "rank": 76,
-      "tier": 8
+      "projected": 150.9,
+      "value": 5
     },
     {
+      "rank": 77,
       "name": "Courtland Sutton",
       "pos": "WR",
       "team": "DEN",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1385,14 +1539,16 @@
       "adp": 61.0,
       "adp_sd": 6.3,
       "bye": 10,
-      "rank": 77,
-      "tier": 8
+      "projected": 144.8,
+      "value": 4
     },
     {
+      "rank": 78,
       "name": "DK Metcalf",
       "pos": "WR",
       "team": "PIT",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "5846",
@@ -1402,13 +1558,15 @@
       "adp": 63.0,
       "adp_sd": 7.4,
       "bye": 9,
-      "rank": 78,
-      "tier": 8
+      "projected": 152.3,
+      "value": 5
     },
     {
+      "rank": 79,
       "name": "Rhamondre Stevenson",
       "pos": "RB",
       "team": "NE",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1419,14 +1577,16 @@
       "adp": 70.5,
       "adp_sd": 6.7,
       "bye": 11,
-      "rank": 79,
-      "tier": 8
+      "projected": 151.8,
+      "value": 25
     },
     {
+      "rank": 80,
       "name": "Chuba Hubbard",
       "pos": "RB",
       "team": "CAR",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "7594",
@@ -1436,13 +1596,15 @@
       "adp": 73.0,
       "adp_sd": 6.4,
       "bye": 5,
-      "rank": 80,
-      "tier": 8
+      "projected": 148.4,
+      "value": 24
     },
     {
+      "rank": 81,
       "name": "Matthew Stafford",
       "pos": "QB",
       "team": "LAR",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1453,13 +1615,15 @@
       "adp": 75.6,
       "adp_sd": 12.5,
       "bye": 11,
-      "rank": 81,
-      "tier": 8
+      "projected": 280.22,
+      "value": 4
     },
     {
+      "rank": 82,
       "name": "Michael Wilson",
       "pos": "WR",
       "team": "ARI",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1470,13 +1634,15 @@
       "adp": 76.8,
       "adp_sd": 9.4,
       "bye": 14,
-      "rank": 82,
-      "tier": 8
+      "projected": 136.5,
+      "value": 1
     },
     {
+      "rank": 83,
       "name": "Rico Dowdle",
       "pos": "RB",
       "team": "PIT",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1487,13 +1653,15 @@
       "adp": 77.3,
       "adp_sd": 8.4,
       "bye": 9,
-      "rank": 83,
-      "tier": 8
+      "projected": 142.1,
+      "value": 22
     },
     {
+      "rank": 84,
       "name": "Chris Godwin Jr.",
       "pos": "WR",
       "team": "TB",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1504,14 +1672,16 @@
       "adp": 81.0,
       "adp_sd": 10.1,
       "bye": 10,
-      "rank": 84,
-      "tier": 8
+      "projected": 139.6,
+      "value": 2
     },
     {
+      "rank": 85,
       "name": "Michael Pittman Jr.",
       "pos": "WR",
       "team": "PIT",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "6819",
@@ -1521,13 +1691,15 @@
       "adp": 81.1,
       "adp_sd": 7.4,
       "bye": 9,
-      "rank": 85,
-      "tier": 8
+      "projected": 136.4,
+      "value": 1
     },
     {
+      "rank": 86,
       "name": "Kyle Pitts Sr.",
       "pos": "TE",
       "team": "ATL",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1538,13 +1710,15 @@
       "adp": 82.1,
       "adp_sd": 6.9,
       "bye": 11,
-      "rank": 86,
-      "tier": 8
+      "projected": 138.6,
+      "value": 8
     },
     {
+      "rank": 87,
       "name": "Quentin Johnston",
       "pos": "WR",
       "team": "LAC",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1555,13 +1729,15 @@
       "adp": 84.2,
       "adp_sd": 7.9,
       "bye": 7,
-      "rank": 87,
-      "tier": 8
+      "projected": 134.9,
+      "value": null
     },
     {
+      "rank": 88,
       "name": "Brock Purdy",
       "pos": "QB",
       "team": "SF",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1572,13 +1748,15 @@
       "adp": 85.7,
       "adp_sd": 12.0,
       "bye": 8,
-      "rank": 88,
-      "tier": 8
+      "projected": 303.2,
+      "value": 9
     },
     {
+      "rank": 89,
       "name": "RJ Harvey",
       "pos": "RB",
       "team": "DEN",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1589,13 +1767,15 @@
       "adp": 87.0,
       "adp_sd": 11.6,
       "bye": 10,
-      "rank": 89,
-      "tier": 8
+      "projected": 125.6,
+      "value": 18
     },
     {
+      "rank": 90,
       "name": "Josh Downs",
       "pos": "WR",
       "team": "IND",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1606,13 +1786,15 @@
       "adp": 87.1,
       "adp_sd": 10.4,
       "bye": 13,
-      "rank": 90,
-      "tier": 8
+      "projected": 143.4,
+      "value": 3
     },
     {
+      "rank": 91,
       "name": "Jakobi Meyers",
       "pos": "WR",
       "team": "JAX",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1623,13 +1805,15 @@
       "adp": 87.4,
       "adp_sd": 9.1,
       "bye": 7,
-      "rank": 91,
-      "tier": 8
+      "projected": 137.3,
+      "value": 2
     },
     {
+      "rank": 92,
       "name": "Sam LaPorta",
       "pos": "TE",
       "team": "DET",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1640,13 +1824,15 @@
       "adp": 89.0,
       "adp_sd": 13.6,
       "bye": 6,
-      "rank": 92,
-      "tier": 8
+      "projected": 158.5,
+      "value": 14
     },
     {
+      "rank": 93,
       "name": "Jayden Reed",
       "pos": "WR",
       "team": "GB",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1657,14 +1843,16 @@
       "adp": 89.4,
       "adp_sd": 7.2,
       "bye": 11,
-      "rank": 93,
-      "tier": 8
+      "projected": 162.6,
+      "value": 8
     },
     {
+      "rank": 94,
       "name": "J.K. Dobbins",
       "pos": "RB",
       "team": "DEN",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "6806",
@@ -1674,13 +1862,15 @@
       "adp": 89.8,
       "adp_sd": 10.2,
       "bye": 10,
-      "rank": 94,
-      "tier": 8
+      "projected": 147.2,
+      "value": 24
     },
     {
+      "rank": 95,
       "name": "Jordan Addison",
       "pos": "WR",
       "team": "MIN",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1691,13 +1881,15 @@
       "adp": 90.6,
       "adp_sd": 9.1,
       "bye": 6,
-      "rank": 95,
-      "tier": 8
+      "projected": 141.7,
+      "value": 3
     },
     {
+      "rank": 96,
       "name": "Wan'Dale Robinson",
       "pos": "WR",
       "team": "TEN",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1708,14 +1900,16 @@
       "adp": 90.8,
       "adp_sd": 9.7,
       "bye": 9,
-      "rank": 96,
-      "tier": 8
+      "projected": 130.1,
+      "value": null
     },
     {
+      "rank": 97,
       "name": "Jordyn Tyson",
       "pos": "WR",
       "team": "NO",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "13281",
@@ -1725,13 +1919,15 @@
       "adp": 91.8,
       "adp_sd": 10.0,
       "bye": 8,
-      "rank": 97,
-      "tier": 8
+      "projected": 133.8,
+      "value": null
     },
     {
+      "rank": 98,
       "name": "Caleb Williams",
       "pos": "QB",
       "team": "CHI",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1742,13 +1938,15 @@
       "adp": 92.2,
       "adp_sd": 17.0,
       "bye": 10,
-      "rank": 98,
-      "tier": 8
+      "projected": 299.34,
+      "value": 8
     },
     {
+      "rank": 99,
       "name": "Trevor Lawrence",
       "pos": "QB",
       "team": "JAX",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1759,14 +1957,16 @@
       "adp": 93.6,
       "adp_sd": 13.0,
       "bye": 7,
-      "rank": 99,
-      "tier": 8
+      "projected": 303.42,
+      "value": 10
     },
     {
+      "rank": 100,
       "name": "Tucker Kraft",
       "pos": "TE",
       "team": "GB",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "9484",
@@ -1776,13 +1976,15 @@
       "adp": 94.2,
       "adp_sd": 15.9,
       "bye": 11,
-      "rank": 100,
-      "tier": 8
+      "projected": 140.9,
+      "value": 9
     },
     {
+      "rank": 101,
       "name": "Stefon Diggs",
       "pos": "WR",
       "team": "WAS",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1793,13 +1995,15 @@
       "adp": 98.1,
       "adp_sd": 10.3,
       "bye": 7,
-      "rank": 101,
-      "tier": 8
+      "projected": 125.3,
+      "value": null
     },
     {
+      "rank": 102,
       "name": "Aaron Jones Sr.",
       "pos": "RB",
       "team": "MIN",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1810,14 +2014,16 @@
       "adp": 98.5,
       "adp_sd": 13.0,
       "bye": 6,
-      "rank": 102,
-      "tier": 8
+      "projected": 120.1,
+      "value": 17
     },
     {
+      "rank": 103,
       "name": "Patrick Mahomes",
       "pos": "QB",
       "team": "KC",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "4046",
@@ -1827,14 +2033,16 @@
       "adp": 99.3,
       "adp_sd": 13.1,
       "bye": 5,
-      "rank": 103,
-      "tier": 8
+      "projected": 286.68,
+      "value": 5
     },
     {
+      "rank": 104,
       "name": "Xavier Worthy",
       "pos": "WR",
       "team": "KC",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "11624",
@@ -1844,13 +2052,15 @@
       "adp": 100.9,
       "adp_sd": 8.5,
       "bye": 5,
-      "rank": 104,
-      "tier": 8
+      "projected": 134.0,
+      "value": null
     },
     {
+      "rank": 105,
       "name": "Kenny Gainwell",
       "pos": "RB",
       "team": "TB",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1861,13 +2071,15 @@
       "adp": 101.1,
       "adp_sd": 12.7,
       "bye": 10,
-      "rank": 105,
-      "tier": 8
+      "projected": 128.8,
+      "value": 19
     },
     {
+      "rank": 106,
       "name": "Deebo Samuel Sr.",
       "pos": "WR",
       "team": "SF",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1878,13 +2090,15 @@
       "adp": 103.1,
       "adp_sd": 13.4,
       "bye": 8,
-      "rank": 106,
-      "tier": 8
+      "projected": 127.7,
+      "value": null
     },
     {
+      "rank": 107,
       "name": "Khalil Shakir",
       "pos": "WR",
       "team": "BUF",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1895,14 +2109,16 @@
       "adp": 103.7,
       "adp_sd": 8.4,
       "bye": 7,
-      "rank": 107,
-      "tier": 8
+      "projected": 132.0,
+      "value": null
     },
     {
+      "rank": 108,
       "name": "Makai Lemon",
       "pos": "WR",
       "team": "PHI",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "13294",
@@ -1912,13 +2128,15 @@
       "adp": 105.1,
       "adp_sd": 10.0,
       "bye": 10,
-      "rank": 108,
-      "tier": 8
+      "projected": 138.5,
+      "value": 2
     },
     {
+      "rank": 109,
       "name": "Jared Goff",
       "pos": "QB",
       "team": "DET",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1929,13 +2147,15 @@
       "adp": 105.6,
       "adp_sd": 12.9,
       "bye": 6,
-      "rank": 109,
-      "tier": 8
+      "projected": 283.46,
+      "value": 4
     },
     {
+      "rank": 110,
       "name": "Justin Herbert",
       "pos": "QB",
       "team": "LAC",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1946,13 +2166,15 @@
       "adp": 106.2,
       "adp_sd": 14.1,
       "bye": 7,
-      "rank": 110,
-      "tier": 8
+      "projected": 295.48,
+      "value": 7
     },
     {
+      "rank": 111,
       "name": "Romeo Doubs",
       "pos": "WR",
       "team": "NE",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1963,13 +2185,15 @@
       "adp": 108.2,
       "adp_sd": 7.1,
       "bye": 11,
-      "rank": 111,
-      "tier": 8
+      "projected": 132.7,
+      "value": null
     },
     {
+      "rank": 112,
       "name": "Jacory Croskey-Merritt",
       "pos": "RB",
       "team": "WAS",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1980,13 +2204,15 @@
       "adp": 109.5,
       "adp_sd": 13.8,
       "bye": 7,
-      "rank": 112,
-      "tier": 8
+      "projected": 118.4,
+      "value": 16
     },
     {
+      "rank": 113,
       "name": "Rachaad White",
       "pos": "RB",
       "team": "WAS",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -1997,13 +2223,15 @@
       "adp": 110.5,
       "adp_sd": 13.1,
       "bye": 7,
-      "rank": 113,
-      "tier": 8
+      "projected": 111.1,
+      "value": 14
     },
     {
+      "rank": 114,
       "name": "Jonathon Brooks",
       "pos": "RB",
       "team": "CAR",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -2014,13 +2242,15 @@
       "adp": 110.6,
       "adp_sd": 18.0,
       "bye": 5,
-      "rank": 114,
-      "tier": 8
+      "projected": 108.5,
+      "value": 14
     },
     {
+      "rank": 115,
       "name": "Matthew Golden",
       "pos": "WR",
       "team": "GB",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -2031,14 +2261,16 @@
       "adp": 111.0,
       "adp_sd": 9.6,
       "bye": 11,
-      "rank": 115,
-      "tier": 8
+      "projected": 141.1,
+      "value": 3
     },
     {
+      "rank": 116,
       "name": "Ricky Pearsall",
       "pos": "WR",
       "team": "SF",
-      "flag": null,
+      "tier": 8,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "11638",
@@ -2048,13 +2280,15 @@
       "adp": 111.2,
       "adp_sd": 1.9,
       "bye": 8,
-      "rank": 116,
-      "tier": 8
+      "projected": null,
+      "value": null
     },
     {
+      "rank": 117,
       "name": "Dallas Goedert",
       "pos": "TE",
       "team": "PHI",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -2065,13 +2299,15 @@
       "adp": 112.8,
       "adp_sd": 17.5,
       "bye": 10,
-      "rank": 117,
-      "tier": 8
+      "projected": 109.5,
+      "value": null
     },
     {
+      "rank": 118,
       "name": "Jordan Mason",
       "pos": "RB",
       "team": "MIN",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -2082,13 +2318,15 @@
       "adp": 113.8,
       "adp_sd": 16.3,
       "bye": 6,
-      "rank": 118,
-      "tier": 8
+      "projected": 143.7,
+      "value": 23
     },
     {
+      "rank": 119,
       "name": "Jalen Coker",
       "pos": "WR",
       "team": "CAR",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -2099,13 +2337,15 @@
       "adp": 114.5,
       "adp_sd": 11.0,
       "bye": 5,
-      "rank": 119,
-      "tier": 8
+      "projected": 135.9,
+      "value": 1
     },
     {
+      "rank": 120,
       "name": "Jaxson Dart",
       "pos": "QB",
       "team": "NYG",
+      "tier": 8,
       "flag": null,
       "note": "",
       "ids": {
@@ -2116,14 +2356,16 @@
       "adp": 115.0,
       "adp_sd": 16.9,
       "bye": 8,
-      "rank": 120,
-      "tier": 8
+      "projected": 296.54,
+      "value": 8
     },
     {
+      "rank": 121,
       "name": "George Kittle",
       "pos": "TE",
       "team": "SF",
-      "flag": null,
+      "tier": 9,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "4217",
@@ -2133,13 +2375,15 @@
       "adp": 115.5,
       "adp_sd": 19.4,
       "bye": 8,
-      "rank": 121,
-      "tier": 9
+      "projected": 138.3,
+      "value": 8
     },
     {
+      "rank": 122,
       "name": "Bo Nix",
       "pos": "QB",
       "team": "DEN",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2150,13 +2394,15 @@
       "adp": 117.2,
       "adp_sd": 14.2,
       "bye": 10,
-      "rank": 122,
-      "tier": 9
+      "projected": 295.72,
+      "value": 8
     },
     {
+      "rank": 123,
       "name": "Jayden Higgins",
       "pos": "WR",
       "team": "HOU",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2167,13 +2413,15 @@
       "adp": 120.9,
       "adp_sd": 12.4,
       "bye": 8,
-      "rank": 123,
-      "tier": 9
+      "projected": 136.9,
+      "value": 2
     },
     {
+      "rank": 124,
       "name": "Rashid Shaheed",
       "pos": "WR",
       "team": "SEA",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2184,13 +2432,15 @@
       "adp": 121.3,
       "adp_sd": 9.3,
       "bye": 11,
-      "rank": 124,
-      "tier": 9
+      "projected": 115.6,
+      "value": null
     },
     {
+      "rank": 125,
       "name": "Travis Kelce",
       "pos": "TE",
       "team": "KC",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2201,13 +2451,15 @@
       "adp": 122.3,
       "adp_sd": 18.6,
       "bye": 5,
-      "rank": 125,
-      "tier": 9
+      "projected": 136.4,
+      "value": 8
     },
     {
+      "rank": 126,
       "name": "KC Concepcion",
       "pos": "WR",
       "team": "CLE",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2218,13 +2470,15 @@
       "adp": 124.6,
       "adp_sd": 9.5,
       "bye": 11,
-      "rank": 126,
-      "tier": 9
+      "projected": 127.4,
+      "value": null
     },
     {
+      "rank": 127,
       "name": "Rashod Bateman",
       "pos": "WR",
       "team": "BAL",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2235,14 +2489,16 @@
       "adp": 130.1,
       "adp_sd": 20.7,
       "bye": 13,
-      "rank": 127,
-      "tier": 9
+      "projected": 70.1,
+      "value": null
     },
     {
+      "rank": 128,
       "name": "Zach Charbonnet",
       "pos": "RB",
       "team": "SEA",
-      "flag": null,
+      "tier": 9,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "9753",
@@ -2252,13 +2508,15 @@
       "adp": 133.2,
       "adp_sd": 18.6,
       "bye": 11,
-      "rank": 128,
-      "tier": 9
+      "projected": 61.7,
+      "value": 2
     },
     {
+      "rank": 129,
       "name": "Baker Mayfield",
       "pos": "QB",
       "team": "TB",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2269,13 +2527,15 @@
       "adp": 133.4,
       "adp_sd": 10.9,
       "bye": 10,
-      "rank": 129,
-      "tier": 9
+      "projected": 274.88,
+      "value": 2
     },
     {
+      "rank": 130,
       "name": "Jerry Jeudy",
       "pos": "WR",
       "team": "CLE",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2286,13 +2546,15 @@
       "adp": 133.6,
       "adp_sd": 9.8,
       "bye": 11,
-      "rank": 130,
-      "tier": 9
+      "projected": 98.1,
+      "value": null
     },
     {
+      "rank": 131,
       "name": "Mark Andrews",
       "pos": "TE",
       "team": "BAL",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2303,14 +2565,16 @@
       "adp": 133.6,
       "adp_sd": 20.0,
       "bye": 13,
-      "rank": 131,
-      "tier": 9
+      "projected": 132.5,
+      "value": 7
     },
     {
+      "rank": 132,
       "name": "Jalen McMillan",
       "pos": "WR",
       "team": "TB",
-      "flag": null,
+      "tier": 9,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "11618",
@@ -2320,13 +2584,15 @@
       "adp": 134.0,
       "adp_sd": 10.3,
       "bye": 10,
-      "rank": 132,
-      "tier": 9
+      "projected": 105.4,
+      "value": null
     },
     {
+      "rank": 133,
       "name": "Tyler Shough",
       "pos": "QB",
       "team": "NO",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2337,13 +2603,15 @@
       "adp": 135.0,
       "adp_sd": 12.1,
       "bye": 8,
-      "rank": 133,
-      "tier": 9
+      "projected": 270.94,
+      "value": 1
     },
     {
+      "rank": 134,
       "name": "Tre Tucker",
       "pos": "WR",
       "team": "LV",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2354,13 +2622,15 @@
       "adp": 135.8,
       "adp_sd": 6.9,
       "bye": 13,
-      "rank": 134,
-      "tier": 9
+      "projected": 91.8,
+      "value": null
     },
     {
+      "rank": 135,
       "name": "Calvin Ridley",
       "pos": "WR",
       "team": "TEN",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2371,13 +2641,15 @@
       "adp": 136.7,
       "adp_sd": 10.2,
       "bye": 9,
-      "rank": 135,
-      "tier": 9
+      "projected": 63.8,
+      "value": null
     },
     {
+      "rank": 136,
       "name": "Isaiah Likely",
       "pos": "TE",
       "team": "NYG",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2388,13 +2660,15 @@
       "adp": 137.4,
       "adp_sd": 19.3,
       "bye": 8,
-      "rank": 136,
-      "tier": 9
+      "projected": 126.3,
+      "value": 5
     },
     {
+      "rank": 137,
       "name": "Theo Wease Jr.",
       "pos": "WR",
       "team": "MIA",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2405,13 +2679,15 @@
       "adp": 138.7,
       "adp_sd": 13.8,
       "bye": 6,
-      "rank": 137,
-      "tier": 9
+      "projected": 55.1,
+      "value": null
     },
     {
+      "rank": 138,
       "name": "Jauan Jennings",
       "pos": "WR",
       "team": "MIN",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2422,13 +2698,15 @@
       "adp": 140.4,
       "adp_sd": 8.6,
       "bye": 6,
-      "rank": 138,
-      "tier": 9
+      "projected": 86.2,
+      "value": null
     },
     {
+      "rank": 139,
       "name": "Jalen Nailor",
       "pos": "WR",
       "team": "LV",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2439,13 +2717,15 @@
       "adp": 140.7,
       "adp_sd": 15.8,
       "bye": 13,
-      "rank": 139,
-      "tier": 9
+      "projected": 107.6,
+      "value": null
     },
     {
+      "rank": 140,
       "name": "Kyler Murray",
       "pos": "QB",
       "team": "MIN",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2456,13 +2736,15 @@
       "adp": 141.8,
       "adp_sd": 17.3,
       "bye": 6,
-      "rank": 140,
-      "tier": 9
+      "projected": 265.2,
+      "value": null
     },
     {
+      "rank": 141,
       "name": "Denzel Boston",
       "pos": "WR",
       "team": "CLE",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2473,13 +2755,15 @@
       "adp": 142.4,
       "adp_sd": 16.0,
       "bye": 11,
-      "rank": 141,
-      "tier": 9
+      "projected": 99.9,
+      "value": null
     },
     {
+      "rank": 142,
       "name": "Dalton Kincaid",
       "pos": "TE",
       "team": "BUF",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2490,13 +2774,15 @@
       "adp": 143.9,
       "adp_sd": 21.7,
       "bye": 7,
-      "rank": 142,
-      "tier": 9
+      "projected": 130.6,
+      "value": 6
     },
     {
+      "rank": 143,
       "name": "De'Zhaun Stribling",
       "pos": "WR",
       "team": "SF",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2507,13 +2793,15 @@
       "adp": 144.4,
       "adp_sd": 17.9,
       "bye": 8,
-      "rank": 143,
-      "tier": 9
+      "projected": 105.4,
+      "value": null
     },
     {
+      "rank": 144,
       "name": "Hunter Henry",
       "pos": "TE",
       "team": "NE",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2524,13 +2812,15 @@
       "adp": 144.5,
       "adp_sd": 21.5,
       "bye": 11,
-      "rank": 144,
-      "tier": 9
+      "projected": 124.5,
+      "value": 5
     },
     {
+      "rank": 145,
       "name": "Sam Darnold",
       "pos": "QB",
       "team": "SEA",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2541,13 +2831,15 @@
       "adp": 146.0,
       "adp_sd": 19.8,
       "bye": 11,
-      "rank": 145,
-      "tier": 9
+      "projected": 262.74,
+      "value": null
     },
     {
+      "rank": 146,
       "name": "Tyjae Spears",
       "pos": "RB",
       "team": "TEN",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2558,13 +2850,15 @@
       "adp": 146.2,
       "adp_sd": 15.7,
       "bye": 9,
-      "rank": 146,
-      "tier": 9
+      "projected": 97.1,
+      "value": 11
     },
     {
+      "rank": 147,
       "name": "Woody Marks",
       "pos": "RB",
       "team": "HOU",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2575,13 +2869,15 @@
       "adp": 146.2,
       "adp_sd": 13.5,
       "bye": 8,
-      "rank": 147,
-      "tier": 9
+      "projected": 74.3,
+      "value": 5
     },
     {
+      "rank": 148,
       "name": "Jake Ferguson",
       "pos": "TE",
       "team": "DAL",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2592,14 +2888,16 @@
       "adp": 147.2,
       "adp_sd": 16.8,
       "bye": 14,
-      "rank": 148,
-      "tier": 9
+      "projected": 124.8,
+      "value": 5
     },
     {
+      "rank": 149,
       "name": "Isiah Pacheco",
       "pos": "RB",
       "team": "DET",
-      "flag": null,
+      "tier": 9,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "8205",
@@ -2609,13 +2907,15 @@
       "adp": 147.6,
       "adp_sd": 24.6,
       "bye": 6,
-      "rank": 149,
-      "tier": 9
+      "projected": 48.6,
+      "value": null
     },
     {
+      "rank": 150,
       "name": "Alvin Kamara",
       "pos": "RB",
       "team": "NO",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2626,13 +2926,15 @@
       "adp": 148.0,
       "adp_sd": 20.7,
       "bye": 8,
-      "rank": 150,
-      "tier": 9
+      "projected": 53.0,
+      "value": null
     },
     {
+      "rank": 151,
       "name": "Jordan Love",
       "pos": "QB",
       "team": "GB",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2643,13 +2945,15 @@
       "adp": 148.7,
       "adp_sd": 12.7,
       "bye": 11,
-      "rank": 151,
-      "tier": 9
+      "projected": 278.52,
+      "value": 3
     },
     {
+      "rank": 152,
       "name": "Malik Washington",
       "pos": "WR",
       "team": "MIA",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2660,13 +2964,15 @@
       "adp": 149.4,
       "adp_sd": 13.1,
       "bye": 6,
-      "rank": 152,
-      "tier": 9
+      "projected": 82.2,
+      "value": null
     },
     {
+      "rank": 153,
       "name": "Keaton Mitchell",
       "pos": "RB",
       "team": "LAC",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2677,13 +2983,15 @@
       "adp": 150.4,
       "adp_sd": 23.3,
       "bye": 7,
-      "rank": 153,
-      "tier": 9
+      "projected": 87.9,
+      "value": 8
     },
     {
+      "rank": 154,
       "name": "Cooper Kupp",
       "pos": "WR",
       "team": "SEA",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2694,13 +3002,15 @@
       "adp": 150.4,
       "adp_sd": 18.5,
       "bye": 11,
-      "rank": 154,
-      "tier": 9
+      "projected": 70.4,
+      "value": null
     },
     {
+      "rank": 155,
       "name": "Tyrone Tracy Jr.",
       "pos": "RB",
       "team": "NYG",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2711,13 +3021,15 @@
       "adp": 151.6,
       "adp_sd": 18.1,
       "bye": 8,
-      "rank": 155,
-      "tier": 9
+      "projected": 100.8,
+      "value": 12
     },
     {
+      "rank": 156,
       "name": "Jonah Coleman",
       "pos": "RB",
       "team": "DEN",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2728,13 +3040,15 @@
       "adp": 152.1,
       "adp_sd": 15.0,
       "bye": 10,
-      "rank": 156,
-      "tier": 9
+      "projected": 58.9,
+      "value": null
     },
     {
+      "rank": 157,
       "name": "Chris Rodriguez Jr.",
       "pos": "RB",
       "team": "JAX",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2745,13 +3059,15 @@
       "adp": 154.6,
       "adp_sd": 17.3,
       "bye": 7,
-      "rank": 157,
-      "tier": 9
+      "projected": 125.0,
+      "value": 18
     },
     {
+      "rank": 158,
       "name": "Bryce Young",
       "pos": "QB",
       "team": "CAR",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2762,13 +3078,15 @@
       "adp": 156.0,
       "adp_sd": 2.0,
       "bye": 5,
-      "rank": 158,
-      "tier": 9
+      "projected": 235.58,
+      "value": null
     },
     {
+      "rank": 159,
       "name": "Travis Hunter",
       "pos": "WR",
       "team": "JAX",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2779,14 +3097,16 @@
       "adp": 158.8,
       "adp_sd": 17.1,
       "bye": 7,
-      "rank": 159,
-      "tier": 9
+      "projected": 83.1,
+      "value": null
     },
     {
+      "rank": 160,
       "name": "Tank Dell",
       "pos": "WR",
       "team": "HOU",
-      "flag": null,
+      "tier": 9,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "9502",
@@ -2796,13 +3116,15 @@
       "adp": 159.0,
       "adp_sd": 14.0,
       "bye": 8,
-      "rank": 160,
-      "tier": 9
+      "projected": 57.4,
+      "value": null
     },
     {
+      "rank": 161,
       "name": "Brenton Strange",
       "pos": "TE",
       "team": "JAX",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2813,13 +3135,15 @@
       "adp": 159.3,
       "adp_sd": 20.2,
       "bye": 7,
-      "rank": 161,
-      "tier": 9
+      "projected": 129.5,
+      "value": 6
     },
     {
+      "rank": 162,
       "name": "Tyler Allgeier",
       "pos": "RB",
       "team": "ARI",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2830,13 +3154,15 @@
       "adp": 159.4,
       "adp_sd": 20.4,
       "bye": 14,
-      "rank": 162,
-      "tier": 9
+      "projected": 65.4,
+      "value": 3
     },
     {
+      "rank": 163,
       "name": "Braelon Allen",
       "pos": "RB",
       "team": "NYJ",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2847,14 +3173,16 @@
       "adp": 159.4,
       "adp_sd": 17.8,
       "bye": 13,
-      "rank": 163,
-      "tier": 9
+      "projected": 47.2,
+      "value": null
     },
     {
+      "rank": 164,
       "name": "Kaelon Black",
       "pos": "RB",
       "team": "SF",
-      "flag": null,
+      "tier": 9,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "13414",
@@ -2864,13 +3192,15 @@
       "adp": 160.7,
       "adp_sd": 18.4,
       "bye": 8,
-      "rank": 164,
-      "tier": 9
+      "projected": 39.3,
+      "value": null
     },
     {
+      "rank": 165,
       "name": "Adonai Mitchell",
       "pos": "WR",
       "team": "NYJ",
+      "tier": 9,
       "flag": null,
       "note": "",
       "ids": {
@@ -2881,13 +3211,15 @@
       "adp": 161.2,
       "adp_sd": 12.8,
       "bye": 13,
-      "rank": 165,
-      "tier": 9
+      "projected": 80.8,
+      "value": null
     },
     {
+      "rank": 166,
       "name": "Ja'Kobi Lane",
       "pos": "WR",
       "team": "BAL",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -2898,13 +3230,15 @@
       "adp": 162.6,
       "adp_sd": 20.8,
       "bye": 13,
-      "rank": 166,
-      "tier": 10
+      "projected": 74.1,
+      "value": null
     },
     {
+      "rank": 167,
       "name": "Ryan Flournoy",
       "pos": "WR",
       "team": "DAL",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -2915,13 +3249,15 @@
       "adp": 162.8,
       "adp_sd": 12.3,
       "bye": 14,
-      "rank": 167,
-      "tier": 10
+      "projected": 97.7,
+      "value": null
     },
     {
+      "rank": 168,
       "name": "Omar Cooper Jr.",
       "pos": "WR",
       "team": "NYJ",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -2932,13 +3268,15 @@
       "adp": 163.3,
       "adp_sd": 9.2,
       "bye": 13,
-      "rank": 168,
-      "tier": 10
+      "projected": 104.6,
+      "value": null
     },
     {
+      "rank": 169,
       "name": "Malik Willis",
       "pos": "QB",
       "team": "MIA",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -2949,13 +3287,15 @@
       "adp": 164.1,
       "adp_sd": 13.4,
       "bye": 6,
-      "rank": 169,
-      "tier": 10
+      "projected": 270.12,
+      "value": null
     },
     {
+      "rank": 170,
       "name": "Daniel Jones",
       "pos": "QB",
       "team": "IND",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -2966,13 +3306,15 @@
       "adp": 164.8,
       "adp_sd": 11.9,
       "bye": 13,
-      "rank": 170,
-      "tier": 10
+      "projected": 223.54,
+      "value": null
     },
     {
+      "rank": 171,
       "name": "T.J. Hockenson",
       "pos": "TE",
       "team": "MIN",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -2983,13 +3325,15 @@
       "adp": 165.0,
       "adp_sd": 22.7,
       "bye": 6,
-      "rank": 171,
-      "tier": 10
+      "projected": 122.0,
+      "value": 4
     },
     {
+      "rank": 172,
       "name": "Mike Washington Jr.",
       "pos": "RB",
       "team": "LV",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -3000,13 +3344,15 @@
       "adp": 165.1,
       "adp_sd": 19.0,
       "bye": 13,
-      "rank": 172,
-      "tier": 10
+      "projected": 57.5,
+      "value": null
     },
     {
+      "rank": 173,
       "name": "C.J. Stroud",
       "pos": "QB",
       "team": "HOU",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -3017,14 +3363,16 @@
       "adp": 165.4,
       "adp_sd": 10.1,
       "bye": 8,
-      "rank": 173,
-      "tier": 10
+      "projected": 238.2,
+      "value": null
     },
     {
+      "rank": 174,
       "name": "Jordan James",
       "pos": "RB",
       "team": "SF",
-      "flag": null,
+      "tier": 10,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "12467",
@@ -3034,13 +3382,15 @@
       "adp": 165.9,
       "adp_sd": 9.4,
       "bye": 8,
-      "rank": 174,
-      "tier": 10
+      "projected": 54.2,
+      "value": null
     },
     {
+      "rank": 175,
       "name": "Kayshon Boutte",
       "pos": "WR",
       "team": "NE",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -3051,13 +3401,15 @@
       "adp": 166.2,
       "adp_sd": 16.9,
       "bye": 11,
-      "rank": 175,
-      "tier": 10
+      "projected": 79.1,
+      "value": null
     },
     {
+      "rank": 176,
       "name": "Tank Bigsby",
       "pos": "RB",
       "team": "PHI",
+      "tier": 10,
       "flag": null,
       "note": "",
       "ids": {
@@ -3068,8 +3420,8 @@
       "adp": 166.7,
       "adp_sd": 22.7,
       "bye": 10,
-      "rank": 176,
-      "tier": 10
+      "projected": 61.2,
+      "value": 2
     },
     {
       "rank": 177,
@@ -3086,7 +3438,9 @@
       },
       "adp": 128.8,
       "adp_sd": 21.4,
-      "bye": 14
+      "bye": 14,
+      "projected": 116.0,
+      "value": 6
     },
     {
       "rank": 178,
@@ -3103,7 +3457,9 @@
       },
       "adp": 135.9,
       "adp_sd": 19.8,
-      "bye": 8
+      "bye": 8,
+      "projected": 113.0,
+      "value": 5
     },
     {
       "rank": 179,
@@ -3120,7 +3476,9 @@
       },
       "adp": 142.2,
       "adp_sd": 15.9,
-      "bye": 7
+      "bye": 7,
+      "projected": 106.0,
+      "value": 4
     },
     {
       "rank": 180,
@@ -3137,7 +3495,9 @@
       },
       "adp": 140.6,
       "adp_sd": 19.7,
-      "bye": 11
+      "bye": 11,
+      "projected": 111.0,
+      "value": 5
     },
     {
       "rank": 181,
@@ -3154,7 +3514,9 @@
       },
       "adp": 157.6,
       "adp_sd": 18.1,
-      "bye": 7
+      "bye": 7,
+      "projected": 112.0,
+      "value": 5
     },
     {
       "rank": 182,
@@ -3171,7 +3533,9 @@
       },
       "adp": null,
       "adp_sd": null,
-      "bye": null
+      "bye": null,
+      "projected": 101.0,
+      "value": 2
     },
     {
       "rank": 183,
@@ -3188,7 +3552,9 @@
       },
       "adp": 151.2,
       "adp_sd": 15.4,
-      "bye": 13
+      "bye": 13,
+      "projected": 106.0,
+      "value": 4
     },
     {
       "rank": 184,
@@ -3205,7 +3571,9 @@
       },
       "adp": 175.0,
       "adp_sd": 20.1,
-      "bye": 6
+      "bye": 6,
+      "projected": 106.0,
+      "value": 4
     },
     {
       "rank": 185,
@@ -3222,7 +3590,9 @@
       },
       "adp": 154.5,
       "adp_sd": 23.2,
-      "bye": 6
+      "bye": 6,
+      "projected": 105.0,
+      "value": 3
     },
     {
       "rank": 186,
@@ -3239,7 +3609,9 @@
       },
       "adp": 164.3,
       "adp_sd": 19.5,
-      "bye": 10
+      "bye": 10,
+      "projected": 100.0,
+      "value": 2
     },
     {
       "rank": 187,
@@ -3256,7 +3628,9 @@
       },
       "adp": 179.6,
       "adp_sd": 23.0,
-      "bye": 11
+      "bye": 11,
+      "projected": 96.0,
+      "value": null
     },
     {
       "rank": 188,
@@ -3273,7 +3647,9 @@
       },
       "adp": 141.5,
       "adp_sd": 26.8,
-      "bye": 11
+      "bye": 11,
+      "projected": 106.0,
+      "value": 4
     },
     {
       "rank": 189,
@@ -3290,7 +3666,9 @@
       },
       "adp": 101.5,
       "adp_sd": 10.2,
-      "bye": 8
+      "bye": 8,
+      "projected": 104.0,
+      "value": 6
     },
     {
       "rank": 190,
@@ -3307,7 +3685,9 @@
       },
       "adp": 87.6,
       "adp_sd": 9.1,
-      "bye": 10
+      "bye": 10,
+      "projected": 96.0,
+      "value": 4
     },
     {
       "rank": 191,
@@ -3324,7 +3704,9 @@
       },
       "adp": 91.5,
       "adp_sd": 12.0,
-      "bye": 11
+      "bye": 11,
+      "projected": 103.0,
+      "value": 5
     },
     {
       "rank": 192,
@@ -3341,7 +3723,9 @@
       },
       "adp": 116.0,
       "adp_sd": 19.9,
-      "bye": 11
+      "bye": 11,
+      "projected": 106.0,
+      "value": 6
     },
     {
       "rank": 193,
@@ -3358,7 +3742,9 @@
       },
       "adp": 126.0,
       "adp_sd": 12.5,
-      "bye": 10
+      "bye": 10,
+      "projected": 98.0,
+      "value": 4
     },
     {
       "rank": 194,
@@ -3375,7 +3761,9 @@
       },
       "adp": 117.7,
       "adp_sd": 7.2,
-      "bye": 6
+      "bye": 6,
+      "projected": 92.0,
+      "value": 3
     },
     {
       "rank": 195,
@@ -3392,7 +3780,9 @@
       },
       "adp": 143.1,
       "adp_sd": 14.5,
-      "bye": 7
+      "bye": 7,
+      "projected": 86.0,
+      "value": null
     },
     {
       "rank": 196,
@@ -3409,7 +3799,9 @@
       },
       "adp": 160.9,
       "adp_sd": 14.4,
-      "bye": 13
+      "bye": 13,
+      "projected": 95.0,
+      "value": 3
     },
     {
       "rank": 197,
@@ -3426,7 +3818,9 @@
       },
       "adp": 125.3,
       "adp_sd": 17.4,
-      "bye": 11
+      "bye": 11,
+      "projected": 92.0,
+      "value": 3
     },
     {
       "rank": 198,
@@ -3443,7 +3837,9 @@
       },
       "adp": 145.0,
       "adp_sd": 13.5,
-      "bye": 9
+      "bye": 9,
+      "projected": 88.0,
+      "value": 2
     },
     {
       "rank": 199,
@@ -3460,7 +3856,9 @@
       },
       "adp": 151.5,
       "adp_sd": 15.7,
-      "bye": 7
+      "bye": 7,
+      "projected": 91.0,
+      "value": 2
     },
     {
       "rank": 200,
@@ -3477,7 +3875,9 @@
       },
       "adp": null,
       "adp_sd": null,
-      "bye": null
+      "bye": null,
+      "projected": 86.0,
+      "value": null
     }
   ],
   "plan": [
@@ -3544,16 +3944,52 @@
   ],
   "injuries": [
     {
+      "name": "Alec Pierce",
+      "team": "IND",
+      "severity": "out",
+      "status": "PUP — ankle"
+    },
+    {
+      "name": "George Kittle",
+      "team": "SF",
+      "severity": "out",
+      "status": "PUP — achilles"
+    },
+    {
+      "name": "Ricky Pearsall",
+      "team": "SF",
+      "severity": "out",
+      "status": "IR — knee - pcl"
+    },
+    {
+      "name": "Zach Charbonnet",
+      "team": "SEA",
+      "severity": "out",
+      "status": "PUP — knee - acl"
+    },
+    {
       "name": "Christian McCaffrey",
       "team": "SF",
       "severity": "risk",
       "status": "Questionable — undisclosed"
     },
     {
+      "name": "Chuba Hubbard",
+      "team": "CAR",
+      "severity": "risk",
+      "status": "Questionable — hamstring"
+    },
+    {
       "name": "D.J. Moore",
       "team": "BUF",
       "severity": "risk",
       "status": "Questionable — lower body"
+    },
+    {
+      "name": "DK Metcalf",
+      "team": "PIT",
+      "severity": "risk",
+      "status": "Questionable — undisclosed"
     },
     {
       "name": "DeVonta Smith",
@@ -3568,10 +4004,28 @@
       "status": "Questionable — undisclosed"
     },
     {
+      "name": "Isiah Pacheco",
+      "team": "DET",
+      "severity": "risk",
+      "status": "Questionable — knee - mcl"
+    },
+    {
+      "name": "J.K. Dobbins",
+      "team": "DEN",
+      "severity": "risk",
+      "status": "Questionable — undisclosed"
+    },
+    {
       "name": "Jadarian Price",
       "team": "SEA",
       "severity": "risk",
       "status": "Questionable — lower body"
+    },
+    {
+      "name": "Jalen McMillan",
+      "team": "TB",
+      "severity": "risk",
+      "status": "Questionable — calf"
     },
     {
       "name": "Jaylen Waddle",
@@ -3586,10 +4040,28 @@
       "status": "Questionable — ankle"
     },
     {
+      "name": "Jordan James",
+      "team": "SF",
+      "severity": "risk",
+      "status": "Questionable — ribs"
+    },
+    {
+      "name": "Jordyn Tyson",
+      "team": "NO",
+      "severity": "risk",
+      "status": "Questionable — hamstring"
+    },
+    {
       "name": "Josh Jacobs",
       "team": "GB",
       "severity": "risk",
       "status": "Questionable — groin"
+    },
+    {
+      "name": "Kaelon Black",
+      "team": "SF",
+      "severity": "risk",
+      "status": "Questionable — thigh"
     },
     {
       "name": "Luther Burden III",
@@ -3598,8 +4070,26 @@
       "status": "Questionable — lower body"
     },
     {
+      "name": "Makai Lemon",
+      "team": "PHI",
+      "severity": "risk",
+      "status": "Questionable — undisclosed"
+    },
+    {
       "name": "Malik Nabers",
       "team": "NYG",
+      "severity": "risk",
+      "status": "Questionable — knee - acl"
+    },
+    {
+      "name": "Michael Pittman Jr.",
+      "team": "PIT",
+      "severity": "risk",
+      "status": "Questionable — leg"
+    },
+    {
+      "name": "Patrick Mahomes",
+      "team": "KC",
       "severity": "risk",
       "status": "Questionable — knee - acl"
     },
@@ -3608,6 +4098,24 @@
       "team": "LAR",
       "severity": "risk",
       "status": "Questionable — undisclosed"
+    },
+    {
+      "name": "Tank Dell",
+      "team": "HOU",
+      "severity": "risk",
+      "status": "Questionable — knee - acl + mcl"
+    },
+    {
+      "name": "Tucker Kraft",
+      "team": "GB",
+      "severity": "risk",
+      "status": "Questionable — knee - acl"
+    },
+    {
+      "name": "Xavier Worthy",
+      "team": "KC",
+      "severity": "risk",
+      "status": "Questionable — shoulder"
     }
   ],
   "sleepers": [
@@ -3718,67 +4226,72 @@
     "window": "2026-08-11 to 2026-08-16",
     "url": "https://fantasyfootballcalculator.com/adp/half-ppr/12-team/all"
   },
+  "auction": {
+    "budget": 200,
+    "roster_size": 15,
+    "teams": 12
+  },
   "trending": [
     {
       "name": "Darren Waller",
       "pos": "TE",
       "team": "CAR",
-      "count": 53433
+      "count": 51966
     },
     {
       "name": "Camden Brown",
       "pos": "WR",
       "team": "DAL",
-      "count": 39627
+      "count": 40611
     },
     {
       "name": "Robert Henry",
       "pos": "RB",
       "team": "WAS",
-      "count": 37996
+      "count": 37002
     },
     {
       "name": "Barion Brown",
       "pos": "WR",
       "team": "NO",
-      "count": 33363
+      "count": 32805
     },
     {
       "name": "Caleb Douglas",
       "pos": "WR",
       "team": "MIA",
-      "count": 32336
+      "count": 30712
     },
     {
       "name": "Matt Hibner",
       "pos": "TE",
       "team": "BAL",
-      "count": 23849
+      "count": 24360
     },
     {
       "name": "Cyrus Allen",
       "pos": "WR",
       "team": "KC",
-      "count": 18714
+      "count": 18732
     },
     {
       "name": "MarShawn Lloyd",
       "pos": "RB",
       "team": "GB",
-      "count": 13437
+      "count": 13140
     },
     {
       "name": "Dean Connors",
       "pos": "RB",
       "team": "LAR",
-      "count": 12228
+      "count": 12560
     },
     {
       "name": "Drew Allar",
       "pos": "QB",
       "team": "PIT",
-      "count": 11124
+      "count": 10773
     }
   ],
-  "refreshed": "2026-08-16 19:17 UTC"
+  "refreshed": "2026-08-16 19:35 UTC"
 }

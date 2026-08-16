@@ -534,3 +534,11 @@ def test_roster_csv_export(browser, page_url):
     assert lines[1].startswith("RB,1,Jahmyr Gibbs,RB,DET,")
     assert pg.locator("#exportRoster").text_content() == "Copied"
     ctx.close()
+
+
+def test_auction_values_show_on_rows(page):
+    val = page.locator('.row[data-rk="1"] .val')
+    assert val.count() == 1
+    assert val.inner_text().startswith("$")
+    assert val.get_attribute("title") == "Auction value"
+    assert "Auction values assume $200" in page.locator("#adpnote").inner_text()

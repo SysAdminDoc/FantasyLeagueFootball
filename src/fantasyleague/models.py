@@ -27,6 +27,10 @@ class Player:
     adp: float | None = None
     adp_sd: float | None = None
     bye: int | None = None
+    # Projected season points for the board's scoring format, and the auction
+    # dollar value derived from them. Both None until `refresh` fills them in.
+    projected: float | None = None
+    value: int | None = None
 
     def __post_init__(self) -> None:
         if self.pos not in POSITIONS:
@@ -44,6 +48,10 @@ class Player:
             raise ValueError(f"{self.name}: adp_sd must be non-negative")
         if self.bye is not None and not 1 <= self.bye <= 18:
             raise ValueError(f"{self.name}: bye week {self.bye} out of range")
+        if self.projected is not None and self.projected < 0:
+            raise ValueError(f"{self.name}: projected points cannot be negative")
+        if self.value is not None and self.value < 1:
+            raise ValueError(f"{self.name}: auction value must be at least $1")
 
     def id_for(self, source: str) -> str | None:
         """External id as a string, or None when the source has none for this player."""
@@ -98,6 +106,10 @@ class Source:
     url: str
 
 
+# Yahoo's default starting lineup (help.yahoo.com/kb/SLN22673).
+DEFAULT_LINEUP = {"QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "K": 1, "DST": 1}
+DEFAULT_ROSTER_SIZE = 15
+
 SCHEMA_VERSION = 1
 """Bump when a change to the dataset shape needs a migration in `Dataset.from_dict`."""
 
@@ -118,6 +130,8 @@ class Dataset:
     sources: list[Source] = field(default_factory=list)
     # Provenance of the players' adp fields: {source, format, window, url}. None if unset.
     adp: dict | None = None
+    # Auction context {budget, roster_size, teams} when values were computed.
+    auction: dict | None = None
     # Most-added players in the last day, from the last `refresh`. [{name, pos, team, count}]
     trending: list = field(default_factory=list)
     # ISO-8601 timestamp of the last injury/trending refresh, or None.
@@ -147,6 +161,7 @@ class Dataset:
             sleepers=[Entry(**e) for e in raw.get("sleepers") or []],
             sources=[Source(**s) for s in raw.get("sources") or []],
             adp=raw.get("adp"),
+            auction=raw.get("auction"),
             trending=raw.get("trending") or [],
             refreshed=raw.get("refreshed"),
         )

@@ -399,6 +399,10 @@
       adpEl.textContent = "";
     }
 
+    if (DATA.auction) {
+      adpEl.textContent += " Auction values assume $" + DATA.auction.budget + " and " +
+        DATA.auction.roster_size + " roster spots in a " + DATA.auction.teams + "-team league.";
+    }
     if (DATA.refreshed) {
       adpEl.textContent += " Injuries and trending refreshed " + DATA.refreshed + ".";
     }
@@ -443,7 +447,7 @@
           '<span class="who"><span class="nm">' + esc(p.name) + "</span>" +
           '<span class="pos">' + esc(p.pos) + " · " + esc(p.team) + "</span>" +
           (p.note ? '<span class="note">' + esc(p.note) + "</span>" : "") + "</span>" +
-          '<span class="flags"><span class="byeslot"></span><span class="oddsslot"></span>' +
+          '<span class="flags"><span class="valslot"></span><span class="byeslot"></span><span class="oddsslot"></span>' +
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
         b.addEventListener("click", function () {
@@ -490,6 +494,9 @@
       var pl = byRank(Number(r.dataset.rk));
       r.classList.toggle("mine", !!(isGone && (entryFor(pl.rank) || {}).mine));
       r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(pl, mine);
+      r.querySelector(".valslot").innerHTML = pl.value
+        ? '<span class="val" title="Auction value">$' + pl.value + "</span>"
+        : "";
       r.querySelector(".byeslot").innerHTML = pl.bye
         ? '<span class="bye' + (myByeWeeks[pl.bye] >= 2 && !isGone ? " clash" : "") + '" title="Bye week ' +
           pl.bye + '">B' + pl.bye + "</span>"

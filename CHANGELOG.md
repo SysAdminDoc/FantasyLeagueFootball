@@ -22,6 +22,11 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Projections and auction values. `refresh` pulls Sleeper's public season projections
+  (`pts_half_ppr`/`pts_ppr`/`pts_std`, matched for 199 of 200 players) and prices every
+  draftable player against a $200 budget; the dollar value shows on each row and the
+  footer states the budget, roster size and league size the numbers assume.
+  `--budget`/`--roster-size`/`--no-projections` control it.
 - `fantasyleague tiers` imports Boris Chen's published consensus tiers (Gaussian-mixture
   clustering over FantasyPros ECR), mapping each position into its own tier block so a
   "tier 1 RB" and a "tier 1 WR" stay distinct. **It refuses files older than 14 days**:

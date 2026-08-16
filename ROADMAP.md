@@ -4,15 +4,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 
 ## Next
 
-- [ ] **Live ADP fetch** — `fantasyleague refresh` pulling current ADP rather than hand-maintaining
-      the JSON. Cache to disk; fall back to packaged data when offline.
-      *Research 2026-08-16:* Sleeper's public API exposes **no ADP** (verified against `players/nfl`
-      and docs); real sources are FantasyPros API v2 (`adp`, paid key), Yahoo `players;sort=AR` /
-      `draft_analysis.average_pick` (OAuth), or scraping. Design the provider interface around that.
-- [ ] **Auto-flag values** — derive `value` / `avoid` from `adp - projected_rank` instead of
-      hardcoding the flag. Needs a `projected` field on each player.
-      *Research 2026-08-16:* FantasyPros ECR supplies `rank_ecr` + `adp` in one call; BeatADP shows
-      "your rank vs ADP" as a first-class column — surface the delta, not just the flag.
 - [ ] **Board expansion to 200** — currently 75 deep, which runs out around round 7 in a
       12-team league. Late rounds are where the sleeper rail is doing the work instead.
       *Research 2026-08-16:* Boris Chen and FantasyPros both publish top-200; Sleeper `search_rank`

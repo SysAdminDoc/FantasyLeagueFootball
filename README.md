@@ -31,7 +31,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Position filters (QB/RB/WR/TE/K/DST) + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, trending adds from the last 24 hours, late-round targets.
-- **Refreshable.** `fantasyleague refresh` pulls current injury designations and trending adds from Sleeper — no key, cached for a day, degrades to cache offline.
+- **Refreshable.** `fantasyleague refresh` pulls current ADP, bye weeks, injury designations, and trending adds — no key, cached for a day, degrades to cache offline.
 - **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
 - **Print sheet.** One button (or Ctrl+P) turns the board into a one-page, three-column, greyscale cheat sheet — flags as glyphs, crossed-off players struck through.
 - **Second screen on your phone.** `fantasyleague serve --host 0.0.0.0` puts the board on your LAN; every tab and device stays in sync, and the screen won't sleep mid-draft.
@@ -71,7 +71,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague build [-o PATH] [--title T] [--league NAME] [--teams N] [--slot S] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser; `--teams`/`--slot` pre-fill the pick-odds settings (editable on the page). |
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|K\|DST\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
-| `fantasyleague refresh [-o PATH] [--force] [--hours N] [--no-trending]` | Rebuild the injury board and trending-adds rail from Sleeper's public player data. Caches for 24h; works offline from cache. |
+| `fantasyleague refresh [-o PATH] [--force] [--reflag] [--no-adp] [--no-trending]` | Pull current ADP + spread + byes (Fantasy Football Calculator) and rebuild the injury board and trending rail (Sleeper). Caches for 24h; works offline from cache. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
 | `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
 | `fantasyleague validate [PATH]` | Check a dataset and print every problem found, each with a JSON pointer. Exits non-zero if any. |

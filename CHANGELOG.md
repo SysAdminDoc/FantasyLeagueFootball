@@ -22,6 +22,12 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `refresh` now also pulls ADP, its spread, and bye weeks from Fantasy Football Calculator's
+  public API (`--adp-format`, `--teams`, `--no-adp`), storing the sample's provenance.
+  `--reflag` recomputes value/reach from the gap between this board's rank and the market —
+  off by default, because the packaged flags compare ADP with a *projected finish*, which is
+  a stronger signal than rank, and K/DST are excluded entirely since their board ranks are
+  positional rather than overall.
 - Roster tracking. When the board knows your slot, a cross-off on your pick is claimed for
   you automatically; otherwise the toast offers "That's mine" (and "Not mine" to undo it).
   A rail card fills Yahoo's default lineup — QB/RB/RB/WR/WR/TE/FLEX/K/DEF then bench, with

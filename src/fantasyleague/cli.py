@@ -16,6 +16,7 @@ from . import draft as draft_mod
 from . import render as render_mod
 from . import schema as schema_mod
 from . import serve as serve_mod
+from .sync import adp as adp_mod
 from .sync import players as players_mod
 from .sync import sleeper as sleeper_mod
 
@@ -165,6 +166,25 @@ def cmd_refresh(args: argparse.Namespace) -> int:
         age = players_mod.cache_age()
         print(f"  offline — using a cache {age / 3600:.1f}h old")
 
+    if not args.no_adp:
+        try:
+            payload = adp_mod.fetch(scoring=args.adp_format, teams=args.teams, year=data.season)
+            data, changed, unmatched = adp_mod.apply(data, payload, reflag=args.reflag)
+            print(f"ADP: {data.adp['format']}, {data.adp['window']}")
+            print(
+                f"  {len(data.players) - len(unmatched)} matched, {len(changed)} moved, "
+                f"{len(unmatched)} without a listing"
+            )
+            for line in unmatched[:5]:
+                print("    no ADP: " + line)
+            if args.reflag:
+                flags = {}
+                for pl in data.players:
+                    flags[pl.flag] = flags.get(pl.flag, 0) + 1
+                print(f"  flags recomputed: {flags.get('value', 0)} value, {flags.get('avoid', 0)} reach")
+        except (OSError, ValueError) as exc:
+            print(f"  ADP unavailable ({exc}); keeping the stored numbers")
+
     data, updated = players_mod.apply_status(data, players)
     print(f"Injury board: {len(data.injuries)} players carrying a designation")
     for line in updated[: args.limit]:
@@ -286,6 +306,17 @@ def build_parser() -> argparse.ArgumentParser:
     rf.add_argument("--trending-limit", type=int, default=10, help="how many trending adds to keep")
     rf.add_argument("--no-trending", action="store_true", help="only refresh injuries")
     rf.add_argument("--limit", type=int, default=15, help="how many injury lines to print")
+    rf.add_argument("--no-adp", action="store_true", help="skip the ADP refresh")
+    rf.add_argument(
+        "--adp-format", default="half-ppr", choices=list(adp_mod.FORMATS), help="ADP scoring format"
+    )
+    rf.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="ADP league size (default 12)")
+    rf.add_argument(
+        "--reflag",
+        action="store_true",
+        help="recompute value/reach from ADP vs this board's rank (skill positions only); "
+        "off by default so curated flags are not silently replaced",
+    )
     rf.set_defaults(func=cmd_refresh)
 
     va = sub.add_parser("validate", help="check a dataset and report every problem found")

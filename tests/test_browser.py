@@ -103,6 +103,48 @@ def test_position_filter_and_reset(page):
     assert page.locator(".row.gone").count() == 0
 
 
+def _live(page) -> str:
+    # The announcer clears then sets on a 0 ms timer; give it a tick.
+    page.wait_for_timeout(50)
+    return page.locator("#live").text_content()
+
+
+def test_live_region_is_empty_on_load_and_announces_actions(page):
+    assert page.locator("#live").get_attribute("aria-live") == "polite"
+    assert page.locator("#live").text_content() == ""
+    page.locator('.row[data-rk="1"]').click()
+    assert _live(page) == "Jahmyr Gibbs crossed off. Best available: Bijan Robinson."
+    page.locator('.row[data-rk="1"]').click()
+    assert _live(page) == "Jahmyr Gibbs restored. Best available: Jahmyr Gibbs."
+
+
+def test_live_region_announces_tier_break_once(page):
+    for rk in (1, 2, 3):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    assert "Tier 1 is down to 2 — tier break." in _live(page)
+    page.locator('.row[data-rk="4"]').click()
+    assert "tier break" not in _live(page), "a tier already broken must not re-announce"
+
+
+def test_enter_in_search_crosses_off_single_match(page):
+    search = page.locator("#search")
+    assert search.get_attribute("placeholder") == "Search, then Enter to cross off"
+    search.fill("gibbs")
+    search.press("Enter")
+    assert page.locator('.row[data-rk="1"]').get_attribute("aria-pressed") == "true"
+    assert search.input_value() == "", "a successful cross-off clears the search"
+    assert page.locator(".row:not(.hide)").count() == 75
+
+    search.fill("brown")  # Chase Brown, A.J. Brown, Amon-Ra St. Brown
+    search.press("Enter")
+    assert page.locator(".row.gone").count() == 1, "ambiguous match must not cross anyone off"
+    assert "players match — keep typing" in _live(page)
+
+    search.fill("zzzz")
+    search.press("Enter")
+    assert "No player matches" in _live(page)
+
+
 def test_guidance_renders_bold_and_neutralises_markup(browser, tmp_path):
     from dataclasses import replace
 

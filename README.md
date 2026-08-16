@@ -25,10 +25,10 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Click to cross off.** Every row is a button. State is saved in the browser, so a refresh mid-draft doesn't lose your place. Reset with one click.
 - **Tier-break warnings.** Each tier header shows how many are left and lights up at two.
 - **Best available** updates as you go, overall or filtered to one position.
-- **Position filters + name search** so you can answer "best RB left?" in one tap.
+- **Position filters + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, late-round targets.
-- **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control.
+- **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
 - **Terminal CLI** over the same data: `list`, `values`, `next --drafted …` for best available and tier breaks without a browser.
 - **Bring your own board.** Any JSON matching the packaged file works; it's validated on load so a bad edit fails loudly instead of rendering holes.
 

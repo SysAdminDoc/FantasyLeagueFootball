@@ -25,7 +25,7 @@ __CSS__
   <section class="plan" id="plan"></section>
 
   <div class="controls">
-    <input id="search" type="search" placeholder="Type a name to cross them off…" aria-label="Search players">
+    <input id="search" type="search" placeholder="Search, then Enter to cross off" aria-label="Search players; press Enter to cross off a single match">
     <div class="chips" id="chips" role="group" aria-label="Filter by position">
       <button class="chip" data-pos="ALL" aria-pressed="true">ALL</button>
       <button class="chip" data-pos="QB" aria-pressed="false">QB</button>
@@ -37,6 +37,7 @@ __CSS__
     <div class="tally" id="tally"></div>
     <div class="storenote" id="storenote" hidden></div>
   </div>
+  <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
   <div class="grid">
     <main id="board"></main>

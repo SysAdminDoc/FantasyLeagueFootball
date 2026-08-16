@@ -42,6 +42,41 @@
   var posFilter = "ALL";
   var board = document.getElementById("board");
 
+  // Screen-reader announcements (WCAG 4.1.3). paint() appends tier-break
+  // transitions to whatever the triggering action queued, then flushes once.
+  var liveEl = document.getElementById("live");
+  var pending = [];
+  var wasBreaking = {};
+  var booted = false;                           // silent during the initial paint
+  function say(msg) { if (booted) pending.push(msg); }
+  function flush() {
+    if (!pending.length) return;
+    var text = pending.join(" ");
+    pending = [];
+    liveEl.textContent = "";                    // retrigger identical messages
+    setTimeout(function () { liveEl.textContent = text; }, 0);
+  }
+
+  function byRank(rank) {
+    for (var i = 0; i < DATA.players.length; i++) {
+      if (DATA.players[i].rank === rank) return DATA.players[i];
+    }
+    return null;
+  }
+
+  function toggle(rank) {
+    var k = String(rank);
+    var p = byRank(rank);
+    if (gone.has(k)) {
+      gone.delete(k);
+      say(p.name + " restored.");
+    } else {
+      gone.add(k);
+      say(p.name + " crossed off.");
+    }
+    save();
+  }
+
   /* ---------- static shell built from DATA ---------- */
 
   function buildShell() {
@@ -122,9 +157,7 @@
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
         b.addEventListener("click", function () {
-          var k = String(p.rank);
-          if (gone.has(k)) gone.delete(k); else gone.add(k);
-          save();
+          toggle(p.rank);
           paint();
         });
         rows.appendChild(b);
@@ -159,6 +192,11 @@
       // filtering to TE must not make a full tier with one TE read "Tier break".
       var tierLeft = rows.filter(notGone).length;
       var breaking = tierLeft > 0 && tierLeft <= TIER_BREAK;
+      var tn = sec.dataset.tier;
+      if (breaking && !wasBreaking[tn]) {
+        say("Tier " + tn + " is down to " + tierLeft + " — tier break.");
+      }
+      wasBreaking[tn] = breaking;
       sec.querySelector(".tier-left").innerHTML =
         left + " left" +
         (filtered && left !== tierLeft ? " · " + tierLeft + " in tier" : "") +
@@ -185,6 +223,29 @@
 
     document.getElementById("tally").innerHTML =
       "<b>" + avail.length + "</b> of " + total + " on the board";
+
+    if (pending.length && avail.length) {
+      say("Best available: " + avail[0].name + ".");
+    }
+    flush();
+  }
+
+  // Enter in the search box crosses off (or restores) the single visible match.
+  function crossOffSearchMatch() {
+    var q = document.getElementById("search").value.trim().toLowerCase();
+    if (!q) return;
+    var matches = Array.prototype.filter.call(document.querySelectorAll(".row:not(.hide)"), function (r) {
+      return r.dataset.nm.indexOf(q) !== -1;
+    });
+    if (matches.length === 1) {
+      toggle(Number(matches[0].dataset.rk));
+      document.getElementById("search").value = "";
+    } else if (matches.length === 0) {
+      say("No player matches “" + q + "”.");
+    } else {
+      say(matches.length + " players match — keep typing.");
+    }
+    paint();
   }
 
   /* ---------- wiring ---------- */
@@ -196,19 +257,25 @@
     Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (c) {
       c.setAttribute("aria-pressed", c === b ? "true" : "false");
     });
+    say(posFilter === "ALL" ? "Showing all positions." : "Showing " + posFilter + " only.");
     paint();
   });
 
   document.getElementById("search").addEventListener("input", paint);
+  document.getElementById("search").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); crossOffSearchMatch(); }
+  });
 
   document.getElementById("reset").addEventListener("click", function () {
     gone.clear();
     save();
     document.getElementById("search").value = "";
+    say("Board reset. " + DATA.players.length + " players on the board.");
     paint();
   });
 
   buildShell();
   buildBoard();
   paint();
+  booted = true;
 })();

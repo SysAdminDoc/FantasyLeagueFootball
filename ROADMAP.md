@@ -43,15 +43,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 
 Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause fixes, then trust/reliability, then quick wins, then larger bets.
 
-### P0
-
-- [ ] P0 — Live-region announcements and honest search microcopy
-  Why: best-available and the tally change silently for screen-reader users (WCAG 2.1 SC 4.1.3); the placeholder promises "Type a name to cross them off…" but typing only filters.
-  Evidence: `assets/board.html.template` line with `#search` placeholder; no `aria-live` anywhere in `board.js`/template; wcag.dock.codes/documentation/wcag413.
-  Touches: `board.html.template` (empty `<div aria-live="polite" class="sr-only">`), `board.js` (announce "X crossed off. Best available: Y" and tier-break; Enter in search crosses off when exactly one visible match), `board.css` (`.sr-only`).
-  Acceptance: NVDA/VoiceOver reads the announcement on toggle; typing "gibbs" + Enter crosses Gibbs off; placeholder reads "Search, then Enter to cross off".
-  Complexity: S
-
 ### P1
 
 - [ ] P1 — Player ID crosswalk and K/DST positions in the dataset

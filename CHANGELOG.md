@@ -17,6 +17,14 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A visible notice in the controls bar when the browser refuses to persist picks
   (e.g. storage disabled), instead of failing silently.
 
+### Accessibility
+- A polite live region announces cross-offs, restores, the new best available, position
+  filter changes, resets, and the moment a tier breaks (once per tier), so screen-reader
+  users hear what sighted users see change (WCAG 2.1 SC 4.1.3).
+- Pressing Enter in the search box crosses off (or restores) the single visible match and
+  clears the search; ambiguous or empty matches are announced instead. The placeholder now
+  says what the box does: "Search, then Enter to cross off".
+
 ### Security
 - `--title`, the dataset `updated`/`season` fields, and every text field rendered by
   the page are HTML-escaped; a `Content-Security-Policy` meta tag (`default-src 'none'`,

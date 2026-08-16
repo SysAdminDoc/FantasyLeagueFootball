@@ -22,6 +22,13 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Roster tracking. When the board knows your slot, a cross-off on your pick is claimed for
+  you automatically; otherwise the toast offers "That's mine" (and "Not mine" to undo it).
+  A rail card fills Yahoo's default lineup — QB/RB/RB/WR/WR/TE/FLEX/K/DEF then bench, with
+  dedicated slots filled before FLEX so a spare RB doesn't eat the flex — lists what the
+  lineup still needs, and your picks are marked on the board.
+- Bye weeks on every row, and a warning when three or more of *your* players share one.
+  Rows show a highlighted bye when two or more of your roster are already out that week.
 - `fantasyleague validate [PATH]` — reports **every** structural problem in a dataset at once,
   each with a JSON pointer (`/players/12/pos: 'P' is not one of QB, RB, WR, TE, K, DST`), and
   exits non-zero. Datasets carry `schema_version`; a file from a newer build is refused with

@@ -23,6 +23,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 
 - **One file, works offline.** `fantasyleague build` writes `dist/draft-board.html` (~37 KB) with all CSS/JS inlined and the dataset embedded. Open it anywhere.
 - **Click to cross off.** Every row is a button. State is saved in the browser as an ordered pick log, so a refresh mid-draft doesn't lose your place. Every action — including Reset — shows a toast with **Undo**.
+- **Your roster.** Claim your picks (automatic once the board knows your slot) and a rail card fills Yahoo's default lineup, tells you what's still open, and warns when three of your players share a bye week.
 - **Run detection.** Three of the last four picks at one position marks that position's chip with *run* — the moment to decide whether to join it or let it pass.
 - **Tier-break warnings.** Each tier header shows how many are left and lights up at two.
 - **Best available** updates as you go, overall or filtered to one position.
@@ -225,7 +226,7 @@ docs/                        README screenshots
 ## Known limitations (v0.0.1)
 
 - Skill-position board is 75 deep — runs out around round 7 in a 12-team league; the sleeper rail carries the late rounds.
-- No roster tracking; Yahoo live sync isn't wired up yet (Sleeper is).
+- Yahoo live sync isn't wired up yet (Sleeper is) — it needs a Yahoo Developer app.
 
 ## License
 

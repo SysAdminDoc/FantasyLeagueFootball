@@ -217,6 +217,48 @@ h1 {
 .toast-undo:hover { background: var(--accent); color: var(--accent-ink); }
 .toast-undo:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .toast-undo[hidden] { display: none; }
+.toast-mine {
+  font-family: var(--f-display); font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  font-weight: 700; color: var(--good); background: none; border: 1px solid var(--good);
+  padding: 5px 10px; cursor: pointer; border-radius: 2px;
+}
+.toast-mine:hover { background: var(--good); color: var(--accent-ink); }
+.toast-mine:focus-visible { outline: 2px solid var(--good); outline-offset: 2px; }
+.toast-mine[hidden] { display: none; }
+
+/* Bye week on a row, and your own picks */
+.bye {
+  font-family: var(--f-data); font-size: 11px; color: var(--ink-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.bye.clash { color: var(--warn); font-weight: 700; }
+.row.mine { background: var(--good-bg); }
+.row.mine .rk::after { content: "\2713"; margin-left: 3px; color: var(--good); }
+.row.mine.gone { opacity: .6; }
+.row.mine.gone .nm { text-decoration-color: var(--good); }
+
+/* Roster rail */
+.slotline {
+  display: grid; grid-template-columns: 42px minmax(0,1fr) auto; gap: 8px;
+  align-items: baseline; font-size: 13px;
+}
+.slotline .sl {
+  font-family: var(--f-display); font-size: 11px; letter-spacing: .08em; font-weight: 700;
+  color: var(--ink-dim);
+}
+.slotline.empty .nm3 { color: var(--ink-dim); font-style: italic; }
+.slotline .nm3 { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slotline .bw { font-family: var(--f-data); font-size: 11px; color: var(--ink-dim); }
+.needs {
+  margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line-soft);
+  font-size: 12.5px; color: var(--ink-mid);
+}
+.needs b { color: var(--accent); }
+.byewarn {
+  margin-top: 6px; font-size: 12.5px; color: var(--warn);
+  border-left: 2px solid var(--warn); padding-left: 8px;
+}
+.byewarn[hidden] { display: none; }
 
 /* Positional run: 3 of the last 4 picks at one position */
 .chip.run { box-shadow: inset 0 -3px 0 var(--warn); }
@@ -394,6 +436,8 @@ footer strong { color: var(--ink); }
   h1 br { display: none; }
   .settings { font-size: 8pt; }
   .plan, .controls, .rail, #live, .storenote, .toast, .odds, .livepill, footer .srcs, footer .howto { display: none !important; }
+  .row.mine { background: none; }
+  .row.mine .rk::after { content: "\2713"; }
   .grid { display: block; margin-top: 6px; }
   #board { column-count: 3; column-gap: 14px; column-rule: 1px solid #bbb; }
   .tier { margin: 0 0 8px; }

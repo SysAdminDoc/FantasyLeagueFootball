@@ -37,7 +37,8 @@
       if (Array.isArray(parsed)) {                                     // v1
         log = parsed.map(function (r) { return { rank: Number(r), ts: null }; });
       } else if (parsed && parsed.v === 2 && Array.isArray(parsed.log)) {
-        log = parsed.log.filter(function (e) { return e && typeof e.rank === "number"; });
+        log = parsed.log.filter(function (e) { return e && typeof e.rank === "number"; })
+          .map(function (e) { return { rank: e.rank, ts: e.ts || null, mine: !!e.mine }; });
       }
     } catch (e) { log = []; }
     rebuildIndex();
@@ -58,12 +59,22 @@
     } catch (e) { /* no fetch — nothing to sync */ }
   }
 
-  function crossOff(rank, fromServer) {
+  function crossOff(rank, fromServer, mine) {
     if (gone.has(String(rank))) return false;
-    log.push({ rank: rank, ts: Date.now() });
+    log.push({ rank: rank, ts: Date.now(), mine: !!mine });
     rebuildIndex();
     if (!fromServer) remote({ pick: { rank: rank } });
     return true;
+  }
+
+  function entryFor(rank) {
+    for (var i = 0; i < log.length; i++) if (log[i].rank === rank) return log[i];
+    return null;
+  }
+
+  function setMine(rank, mine) {
+    var e = entryFor(rank);
+    if (e) { e.mine = !!mine; save(); }
   }
 
   function restore(rank, fromServer) {
@@ -154,17 +165,114 @@
       (pr[1] != null ? " · " + Math.round(pr[1] * 100) + "%" : "") + "</span>";
   }
 
+  // ---- your roster: Yahoo's default lineup, and what it still needs ----
+  // help.yahoo.com/kb/SLN22673: 1QB 2RB 2WR 1TE 1FLEX 1K 1DEF, then bench.
+  var LINEUP = [
+    { slot: "QB", takes: ["QB"] },
+    { slot: "RB", takes: ["RB"] }, { slot: "RB", takes: ["RB"] },
+    { slot: "WR", takes: ["WR"] }, { slot: "WR", takes: ["WR"] },
+    { slot: "TE", takes: ["TE"] },
+    { slot: "FLEX", takes: ["RB", "WR", "TE"] },
+    { slot: "K", takes: ["K"] },
+    { slot: "DEF", takes: ["DST"] }
+  ];
+
+  function myPlayers() {
+    return log.filter(function (e) { return e.mine; })
+      .map(function (e) { return byRank(e.rank); })
+      .filter(Boolean);
+  }
+
+  // Greedy fill in lineup order, dedicated slots before FLEX so a spare RB
+  // doesn't consume the flex while RB2 sits empty.
+  function fillLineup(players) {
+    var pool = players.slice();
+    var filled = LINEUP.map(function (l) { return { slot: l.slot, takes: l.takes, player: null }; });
+    filled.forEach(function (row) {
+      if (row.slot === "FLEX") return;
+      for (var i = 0; i < pool.length; i++) {
+        if (row.takes.indexOf(pool[i].pos) !== -1) { row.player = pool.splice(i, 1)[0]; return; }
+      }
+    });
+    filled.forEach(function (row) {
+      if (row.slot !== "FLEX" || row.player) return;
+      for (var i = 0; i < pool.length; i++) {
+        if (row.takes.indexOf(pool[i].pos) !== -1) { row.player = pool.splice(i, 1)[0]; return; }
+      }
+    });
+    return { filled: filled, bench: pool };
+  }
+
+  function byeClashes(players) {
+    var weeks = {};
+    players.forEach(function (p) {
+      if (p.bye) (weeks[p.bye] = weeks[p.bye] || []).push(p);
+    });
+    return Object.keys(weeks)
+      .filter(function (w) { return weeks[w].length >= 3; })
+      .map(function (w) { return { week: Number(w), players: weeks[w] }; });
+  }
+
+  function paintRoster() {
+    var mine = myPlayers();
+    var card = document.getElementById("rostercard");
+    if (!mine.length) { card.hidden = true; myByeWeeks = {}; return; }
+    card.hidden = false;
+
+    var res = fillLineup(mine);
+    document.getElementById("roster").innerHTML = res.filled.map(function (r) {
+      var p = r.player;
+      return '<div class="slotline' + (p ? "" : " empty") + '"><span class="sl">' + r.slot + "</span>" +
+        '<span class="nm3">' + (p ? esc(p.name) + " " : "—") +
+        (p ? '<span class="bw">' + esc(p.pos) + " " + esc(p.team) + "</span>" : "") + "</span>" +
+        '<span class="bw">' + (p && p.bye ? "B" + p.bye : "") + "</span></div>";
+    }).join("") + res.bench.map(function (p) {
+      return '<div class="slotline"><span class="sl">BN</span><span class="nm3">' + esc(p.name) +
+        ' <span class="bw">' + esc(p.pos) + " " + esc(p.team) + '</span></span><span class="bw">' +
+        (p.bye ? "B" + p.bye : "") + "</span></div>";
+    }).join("");
+
+    var open = res.filled.filter(function (r) { return !r.player; }).map(function (r) { return r.slot; });
+    document.getElementById("needs").innerHTML = open.length
+      ? "Still needs <b>" + open.join("</b>, <b>") + "</b>"
+      : "Starting lineup complete — " + res.bench.length + " on the bench";
+
+    var clashes = byeClashes(mine);
+    var warn = document.getElementById("byewarn");
+    warn.hidden = !clashes.length;
+    if (clashes.length) {
+      warn.innerHTML = clashes.map(function (c) {
+        return "Week " + c.week + ": " + c.players.length + " of your players are on bye (" +
+          c.players.map(function (p) { return esc(p.name); }).join(", ") + ")";
+      }).join("<br>");
+    }
+
+    myByeWeeks = {};
+    mine.forEach(function (p) { if (p.bye) myByeWeeks[p.bye] = (myByeWeeks[p.bye] || 0) + 1; });
+  }
+  var myByeWeeks = {};
+
   // ---- toast with Undo (the safety net; there are no confirm dialogs) ----
   var toastEl = document.getElementById("toast");
   var toastMsg = document.getElementById("toastMsg");
   var toastUndo = document.getElementById("toastUndo");
+  var toastMine = document.getElementById("toastMine");
   var toastTimer = null;
   var undoAction = null;                        // function that reverts the last action
 
-  function toast(msg, undo) {
+  var mineRank = null;                          // rank the "That's mine" button toggles
+  function toast(msg, undo, rank) {
     toastMsg.textContent = msg;
     undoAction = undo || null;
     toastUndo.hidden = !undo;
+    mineRank = rank == null ? null : rank;
+    if (mineRank !== null) {
+      var e = entryFor(mineRank);
+      toastMine.hidden = false;
+      toastMine.textContent = e && e.mine ? "Not mine" : "That's mine";
+    } else {
+      toastMine.hidden = true;
+    }
     toastEl.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(hideToast, 6000);
@@ -172,7 +280,18 @@
   function hideToast() {
     toastEl.hidden = true;
     undoAction = null;
+    mineRank = null;
   }
+  toastMine.addEventListener("click", function () {
+    if (mineRank === null) return;
+    var e = entryFor(mineRank);
+    var now = !(e && e.mine);
+    setMine(mineRank, now);
+    var p = byRank(mineRank);
+    say(p.name + (now ? " added to your roster." : " removed from your roster."));
+    toastMine.textContent = now ? "Not mine" : "That's mine";
+    paint();
+  });
   toastUndo.addEventListener("click", function () {
     var fn = undoAction;
     hideToast();
@@ -187,9 +306,16 @@
       say(p.name + " restored.");
       toast(p.name + " restored", function () { crossOff(rank); save(); say(p.name + " crossed off."); });
     } else {
-      crossOff(rank);
-      say(p.name + " crossed off.");
-      toast(p.name + " crossed off", function () { restore(rank); save(); say(p.name + " restored."); });
+      // If the board knows your slot and this is your pick, assume it's yours.
+      var onTheClock = log.length + 1;
+      var mine = nextPicks(onTheClock, 1)[0] === onTheClock;
+      crossOff(rank, false, mine);
+      say(p.name + (mine ? " crossed off — added to your roster." : " crossed off."));
+      toast(
+        p.name + (mine ? " — yours" : " crossed off"),
+        function () { restore(rank); save(); say(p.name + " restored."); },
+        rank
+      );
     }
     save();
   }
@@ -312,7 +438,7 @@
           '<span class="who"><span class="nm">' + esc(p.name) + "</span>" +
           '<span class="pos">' + esc(p.pos) + " · " + esc(p.team) + "</span>" +
           (p.note ? '<span class="note">' + esc(p.note) + "</span>" : "") + "</span>" +
-          '<span class="flags"><span class="oddsslot"></span>' +
+          '<span class="flags"><span class="byeslot"></span><span class="oddsslot"></span>' +
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
         b.addEventListener("click", function () {
@@ -347,6 +473,7 @@
     var current = log.length + 1;                 // every taken player crossed off => this is the pick on the clock
     var mine = nextPicks(current, 2);
     paintPickInfo(current, mine);
+    paintRoster();
 
     Array.prototype.forEach.call(document.querySelectorAll(".row"), function (r) {
       var isGone = gone.has(r.dataset.rk);
@@ -355,7 +482,13 @@
       var okPos = posFilter === "ALL" || r.dataset.pos === posFilter;
       var okQ = !q || r.dataset.nm.indexOf(q) !== -1;
       r.classList.toggle("hide", !(okPos && okQ));
-      r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(byRank(Number(r.dataset.rk)), mine);
+      var pl = byRank(Number(r.dataset.rk));
+      r.classList.toggle("mine", !!(isGone && (entryFor(pl.rank) || {}).mine));
+      r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(pl, mine);
+      r.querySelector(".byeslot").innerHTML = pl.bye
+        ? '<span class="bye' + (myByeWeeks[pl.bye] >= 2 && !isGone ? " clash" : "") + '" title="Bye week ' +
+          pl.bye + '">B' + pl.bye + "</span>"
+        : "";
     });
 
     var filtered = posFilter !== "ALL" || !!q;

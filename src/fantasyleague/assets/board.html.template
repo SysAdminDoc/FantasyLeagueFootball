@@ -49,6 +49,7 @@ __CSS__
   <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <div class="toast" id="toast" hidden>
     <span id="toastMsg"></span>
+    <button type="button" class="toast-mine" id="toastMine" hidden>That's mine</button>
     <button type="button" class="toast-undo" id="toastUndo">Undo</button>
   </div>
 
@@ -59,6 +60,15 @@ __CSS__
       <section class="card hot">
         <h2>Best available</h2>
         <div class="card-body"><div class="ba" id="bestAvail"></div></div>
+      </section>
+
+      <section class="card" id="rostercard" hidden>
+        <h2>Your roster</h2>
+        <div class="card-body tight">
+          <div id="roster"></div>
+          <div class="needs" id="needs"></div>
+          <div class="byewarn" id="byewarn" hidden></div>
+        </div>
       </section>
 
       <section class="card">

@@ -13,10 +13,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
       hardcoding the flag. Needs a `projected` field on each player.
       *Research 2026-08-16:* FantasyPros ECR supplies `rank_ecr` + `adp` in one call; BeatADP shows
       "your rank vs ADP" as a first-class column — surface the delta, not just the flag.
-- [ ] **Roster tracking** — mark which crossed-off players *you* took, then show positional
-      needs against a configurable lineup (1QB/2RB/2WR/1TE/1FLEX by default).
-      *Research 2026-08-16:* Yahoo's default lineup is 1QB/2RB/2WR/1TE/1FLEX/**1K/1DEF**/6BN/2IR
-      (help.yahoo.com SLN22673) — land the K/DST positions item below first or needs math is wrong.
 - [ ] **Board expansion to 200** — currently 75 deep, which runs out around round 7 in a
       12-team league. Late rounds are where the sleeper rail is doing the work instead.
       *Research 2026-08-16:* Boris Chen and FantasyPros both publish top-200; Sleeper `search_rank`
@@ -25,10 +21,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 ## Later
 
 - [ ] Superflex and full-PPR variants of the ranking set.
-- [ ] Bye-week column, and a warning when a roster stacks too many byes in one week.
-      *Research 2026-08-16:* Sleeper `players/nfl` has **no bye field** (verified). Sources: nflverse
-      `import_schedules(2026)` (byes run W5–W14 in 2026), Yahoo player `bye_weeks`, FantasyPros
-      `player_bye_week`.
 - [ ] Keeper/dynasty mode — age and contract context on each row.
       *Research 2026-08-16:* Sleeper picks carry `is_keeper`; Sleeper players carry `age`, `years_exp`.
 - [ ] Export a drafted roster to CSV.

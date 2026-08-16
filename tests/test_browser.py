@@ -390,6 +390,96 @@ def test_sleeper_sync_reaches_the_browser(browser, monkeypatch):
         ctx.close()
 
 
+def _mine_label(page) -> str:
+    # .toast-mine is text-transform: uppercase, so inner_text() would be "THAT'S MINE".
+    return page.locator("#toastMine").text_content()
+
+
+def test_bye_weeks_show_on_rows(page):
+    bye = page.locator('.row[data-rk="1"] .bye')
+    assert bye.count() == 1
+    assert bye.inner_text().startswith("B")
+    assert bye.get_attribute("title").startswith("Bye week ")
+
+
+def test_roster_tracks_your_picks_and_shows_needs(page):
+    card = page.locator("#rostercard")
+    assert card.is_hidden(), "no roster card until you own a pick"
+
+    # With no slot set, a cross-off is somebody else's pick.
+    page.locator('.row[data-rk="1"]').click()
+    assert card.is_hidden()
+
+    # Claim it via the toast.
+    page.locator("#toastMine").click()
+    assert card.is_visible()
+    assert "Jahmyr Gibbs" in page.locator("#roster").inner_text()
+    needs = page.locator("#needs").inner_text()
+    assert needs.startswith("Still needs") and "QB" in needs and "TE" in needs
+    assert "mine" in page.locator('.row[data-rk="1"]').get_attribute("class")
+
+    # And un-claim it.
+    page.locator("#toastMine").click()
+    assert card.is_hidden()
+
+
+def test_your_pick_is_claimed_automatically_when_the_slot_is_known(page):
+    page.locator("#slot").fill("1")          # slot 1 => pick 1 is yours
+    page.locator('.row[data-rk="1"]').click()
+    assert page.locator("#rostercard").is_visible()
+    assert "Jahmyr Gibbs" in page.locator("#roster").inner_text()
+    assert "added to your roster" in _live(page)
+    # Pick 2 belongs to somebody else and is not claimed.
+    page.locator('.row[data-rk="2"]').click()
+    assert "Bijan Robinson" not in page.locator("#roster").inner_text()
+
+
+def test_flex_fills_only_after_dedicated_slots(page):
+    page.locator("#slot").fill("1")
+    # Three RBs: two fill RB/RB, the third takes FLEX — not the reverse.
+    for rk in (1, 2, 6):
+        row = page.locator(f'.row[data-rk="{rk}"]')
+        row.click()
+        if _mine_label(page) == "That's mine":
+            page.locator("#toastMine").click()
+    text = page.locator("#roster").inner_text()
+    assert text.count("RB") >= 2
+    lines = [ln for ln in text.split("\n") if ln.strip()]
+    flex = next(ln for ln in lines if ln.startswith("FLEX"))
+    assert "—" not in flex, "third RB should occupy FLEX"
+
+
+def test_bye_cluster_warning(page):
+    page.locator("#slot").fill("1")
+    data = board.load()
+    # Find three players sharing a bye week.
+    from collections import defaultdict
+
+    weeks = defaultdict(list)
+    for p in data.players:
+        if p.bye:
+            weeks[p.bye].append(p)
+    week, group = next((w, g) for w, g in weeks.items() if len(g) >= 3)
+
+    warn = page.locator("#byewarn")
+    for p in group[:3]:
+        page.locator(f'.row[data-rk="{p.rank}"]').click()
+        if _mine_label(page) == "That's mine":
+            page.locator("#toastMine").click()
+    assert warn.is_visible()
+    assert f"Week {week}" in warn.inner_text()
+    assert "3 of your players are on bye" in warn.inner_text()
+
+
+def test_roster_survives_reload(page):
+    page.locator("#slot").fill("1")
+    page.locator('.row[data-rk="1"]').click()
+    page.reload()
+    page.wait_for_selector(".row")
+    assert page.locator("#rostercard").is_visible()
+    assert "Jahmyr Gibbs" in page.locator("#roster").inner_text()
+
+
 def test_touch_targets_are_large_enough_on_a_phone(browser, page_url):
     """WCAG 2.5.8 wants 24px minimum; rows are the primary target and get 44."""
     ctx = browser.new_context(

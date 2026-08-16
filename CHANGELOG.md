@@ -6,6 +6,16 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- The phone layout leads with the readouts you use on the clock. Collapsing to one
+  column used to append the rail *after* the board, putting Best available, your
+  roster and the managers picking ahead of you some 15,000 px down; they now sit
+  directly under the controls, and the four-cell strategy strip became one
+  swipeable row rather than a full screen of reading.
+- The rail no longer hides its own heading behind the sticky controls bar (which
+  wraps to two rows at some widths), and it scrolls inside itself, so the injury
+  board and late-round targets are reachable without scrolling past 200 rows.
+
 ### Fixed
 - Roster claims survive live mode. Ownership is now server state, so a reload or a
   dropped SSE connection no longer empties "Your roster" — and a pick that arrives

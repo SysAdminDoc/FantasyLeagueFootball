@@ -471,6 +471,48 @@ def test_odds_survive_past_the_sixteenth_round(browser, page_url):
     ctx.close()
 
 
+def test_phone_puts_the_live_readouts_above_the_board(browser, page_url):
+    """One column used to put Best available ~15,000px down, under 200 rows."""
+    ctx = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True,
+                              has_touch=True, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pos = pg.evaluate("""() => {
+      const top = s => Math.round(document.querySelector(s).getBoundingClientRect().top + scrollY);
+      return {search: top('#search'), best: top('#bestAvail'), board: top('#board'),
+              wide: document.documentElement.scrollWidth > innerWidth};
+    }""")
+    assert pos["best"] < pos["board"], "best available must sit above the 200-row board"
+    assert pos["search"] < 844, "the search box must be on the first screen"
+    assert pos["best"] < 900
+    assert not pos["wide"]
+    ctx.close()
+
+
+def test_rail_clears_the_controls_and_scrolls_to_its_last_card(browser, page_url):
+    ctx = browser.new_context(viewport={"width": 1440, "height": 900}, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pg.evaluate("window.scrollTo(0, 3000)")
+    pg.wait_for_timeout(120)
+    geo = pg.evaluate("""() => {
+      const r = s => document.querySelector(s).getBoundingClientRect();
+      const rail = document.querySelector('.rail');
+      return {controlsBottom: r('.controls').bottom, hotTop: r('.card.hot > h2').top,
+              scrolls: rail.scrollHeight > rail.clientHeight,
+              varSet: getComputedStyle(document.documentElement).getPropertyValue('--controls-h').trim()};
+    }""")
+    assert geo["hotTop"] >= geo["controlsBottom"], "the rail heading hid behind the sticky controls"
+    assert geo["scrolls"], "the rail must scroll internally so its lower cards stay reachable"
+    assert geo["varSet"].endswith("px")
+    pg.evaluate("document.querySelector('.rail').scrollTop = 99999")
+    pg.wait_for_timeout(100)
+    assert pg.locator("#slp").is_visible()
+    ctx.close()
+
+
 def _mine_label(page) -> str:
     # .toast-mine is text-transform: uppercase, so inner_text() would be "THAT'S MINE".
     return page.locator("#toastMine").text_content()

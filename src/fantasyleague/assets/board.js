@@ -933,6 +933,20 @@
     keepAwake();
   }
 
+  // The controls bar wraps to two rows at some widths; the rail sticks below it,
+  // so its offset is measured rather than assumed.
+  (function trackControlsHeight() {
+    var bar = document.querySelector(".controls");
+    if (!bar) return;
+    var apply = function () {
+      var h = Math.round(bar.getBoundingClientRect().height);
+      document.documentElement.style.setProperty("--controls-h", h + "px");
+    };
+    apply();
+    if (typeof ResizeObserver !== "undefined") new ResizeObserver(apply).observe(bar);
+    else window.addEventListener("resize", apply);
+  })();
+
   buildShell();
   buildBoard();
   paint();

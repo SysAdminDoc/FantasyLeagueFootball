@@ -305,8 +305,26 @@ h1 {
   gap: 30px; align-items: start; margin-top: 24px;
 }
 @media (max-width: 940px) {
-  .grid { grid-template-columns: minmax(0, 1fr); }
-  .rail { position: static !important; }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  /* One column puts the rail *after* 200 rows — roughly 15,000px down a phone,
+     which is where the board's most time-critical readouts used to live. Drop the
+     rail box so its cards become grid items and the ones you need on the clock
+     sit above the board. */
+  .rail { display: contents; }
+  .rail > .card { order: 5; }
+  .rail > .card.hot { order: 1; }
+  #board { order: 4; }
+  #opponentcard { order: 2; }
+  #rostercard { order: 3; }
+  /* The plan is reference, not a readout: one swipeable row instead of a
+     four-cell stack that pushed everything else off the first screen. */
+  .plan {
+    grid-template-columns: none; grid-auto-flow: column;
+    grid-auto-columns: minmax(228px, 82%);
+    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+  }
+  .plan-cell { scroll-snap-align: start; }
+  .masthead { padding-top: 20px; }
 }
 
 /* ---------- Tiers ---------- */
@@ -375,8 +393,17 @@ h1 {
 .row.gone .flags { visibility: hidden; }
 .row.hide { display: none; }
 
-/* ---------- Rail ---------- */
-.rail { position: sticky; top: 68px; display: flex; flex-direction: column; gap: 18px; }
+/* ---------- Rail ----------
+   --controls-h is measured from the sticky controls bar at runtime: it wraps to
+   two rows at some widths, and a fixed offset hid the "Best available" heading
+   behind it. The rail scrolls inside itself so the lower cards stay reachable
+   without scrolling the whole board first. */
+.rail {
+  position: sticky; top: calc(var(--controls-h, 68px) + 10px);
+  max-height: calc(100vh - var(--controls-h, 68px) - 26px);
+  overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable;
+  display: flex; flex-direction: column; gap: 18px;
+}
 .card { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .card > h2 {
   font-family: var(--f-display); font-size: 12px; letter-spacing: .14em;

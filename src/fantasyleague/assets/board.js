@@ -266,6 +266,8 @@
     if (e.key === "Enter") { e.preventDefault(); crossOffSearchMatch(); }
   });
 
+  document.getElementById("print").addEventListener("click", function () { window.print(); });
+
   document.getElementById("reset").addEventListener("click", function () {
     gone.clear();
     save();

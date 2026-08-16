@@ -87,13 +87,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Acceptance: cross off → toast "Gibbs crossed off · Undo" for 6 s; Reset → toast "Board reset · Undo" restores all; after 3 RBs in 4 consecutive picks a "RB run" chip appears on the RB filter.
   Complexity: M
 
-- [ ] P1 — Print stylesheet: one-page cheat sheet
-  Why: the printed one-pager is still the dominant draft-day artifact; competitors either sell it (BeatADP CSV export) or give it away as static PDFs that can't reflect your flags.
-  Evidence: subvertadown Hold-My-BeerSheets one-pager; cheatsheetwarroom printable sheets; PFF/ESPN printable cheat sheets; BeatADP pricing page.
-  Touches: `board.css` (`@media print`: hide controls/rail, tiers as 3-column compact list with rank·name·pos·flag, tier headers as rules, `break-inside: avoid`, monochrome flag glyphs), `board.html.template` (a "Print" ghost button calling `window.print()`).
-  Acceptance: Ctrl+P → 75 players on one Letter/A4 page with tier boundaries visible in greyscale; nothing from the rail prints.
-  Complexity: S
-
 ### P2
 
 - [ ] P2 — `schema_version` + JSON Schema + `validate` subcommand for custom data

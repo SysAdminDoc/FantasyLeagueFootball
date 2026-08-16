@@ -29,6 +29,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, late-round targets.
 - **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
+- **Print sheet.** One button (or Ctrl+P) turns the board into a one-page, three-column, greyscale cheat sheet — flags as glyphs, crossed-off players struck through.
 - **Terminal CLI** over the same data: `list`, `values`, `next --drafted …` for best available and tier breaks without a browser.
 - **Bring your own board.** Any JSON matching the packaged file works; it's validated on load so a bad edit fails loudly instead of rendering holes.
 

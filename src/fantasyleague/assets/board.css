@@ -298,3 +298,51 @@ footer strong { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- Print: one-page cheat sheet ----------
+   Monochrome, three columns, tiers kept whole, rails and controls dropped.
+   Flags become glyphs so the sheet reads in greyscale. */
+@media print {
+  @page { margin: 10mm; }
+  /* Same selector list as the theme blocks so this out-specifies them in every state. */
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"], :root[data-theme="light"] {
+    --ground: #fff; --surface: #fff; --surface-2: #fff; --raise: #fff;
+    --line: #000; --line-soft: #bbb; --ink: #000; --ink-mid: #222; --ink-dim: #444;
+    --accent: #000; --accent-ink: #fff; --shadow: none;
+  }
+  body { background: #fff; color: #000; font-size: 8.5pt; line-height: 1.25; }
+  .wrap { max-width: none; padding: 0; }
+  .masthead { padding: 0 0 4px; border-bottom: 1.5px solid #000; align-items: baseline; }
+  h1 { font-size: 20pt; line-height: 1; }
+  h1 br { display: none; }
+  .settings { font-size: 8pt; }
+  .plan, .controls, .rail, #live, .storenote, footer .srcs, footer .howto { display: none !important; }
+  .grid { display: block; margin-top: 6px; }
+  #board { column-count: 3; column-gap: 14px; column-rule: 1px solid #bbb; }
+  .tier { margin: 0 0 8px; }
+  .tier-head { padding: 2px 0; background: none; border-left: 0; border-bottom: 1px solid #000; gap: 6px; break-after: avoid; }
+  .tier-num { font-size: 11pt; }
+  .tier-name { font-size: 8pt; letter-spacing: .06em; }
+  .tier-range, .tier-left { display: none; }
+  .row {
+    grid-template-columns: 18px minmax(0, 1fr) 12px;
+    gap: 4px; padding: 1px 0; border-bottom: 0; font-size: 8.5pt; background: none;
+    break-inside: avoid;
+  }
+  .row .rk { font-size: 7.5pt; }
+  .row .who { gap: 4px; flex-wrap: nowrap; }
+  .nm { font-weight: 600; }
+  .pos { border: 0; padding: 0; background: none; font-size: 7pt; color: #444; }
+  .note { display: none; }
+  .row.gone { opacity: 1; }
+  .row.gone .nm, .row.gone .pos { text-decoration: line-through; color: #888; }
+  .row.gone .flags { visibility: visible; }
+  /* Flag glyphs: ▲ value, ▼ reach, ! watch */
+  .flags { justify-self: end; font-size: 8pt; font-weight: 700; }
+  .flags .f-value::after { content: "\25B2"; }
+  .flags .f-avoid::after { content: "\25BC"; }
+  .flags .f-watch::after { content: "!"; }
+  .flags .flag { border: 0; padding: 0; background: none; color: #000; font-size: 0; }
+  .flags .flag::after { font-size: 8pt; }
+  footer { margin-top: 6px; padding-top: 4px; border-top: 1px solid #000; font-size: 7pt; color: #444; }
+}

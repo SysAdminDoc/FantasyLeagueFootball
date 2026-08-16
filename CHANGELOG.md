@@ -14,6 +14,9 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Print stylesheet + a "Print sheet" button: Ctrl+P (or the button) produces a one-page,
+  three-column, monochrome cheat sheet — all 99 players with tier rules, flags as glyphs
+  (▲ value, ▼ reach, ! watch), crossed-off players struck through, rails and controls dropped.
 - Kickers and defenses: 12 K (tier 8, FantasyPros tiers 2026-08-14) and 12 D/ST (tier 9,
   FantasyLife rankings 2026-08-08) at ranks 76–99, with K and DST position chips and CLI
   filters. Yahoo's default lineup starts one of each; the board can finally represent it.

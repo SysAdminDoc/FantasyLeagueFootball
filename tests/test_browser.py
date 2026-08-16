@@ -203,6 +203,30 @@ def test_two_leagues_keep_separate_state(browser, tmp_path):
     ctx.close()
 
 
+def test_print_media_is_a_one_page_monochrome_sheet(browser, page_url, tmp_path):
+    import re
+
+    ctx = browser.new_context()
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pg.locator('.row[data-rk="1"]').click()
+    pg.emulate_media(media="print")
+    assert not pg.locator(".rail").is_visible()
+    assert not pg.locator(".controls").is_visible()
+    assert pg.locator(".row:visible").count() == 99
+    assert pg.evaluate("getComputedStyle(document.body).backgroundColor") == "rgb(255, 255, 255)"
+    assert pg.evaluate("getComputedStyle(document.body).color") == "rgb(0, 0, 0)"
+    # Value flag becomes a glyph, not a coloured pill.
+    glyph = pg.evaluate("getComputedStyle(document.querySelector('.f-value'), '::after').content")
+    assert glyph == '"▲"'
+    pdf = tmp_path / "sheet.pdf"
+    pg.pdf(path=str(pdf), format="Letter")
+    pages = len(re.findall(rb"/Type\s*/Page[^s]", pdf.read_bytes()))
+    assert pages == 1, f"cheat sheet must fit one Letter page, got {pages}"
+    ctx.close()
+
+
 def test_light_theme_paints_its_own_ground(browser, page_url):
     ctx = browser.new_context(color_scheme="light")
     pg = ctx.new_page()

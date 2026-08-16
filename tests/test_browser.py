@@ -795,6 +795,34 @@ def test_rail_clears_the_controls_and_scrolls_to_its_last_card(browser, page_url
     ctx.close()
 
 
+def test_board_works_in_a_second_engine(page_url):
+    """Chromium-only testing would miss engine-specific breakage; Firefox is the check."""
+    with playwright.sync_playwright() as p:
+        try:
+            fx = p.firefox.launch()
+        except Exception as exc:  # noqa: BLE001 - not installed is a skip, not a failure
+            pytest.skip(f"firefox unavailable: {exc}")
+        ctx = fx.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+        pg = ctx.new_page()
+        errors: list[str] = []
+        pg.on("pageerror", lambda e: errors.append(str(e)))
+        pg.goto(page_url)
+        pg.wait_for_selector(".row")
+        assert pg.locator(".row").count() == 200
+        pg.locator('.row[data-rk="1"]').click()
+        assert pg.locator(".row.gone").count() == 1
+        assert "Bijan" in pg.locator("#bestAvail").text_content()
+        pg.locator("#theme").click()
+        pg.locator("#theme").click()
+        assert pg.evaluate("() => document.documentElement.dataset.theme") == "light"
+        pg.reload()
+        pg.wait_for_selector(".row")
+        assert pg.locator(".row.gone").count() == 1, "state must survive a reload here too"
+        assert errors == []
+        ctx.close()
+        fx.close()
+
+
 def _mine_label(page) -> str:
     # .toast-mine is text-transform: uppercase, so inner_text() would be "THAT'S MINE".
     return page.locator("#toastMine").text_content()

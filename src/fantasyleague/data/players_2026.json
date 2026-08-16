@@ -93,10 +93,10 @@
   ],
 
   "plan": [
-    { "position": "Running back",  "guidance": "Get <strong>three RBs by the Jaylen Warren / Tony Pollard range</strong> — roughly the end of round 5. The position thins hard right after that." },
-    { "position": "Wide receiver", "guidance": "Take <strong>exactly two through rounds 5–6</strong>. Don't front-load. The best WR values on this board all sit after pick 50." },
-    { "position": "Quarterback",   "guidance": "Two clean paths: <strong>Daniels or Hurts in round 5</strong>, or <strong>wait and pair two QBs after pick 100</strong>. Nothing in between is worth it." },
-    { "position": "Tight end",     "guidance": "Bowers or McBride early, or <strong>skip to Mark Andrews</strong> — he's the single biggest value on the board. Stream if both plans die." }
+    { "position": "Running back",  "guidance": "Get **three RBs by the Jaylen Warren / Tony Pollard range** — roughly the end of round 5. The position thins hard right after that." },
+    { "position": "Wide receiver", "guidance": "Take **exactly two through rounds 5–6**. Don't front-load. The best WR values on this board all sit after pick 50." },
+    { "position": "Quarterback",   "guidance": "Two clean paths: **Daniels or Hurts in round 5**, or **wait and pair two QBs after pick 100**. Nothing in between is worth it." },
+    { "position": "Tight end",     "guidance": "Bowers or McBride early, or **skip to Mark Andrews** — he's the single biggest value on the board. Stream if both plans die." }
   ],
 
   "do_not_draft": [

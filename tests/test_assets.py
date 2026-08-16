@@ -72,8 +72,8 @@ def test_tier_break_threshold_comes_from_data(js):
     assert not re.search(r"var TIER_BREAK = \d+;", js), "hardcoded threshold reintroduced in board.js"
 
 
-def test_storage_key_is_season_scoped(js):
-    assert 'KEY = "ff-warroom-" + DATA.season' in js, "storage key must not collide across seasons"
+def test_storage_key_is_board_scoped(js):
+    assert 'KEY = "ff-warroom-" + DATA.board_id' in js, "storage key must be scoped to the board identity"
 
 
 def test_js_escapes_interpolated_text(js):

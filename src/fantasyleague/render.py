@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
+import html as htmlmod
 import json
+import re
 from dataclasses import asdict
 from datetime import date
 from importlib import resources
@@ -27,10 +30,30 @@ def _pretty_date(iso: str) -> str:
     return f"{d:%A, %B} {d.day}, {d.year}"
 
 
-def render(data: Dataset, title: str | None = None) -> str:
+def _slug(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+def board_id(data: Dataset, league: str | None = None) -> str:
+    """Stable identity for the browser-storage key.
+
+    Crossed-off state is stored by rank, so it may only carry over between builds
+    whose player order is identical. Hash the season plus the ordered roster —
+    note edits keep the id, any re-ranking changes it — and suffix the league so
+    two leagues drafting from the same board never share a key.
+    """
+    digest = hashlib.sha1(
+        (str(data.season) + "|" + "|".join(p.name for p in data.players)).encode("utf-8")
+    ).hexdigest()[:10]
+    return f"{digest}-{_slug(league)}" if league else digest
+
+
+def render(data: Dataset, title: str | None = None, league: str | None = None) -> str:
     """Return the complete HTML document for *data*."""
     payload = {
         "tier_break": TIER_BREAK_THRESHOLD,
+        "board_id": board_id(data, league),
+        "league": league or "",
         "season": data.season,
         "scoring": data.scoring,
         "format": data.format,
@@ -44,25 +67,33 @@ def render(data: Dataset, title: str | None = None) -> str:
         "sources": [asdict(s) for s in data.sources],
     }
 
+    default_title = f"{data.season} Draft War Room"
+    if league:
+        default_title = f"{league} · {default_title}"
+
     html = _asset("board.html.template")
     replacements = {
         "__CSS__": _asset("board.css"),
         "__JS__": _asset("board.js"),
         # </script> inside a JSON string would close the host <script> tag early.
         "__DATA__": json.dumps(payload, ensure_ascii=False).replace("</", "<\\/"),
-        "__VERSION__": __version__,
-        "__SEASON__": str(data.season),
-        "__UPDATED__": _pretty_date(data.updated),
-        "__TITLE__": title or f"{data.season} Draft War Room",
+        # Everything below lands in markup as text and must be escaped: --title and
+        # the dataset's `updated`/`season` can come from an untrusted --data file.
+        "__VERSION__": htmlmod.escape(__version__),
+        "__SEASON__": htmlmod.escape(str(data.season)),
+        "__UPDATED__": htmlmod.escape(_pretty_date(data.updated)),
+        "__TITLE__": htmlmod.escape(title or default_title),
     }
     for token, value in replacements.items():
         html = html.replace(token, value)
     return html
 
 
-def write(data: Dataset, out: str | Path, title: str | None = None) -> Path:
+def write(
+    data: Dataset, out: str | Path, title: str | None = None, league: str | None = None
+) -> Path:
     """Render *data* and write it to *out*, creating parent directories."""
     path = Path(out)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(render(data, title=title), encoding="utf-8")
+    path.write_text(render(data, title=title, league=league), encoding="utf-8")
     return path

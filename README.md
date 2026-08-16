@@ -62,7 +62,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 
 | Command | What it does |
 |---|---|
-| `fantasyleague build [-o PATH] [--title T] [--open]` | Render the board. Default output `dist/draft-board.html`. |
+| `fantasyleague build [-o PATH] [--title T] [--league NAME] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser. |
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
 | `fantasyleague next [--drafted RANK …] [--pos …] [--limit N]` | Best available given who's gone, plus any tier down to its last two and a remaining-by-position count. |
@@ -75,7 +75,7 @@ Examples:
 fantasyleague list --pos RB
 fantasyleague list --flag value
 fantasyleague next --drafted 1 2 3 5 8 --pos WR --limit 5
-fantasyleague --data my-league.json build -o dist/my-board.html --title "Thursday League"
+fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursday League"
 ```
 
 ## The 2026 board
@@ -133,6 +133,8 @@ The shape is [`players_2026.json`](src/fantasyleague/data/players_2026.json). Th
 }
 ```
 
+`guidance` text may use `**bold**` for emphasis; it is escaped before rendering, so HTML in any field shows up as literal text rather than markup.
+
 Validation on load rejects: ranks that aren't exactly `1..N` (gaps or duplicates), duplicate player names, a `tier` that isn't defined in `tiers`, a `pos` outside `QB/RB/WR/TE`, a `flag` outside `value/avoid/watch`, a `severity` outside `out/risk/ok`. Bad data fails at load with a message naming the problem — never a board with holes in it.
 
 ## Theming
@@ -179,7 +181,6 @@ docs/                        README screenshots
 
 - Board is 75 deep — runs out around round 7 in a 12-team league; the sleeper rail carries the late rounds.
 - No K or DEF positions yet; no bye weeks; no roster tracking; no live sync.
-- Storage key is per-season, so two league boards on one machine share crossed-off state until the league-scoped key lands.
 
 ## License
 

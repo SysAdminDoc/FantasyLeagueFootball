@@ -77,4 +77,49 @@ def test_write_creates_parent_dirs(tmp_path):
 
 def test_custom_title(tmp_path):
     html = render.render(board.load(), title="Matt's Board")
-    assert "<title>Matt's Board</title>" in html
+    assert "<title>Matt&#x27;s Board</title>" in html
+
+
+def test_title_is_escaped():
+    html = render.render(board.load(), title='<img src=x onerror="alert(1)">')
+    assert "<img" not in html
+    assert "&lt;img src=x onerror=&quot;alert(1)&quot;&gt;" in html
+
+
+def test_league_shapes_title_and_payload():
+    html = render.render(board.load(), league="Thursday Night")
+    assert "<title>Thursday Night · 2026 Draft War Room</title>" in html
+    raw = re.search(r"const DATA = (\{.*?\});", html, re.S).group(1)
+    payload = json.loads(raw.replace("<\\/", "</"))
+    assert payload["league"] == "Thursday Night"
+    assert payload["board_id"].endswith("-thursday-night")
+
+
+def test_csp_meta_present(html):
+    assert '<meta http-equiv="Content-Security-Policy"' in html
+    assert "default-src 'none'" in html
+
+
+def test_board_id_stable_across_note_edits_but_not_reranks():
+    from dataclasses import replace
+
+    data = board.load()
+    base = render.board_id(data)
+    assert len(base) == 10
+
+    edited = replace(data, players=[replace(data.players[0], note="new note")] + data.players[1:])
+    assert render.board_id(edited) == base, "a note edit must not orphan saved picks"
+
+    swapped = replace(
+        data,
+        players=[replace(data.players[1], rank=1), replace(data.players[0], rank=2)] + data.players[2:],
+    )
+    assert render.board_id(swapped) != base, "a re-ranked board must get a fresh key"
+
+    assert render.board_id(data, "League A") != render.board_id(data, "League B")
+    assert render.board_id(data, "League A") == base + "-league-a"
+
+
+def test_guidance_bold_markup_is_double_star_not_html():
+    for item in board.load().plan:
+        assert "<" not in item.guidance, "guidance must use **bold**, never HTML"

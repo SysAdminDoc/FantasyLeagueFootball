@@ -4,22 +4,39 @@
 
   var TIER_BREAK = DATA.tier_break;   // single source of truth: board.TIER_BREAK_THRESHOLD
   var FLAG_LABEL = { value: "Value", avoid: "Reach", watch: "Watch" };
-  var KEY = "ff-warroom-" + DATA.season;
+  // Keyed by board identity (season + ordered roster + league), not just season:
+  // on file:// some browsers give every local page one storage origin, so two
+  // league boards would otherwise share crossed-off state.
+  var KEY = "ff-warroom-" + DATA.board_id;
+
+  var storageBroken = false;
+  function storageFailed() {
+    if (storageBroken) return;
+    storageBroken = true;
+    var n = document.getElementById("storenote");
+    n.textContent = "This browser isn't saving your picks — they'll reset if you refresh.";
+    n.hidden = false;
+  }
 
   var gone = new Set();
   try {
     var saved = localStorage.getItem(KEY);
     if (saved) gone = new Set(JSON.parse(saved));
-  } catch (e) { /* private mode — fall back to in-memory only */ }
+  } catch (e) { storageFailed(); }
 
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify([].concat(Array.from(gone)))); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify([].concat(Array.from(gone)))); } catch (e) { storageFailed(); }
   }
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+
+  // Escape first, then promote **bold** — the only markup guidance text may carry.
+  function emph(s) {
+    return esc(s).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   }
 
   var posFilter = "ALL";
@@ -34,8 +51,12 @@
       "<span><b>QB</b> Single</span>" +
       "<span><b>Board</b> " + DATA.players.length + " ranked + rails</span>";
 
+    if (DATA.league) {
+      document.getElementById("eyebrow").textContent += " · " + DATA.league;
+    }
+
     document.getElementById("plan").innerHTML = DATA.plan.map(function (p) {
-      return '<div class="plan-cell"><h3>' + esc(p.position) + "</h3><p>" + p.guidance + "</p></div>";
+      return '<div class="plan-cell"><h3>' + esc(p.position) + "</h3><p>" + emph(p.guidance) + "</p></div>";
     }).join("");
 
     document.getElementById("dnd").innerHTML = DATA.do_not_draft.map(function (e) {

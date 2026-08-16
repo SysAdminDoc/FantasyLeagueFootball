@@ -11,7 +11,23 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   position filter or search — filtering to TE no longer marks a full tier "Tier break".
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
+### Added
+- `build --league NAME` — shows the league in the header and page title, and keeps that
+  board's saved picks separate from any other board opened in the same browser.
+- A visible notice in the controls bar when the browser refuses to persist picks
+  (e.g. storage disabled), instead of failing silently.
+
+### Security
+- `--title`, the dataset `updated`/`season` fields, and every text field rendered by
+  the page are HTML-escaped; a `Content-Security-Policy` meta tag (`default-src 'none'`,
+  inline script/style only, `img-src data:`) is emitted in every build.
+- Plan guidance no longer accepts raw HTML. Emphasis is written as `**bold**` and
+  promoted after escaping, so an untrusted `--data` file cannot inject markup.
+
 ### Changed
+- Browser storage is keyed by board identity (season + ordered roster + league) rather than
+  season alone. Saved picks survive note edits and are dropped when the board is re-ranked,
+  which is the only case where rank-based state would be wrong.
 - The tier-break threshold is injected into the page payload from `board.TIER_BREAK_THRESHOLD`;
   `board.js` no longer carries its own copy.
 

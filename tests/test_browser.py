@@ -103,6 +103,64 @@ def test_position_filter_and_reset(page):
     assert page.locator(".row.gone").count() == 0
 
 
+def test_guidance_renders_bold_and_neutralises_markup(browser, tmp_path):
+    from dataclasses import replace
+
+    from fantasyleague.models import PlanItem
+
+    data = board.load()
+    hostile = replace(
+        data,
+        plan=[PlanItem("Running back", 'Get **three** RBs <img src=x onerror="window.pwned=1"> now')],
+    )
+    out = tmp_path / "hostile.html"
+    render.write(hostile, out)
+    ctx = browser.new_context()
+    pg = ctx.new_page()
+    pg.goto(out.resolve().as_uri())
+    pg.wait_for_selector(".plan-cell")
+    cell = pg.locator(".plan-cell p").first
+    assert cell.locator("strong").inner_text() == "three"
+    assert cell.locator("img").count() == 0
+    assert '<img src=x onerror="window.pwned=1">' in cell.inner_text()
+    assert pg.evaluate("window.pwned") is None
+    ctx.close()
+
+
+def test_storage_failure_shows_notice_and_board_still_works(browser, page_url):
+    ctx = browser.new_context()
+    ctx.add_init_script(
+        "Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });"
+    )
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    note = pg.locator("#storenote")
+    assert note.is_visible()
+    assert "isn't saving your picks" in note.inner_text()
+    pg.locator('.row[data-rk="1"]').click()
+    assert pg.locator(".row.gone").count() == 1
+    ctx.close()
+
+
+def test_two_leagues_keep_separate_state(browser, tmp_path):
+    data = board.load()
+    a = tmp_path / "a.html"
+    b = tmp_path / "b.html"
+    render.write(data, a, league="Alpha")
+    render.write(data, b, league="Beta")
+    ctx = browser.new_context()
+    pg = ctx.new_page()
+    pg.goto(a.resolve().as_uri())
+    pg.wait_for_selector(".row")
+    pg.locator('.row[data-rk="1"]').click()
+    pg.goto(b.resolve().as_uri())
+    pg.wait_for_selector(".row")
+    assert pg.locator(".row.gone").count() == 0
+    assert "Beta" in pg.locator("#eyebrow").text_content()  # inner_text is CSS-uppercased
+    ctx.close()
+
+
 def test_light_theme_paints_its_own_ground(browser, page_url):
     ctx = browser.new_context(color_scheme="light")
     pg = ctx.new_page()

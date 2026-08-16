@@ -45,20 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P0
 
-- [ ] P0 — Escape `--title` and `plan[].guidance`; add a CSP meta tag
-  Why: `--data` / `--title` from an untrusted file is stored XSS in the generated page.
-  Evidence: `src/fantasyleague/render.py` `__TITLE__` inserted raw; `assets/board.js` `buildShell()` inserts `guidance` as HTML; no `<meta http-equiv="Content-Security-Policy">` in `assets/board.html.template`.
-  Touches: `render.py` (`html.escape` on title), `board.js` (either whitelist `<strong>` via a tiny parser or move emphasis to `guidance_strong: [..]`), `board.html.template` (CSP `default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:`), `tests/test_render.py`.
-  Acceptance: `build --title "<img src=x onerror=alert(1)>"` renders the literal text; a `guidance` containing `<script>` renders inert; page still functions with the CSP present.
-  Complexity: S
-
-- [ ] P0 — League-scoped storage key + storage-unavailable notice
-  Why: `localStorage` behaviour on `file://` is undefined by spec and differs by browser — Chrome/Safari have treated every local file as one storage origin, so two league boards on one machine share crossed-off state; where storage is unavailable the page silently loses persistence with no message.
-  Evidence: MDN `Window.localStorage` ("requirements for file: URLs are undefined and may vary"); whatwg-2008-April thread; Bugzilla 507361; `assets/board.js` `KEY = "ff-warroom-" + DATA.season`. Needs live validation per browser.
-  Touches: `render.py` (emit `board_id` = short hash of dataset + optional `--league NAME`), `board.js` (key includes `board_id`; on `catch` set a visible one-line notice in the controls bar), `cli.py` (`--league`).
-  Acceptance: two boards built with different `--league` values keep independent state in the same browser; when `localStorage` throws, the controls bar shows "This browser isn't saving your picks — use `fantasyleague serve`" and the board still works.
-  Complexity: S
-
 - [ ] P0 — Live-region announcements and honest search microcopy
   Why: best-available and the tally change silently for screen-reader users (WCAG 2.1 SC 4.1.3); the placeholder promises "Type a name to cross them off…" but typing only filters.
   Evidence: `assets/board.html.template` line with `#search` placeholder; no `aria-live` anywhere in `board.js`/template; wcag.dock.codes/documentation/wcag413.

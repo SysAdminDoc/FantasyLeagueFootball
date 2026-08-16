@@ -27,7 +27,7 @@ def _print_players(players, header: str) -> None:
 
 def cmd_build(args: argparse.Namespace) -> int:
     data = board_mod.load(args.data)
-    path = render_mod.write(data, args.out, title=args.title)
+    path = render_mod.write(data, args.out, title=args.title, league=args.league)
     size = path.stat().st_size
     print(f"Built {path} ({size:,} bytes, {len(data.players)} players)")
     if args.open:
@@ -85,6 +85,11 @@ def build_parser() -> argparse.ArgumentParser:
     b = sub.add_parser("build", help="render the HTML draft board")
     b.add_argument("-o", "--out", default=DEFAULT_OUT, help=f"output path (default: {DEFAULT_OUT})")
     b.add_argument("--title", help="override the page title")
+    b.add_argument(
+        "--league",
+        help="league name; shown in the header and keeps this board's saved picks separate "
+        "from other boards in the same browser",
+    )
     b.add_argument("--open", action="store_true", help="open the board in a browser when done")
     b.set_defaults(func=cmd_build)
 

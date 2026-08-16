@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="generator" content="FantasyLeagueFootball v__VERSION__">
 <title>__TITLE__</title>
 <style>
@@ -15,7 +16,7 @@ __CSS__
 
   <header class="masthead">
     <div class="mast-l">
-      <div class="eyebrow">__UPDATED__ · Board is live</div>
+      <div class="eyebrow" id="eyebrow">__UPDATED__ · Board is live</div>
       <h1>__SEASON__ Draft<br>War Room</h1>
     </div>
     <div class="settings" id="settings"></div>
@@ -34,6 +35,7 @@ __CSS__
     </div>
     <button class="ghost" id="reset">Reset board</button>
     <div class="tally" id="tally"></div>
+    <div class="storenote" id="storenote" hidden></div>
   </div>
 
   <div class="grid">

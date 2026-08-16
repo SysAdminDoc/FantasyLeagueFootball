@@ -41,6 +41,10 @@ __CSS__
     <div class="storenote" id="storenote" hidden></div>
   </div>
   <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <div class="toast" id="toast" hidden>
+    <span id="toastMsg"></span>
+    <button type="button" class="toast-undo" id="toastUndo">Undo</button>
+  </div>
 
   <div class="grid">
     <main id="board"></main>

@@ -145,6 +145,60 @@ def test_enter_in_search_crosses_off_single_match(page):
     assert "No player matches" in _live(page)
 
 
+def test_toast_offers_undo_for_cross_off(page):
+    page.locator('.row[data-rk="1"]').click()
+    toast = page.locator("#toast")
+    assert toast.is_visible()
+    assert page.locator("#toastMsg").inner_text() == "Jahmyr Gibbs crossed off"
+    page.locator("#toastUndo").click()
+    assert page.locator('.row[data-rk="1"]').get_attribute("aria-pressed") == "false"
+    assert not toast.is_visible()
+    assert page.locator(".row.gone").count() == 0
+
+
+def test_reset_is_undoable(page):
+    for rk in (1, 2, 3):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    page.locator("#reset").click()
+    assert page.locator(".row.gone").count() == 0
+    assert "3 picks cleared" in page.locator("#toastMsg").inner_text()
+    page.locator("#toastUndo").click()
+    assert page.locator(".row.gone").count() == 3
+    page.reload()
+    page.wait_for_selector(".row")
+    assert page.locator(".row.gone").count() == 3, "undo must persist"
+
+
+def test_positional_run_marks_the_chip(page):
+    # RB, WR, RB, RB -> 3 of the last 4 are RB.
+    for rk in (1, 3, 2, 6):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    assert "run" in page.locator('.chip[data-pos="RB"]').get_attribute("class")
+    assert "run" not in page.locator('.chip[data-pos="WR"]').get_attribute("class")
+    assert "RB run: 3 of the last 4 picks." in _live(page)
+    # Two WRs later the window has moved on and the run clears.
+    for rk in (4, 5):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    assert "run" not in page.locator('.chip[data-pos="RB"]').get_attribute("class")
+
+
+def test_v1_storage_array_is_migrated(browser, page_url):
+    ctx = browser.new_context()
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    key = pg.evaluate("'ff-warroom-' + DATA.board_id")
+    pg.evaluate("([k]) => localStorage.setItem(k, JSON.stringify(['1','2','7']))", [key])
+    pg.reload()
+    pg.wait_for_selector(".row")
+    assert pg.locator(".row.gone").count() == 3
+    # first save after migration rewrites in v2 form; trigger one
+    pg.locator('.row[data-rk="9"]').click()
+    stored = pg.evaluate("([k]) => JSON.parse(localStorage.getItem(k))", [key])
+    assert stored["v"] == 2 and [e["rank"] for e in stored["log"]] == [1, 2, 7, 9]
+    ctx.close()
+
+
 def test_guidance_renders_bold_and_neutralises_markup(browser, tmp_path):
     from dataclasses import replace
 

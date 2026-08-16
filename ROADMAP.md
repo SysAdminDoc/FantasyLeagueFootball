@@ -80,13 +80,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Acceptance: `refresh` updates the injury card from live data with a "as of <timestamp>" line; offline it falls back to packaged data and says so; second run within 24 h makes no network call.
   Complexity: M — shares plumbing with **Live ADP fetch** (existing); Sleeper cannot supply ADP.
 
-- [ ] P1 — Pick log with undo toast and positional-run detection
-  Why: as of v0.0.1 a cross-off is a stateless toggle; a mis-tap on Reset wipes the draft with no recovery (confirm dialogs are prohibited by repo rules, so Undo is the safety net); an ordered log also enables "3 RBs went in the last 4 picks".
-  Evidence: jjti/ff ships undo-last-pick and skip-turn; every sync product shows an ordered pick feed; repo rule "No confirmation dialogs — toast feedback".
-  Touches: `board.js` (state becomes an ordered array of `{rank, mine, ts}`; toast component with Undo; run detector over last N picks), `board.css` (toast), storage schema bump, `tests/test_assets.py`.
-  Acceptance: cross off → toast "Gibbs crossed off · Undo" for 6 s; Reset → toast "Board reset · Undo" restores all; after 3 RBs in 4 consecutive picks a "RB run" chip appears on the RB filter.
-  Complexity: M
-
 ### P2
 
 - [ ] P2 — `schema_version` + JSON Schema + `validate` subcommand for custom data

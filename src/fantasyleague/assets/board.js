@@ -18,14 +18,44 @@
     n.hidden = false;
   }
 
+  // State is an ordered pick log: [{rank, ts}] in the order players were crossed
+  // off. `gone` is a derived index for O(1) lookups. Storage schema v2; v1 was a
+  // bare array of rank strings, migrated in load order (Set insertion order).
+  var log = [];
   var gone = new Set();
-  try {
-    var saved = localStorage.getItem(KEY);
-    if (saved) gone = new Set(JSON.parse(saved));
-  } catch (e) { storageFailed(); }
+
+  function rebuildIndex() {
+    gone = new Set(log.map(function (e) { return String(e.rank); }));
+  }
+
+  (function load() {
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) { storageFailed(); return; }
+    if (!saved) return;
+    try {
+      var parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {                                     // v1
+        log = parsed.map(function (r) { return { rank: Number(r), ts: null }; });
+      } else if (parsed && parsed.v === 2 && Array.isArray(parsed.log)) {
+        log = parsed.log.filter(function (e) { return e && typeof e.rank === "number"; });
+      }
+    } catch (e) { log = []; }
+    rebuildIndex();
+  })();
 
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify([].concat(Array.from(gone)))); } catch (e) { storageFailed(); }
+    try { localStorage.setItem(KEY, JSON.stringify({ v: 2, log: log })); } catch (e) { storageFailed(); }
+  }
+
+  function crossOff(rank) {
+    if (gone.has(String(rank))) return;
+    log.push({ rank: rank, ts: Date.now() });
+    rebuildIndex();
+  }
+
+  function restore(rank) {
+    log = log.filter(function (e) { return e.rank !== rank; });
+    rebuildIndex();
   }
 
   function esc(s) {
@@ -64,17 +94,65 @@
     return null;
   }
 
+  // ---- toast with Undo (the safety net; there are no confirm dialogs) ----
+  var toastEl = document.getElementById("toast");
+  var toastMsg = document.getElementById("toastMsg");
+  var toastUndo = document.getElementById("toastUndo");
+  var toastTimer = null;
+  var undoAction = null;                        // function that reverts the last action
+
+  function toast(msg, undo) {
+    toastMsg.textContent = msg;
+    undoAction = undo || null;
+    toastUndo.hidden = !undo;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 6000);
+  }
+  function hideToast() {
+    toastEl.hidden = true;
+    undoAction = null;
+  }
+  toastUndo.addEventListener("click", function () {
+    var fn = undoAction;
+    hideToast();
+    if (fn) { fn(); paint(); }
+  });
+
   function toggle(rank) {
     var k = String(rank);
     var p = byRank(rank);
     if (gone.has(k)) {
-      gone.delete(k);
+      restore(rank);
       say(p.name + " restored.");
+      toast(p.name + " restored", function () { crossOff(rank); save(); say(p.name + " crossed off."); });
     } else {
-      gone.add(k);
+      crossOff(rank);
       say(p.name + " crossed off.");
+      toast(p.name + " crossed off", function () { restore(rank); save(); say(p.name + " restored."); });
     }
     save();
+  }
+
+  // ---- positional runs: 3 of the last 4 picks at one position ----
+  var RUN_WINDOW = 4, RUN_MIN = 3;
+  var lastRun = null;
+  function detectRun() {
+    var recent = log.slice(-RUN_WINDOW);
+    var counts = {};
+    recent.forEach(function (e) {
+      var p = byRank(e.rank);
+      if (p) counts[p.pos] = (counts[p.pos] || 0) + 1;
+    });
+    var run = null;
+    Object.keys(counts).forEach(function (pos) { if (counts[pos] >= RUN_MIN) run = pos; });
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (c) {
+      c.classList.toggle("run", c.dataset.pos === run);
+    });
+    if (run && run !== lastRun) {
+      say(run + " run: " + counts[run] + " of the last " + recent.length + " picks.");
+    }
+    lastRun = run;
   }
 
   /* ---------- static shell built from DATA ---------- */
@@ -224,6 +302,7 @@
     document.getElementById("tally").innerHTML =
       "<b>" + avail.length + "</b> of " + total + " on the board";
 
+    detectRun();
     if (pending.length && avail.length) {
       say("Best available: " + avail[0].name + ".");
     }
@@ -269,10 +348,17 @@
   document.getElementById("print").addEventListener("click", function () { window.print(); });
 
   document.getElementById("reset").addEventListener("click", function () {
-    gone.clear();
+    var before = log.slice();
+    log = [];
+    rebuildIndex();
     save();
     document.getElementById("search").value = "";
     say("Board reset. " + DATA.players.length + " players on the board.");
+    if (before.length) {
+      toast("Board reset — " + before.length + " picks cleared", function () {
+        log = before; rebuildIndex(); save(); say("Reset undone. " + before.length + " picks restored.");
+      });
+    }
     paint();
   });
 

@@ -14,6 +14,13 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Undo. Every cross-off, restore, and Reset shows a toast with an Undo button for six
+  seconds — the safety net in place of confirmation dialogs. Reset undo restores the whole
+  log and persists.
+- Positional-run detection: when 3 of the last 4 picks share a position, that position's
+  filter chip is marked "run" and the live region says so once.
+- Picks are stored as an ordered log (`{v: 2, log: [{rank, ts}]}`); the previous bare
+  rank array is migrated in place on first load.
 - Print stylesheet + a "Print sheet" button: Ctrl+P (or the button) produces a one-page,
   three-column, monochrome cheat sheet — all 99 players with tier rules, flags as glyphs
   (▲ value, ▼ reach, ! watch), crossed-off players struck through, rails and controls dropped.

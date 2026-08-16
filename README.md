@@ -1,10 +1,10 @@
 # FantasyLeagueFootball
 
-[![Version](https://img.shields.io/badge/version-0.0.1-E8963C.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.0-E8963C.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](pyproject.toml)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](#install)
-[![Tests](https://img.shields.io/badge/tests-42%20passing-6FBF73.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-191%20passing-6FBF73.svg)](tests/)
 [![Dependencies](https://img.shields.io/badge/runtime%20deps-0-6FBF73.svg)](pyproject.toml)
 
 A draft-day board for **Yahoo half-PPR fantasy football**. Renders one self-contained HTML page you keep open on a second screen while you draft — click players off as they go, watch tiers drain, and get warned the moment a tier is about to break.
@@ -17,7 +17,7 @@ Ships with a ranked 2026 board — 200 players in 12 tiers — with value/reach 
 
 Rankings sites give you a list. A list doesn't answer the only question that matters at the turn: *take him now, or gamble he lasts eleven picks?* Players inside a tier are close enough to be interchangeable; the value cliff is **between** tiers. So this board tracks how many players each tier has left and flags **Tier break** when one is down to its last two — that's your cue to reach instead of waiting for the wheel.
 
-![Mid-draft: eleven players crossed off, tier 2 showing a tier-break warning](docs/screenshot-mid-draft.png)
+![Mid-draft: live value, keeper ages, auction prices, and the managers picking before you](docs/screenshot-mid-draft.png)
 
 ## Features
 
@@ -206,7 +206,7 @@ Dark is the default. The page defines a complete light palette too and picks one
 ```bash
 pip install -e ".[dev]"
 python -m playwright install chromium   # only needed for the browser tests
-pytest                                  # 156 tests
+pytest                                  # 191 tests
 ruff check .
 python -m build                         # wheel + sdist into dist/
 ```

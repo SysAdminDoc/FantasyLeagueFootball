@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.0] — 2026-08-16
 
 ### Fixed
 - A dataset saved by Notepad or PowerShell's `Out-File` (both write a UTF-8 BOM) failed to
@@ -179,4 +179,5 @@ Initial release.
 - README screenshots (dark, light, mid-draft) captured from the rendered board.
 - Published to GitHub: https://github.com/SysAdminDoc/FantasyLeagueFootball
 
+[0.1.0]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.1.0
 [0.0.1]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.0.1

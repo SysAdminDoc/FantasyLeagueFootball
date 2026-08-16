@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fantasyleaguefootball"
-version = "0.0.1"
+version = "0.1.0"
 description = "Draft-day board for Yahoo half-PPR fantasy football"
 readme = "README.md"
 requires-python = ">=3.11"

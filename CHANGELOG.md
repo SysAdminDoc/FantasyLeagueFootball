@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Tier-break badge is computed from the whole tier, not the rows left visible by a
+  position filter or search — filtering to TE no longer marks a full tier "Tier break".
+  When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
+
+### Changed
+- The tier-break threshold is injected into the page payload from `board.TIER_BREAK_THRESHOLD`;
+  `board.js` no longer carries its own copy.
+
 ## [0.0.1] — 2026-08-16
 
 Initial release.

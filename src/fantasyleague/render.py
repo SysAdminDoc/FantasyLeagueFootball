@@ -9,6 +9,7 @@ from importlib import resources
 from pathlib import Path
 
 from . import __version__
+from .board import TIER_BREAK_THRESHOLD
 from .models import Dataset
 
 
@@ -29,6 +30,7 @@ def _pretty_date(iso: str) -> str:
 def render(data: Dataset, title: str | None = None) -> str:
     """Return the complete HTML document for *data*."""
     payload = {
+        "tier_break": TIER_BREAK_THRESHOLD,
         "season": data.season,
         "scoring": data.scoring,
         "format": data.format,

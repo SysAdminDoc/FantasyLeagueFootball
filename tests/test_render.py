@@ -46,6 +46,13 @@ def test_data_payload_round_trips(html):
     assert payload["players"][0]["name"] == "Jahmyr Gibbs"
 
 
+def test_payload_carries_tier_break_threshold(html):
+    from fantasyleague.board import TIER_BREAK_THRESHOLD
+
+    raw = re.search(r"const DATA = (\{.*?\});", html, re.S).group(1)
+    assert json.loads(raw.replace("<\\/", "</"))["tier_break"] == TIER_BREAK_THRESHOLD
+
+
 def test_script_tags_cannot_break_out_of_payload(html):
     body = html.split("const DATA = ", 1)[1].split(";\n", 1)[0]
     assert "</script" not in body

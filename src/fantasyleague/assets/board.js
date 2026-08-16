@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  var TIER_BREAK = 2;
+  var TIER_BREAK = DATA.tier_break;   // single source of truth: board.TIER_BREAK_THRESHOLD
   var FLAG_LABEL = { value: "Value", avoid: "Reach", watch: "Watch" };
   var KEY = "ff-warroom-" + DATA.season;
 
@@ -128,12 +128,20 @@
       r.classList.toggle("hide", !(okPos && okQ));
     });
 
+    var filtered = posFilter !== "ALL" || !!q;
     Array.prototype.forEach.call(document.querySelectorAll(".tier"), function (sec) {
       var rows = Array.prototype.slice.call(sec.querySelectorAll(".row"));
+      var notGone = function (r) { return !r.classList.contains("gone"); };
       var visible = rows.filter(function (r) { return !r.classList.contains("hide"); });
-      var left = visible.filter(function (r) { return !r.classList.contains("gone"); }).length;
+      var left = visible.filter(notGone).length;
+      // The break signal is about the whole tier, never the filtered slice of it —
+      // filtering to TE must not make a full tier with one TE read "Tier break".
+      var tierLeft = rows.filter(notGone).length;
+      var breaking = tierLeft > 0 && tierLeft <= TIER_BREAK;
       sec.querySelector(".tier-left").innerHTML =
-        left + " left" + (left > 0 && left <= TIER_BREAK ? '<span class="breakflag">Tier break</span>' : "");
+        left + " left" +
+        (filtered && left !== tierLeft ? " · " + tierLeft + " in tier" : "") +
+        (breaking ? '<span class="breakflag">Tier break</span>' : "");
       sec.classList.toggle("empty", left === 0);
       sec.style.display = visible.length ? "" : "none";
     });

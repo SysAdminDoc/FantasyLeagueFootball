@@ -66,11 +66,10 @@ def test_severity_classes_cover_every_severity(css):
         assert f".st-{sev}" in css, f"board.css has no style for severity {sev!r}"
 
 
-def test_tier_break_threshold_matches_python(js):
-    from fantasyleague.board import TIER_BREAK_THRESHOLD
-
-    found = int(re.search(r"var TIER_BREAK = (\d+);", js).group(1))
-    assert found == TIER_BREAK_THRESHOLD, "tier-break threshold drifted between JS and Python"
+def test_tier_break_threshold_comes_from_data(js):
+    """JS must read the threshold from the payload, not carry its own copy."""
+    assert "DATA.tier_break" in js
+    assert not re.search(r"var TIER_BREAK = \d+;", js), "hardcoded threshold reintroduced in board.js"
 
 
 def test_storage_key_is_season_scoped(js):

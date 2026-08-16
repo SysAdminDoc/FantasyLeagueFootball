@@ -70,6 +70,22 @@ def test_tier_break_fires_at_two_left(page):
     assert page.locator('.tier[data-tier="1"] .breakflag').count() == 0
 
 
+def test_tier_break_ignores_position_filter(page):
+    # Tier 3 holds exactly one TE (Bowers) among seven players. Filtering to TE must
+    # show the filtered count without claiming the tier is breaking.
+    page.locator('.chip[data-pos="TE"]').click()
+    head = page.locator('.tier[data-tier="3"] .tier-left')
+    assert head.inner_text().startswith("1 left · 7 in tier")
+    assert page.locator('.tier[data-tier="3"] .breakflag').count() == 0
+    # Drain the tier for real (all positions) and the badge appears even while filtered.
+    page.locator('.chip[data-pos="ALL"]').click()
+    for rk in (14, 15, 16, 18, 19):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    page.locator('.chip[data-pos="TE"]').click()
+    assert page.locator('.tier[data-tier="3"] .breakflag').count() == 1
+    assert page.locator('.tier[data-tier="3"] .tier-left').inner_text().startswith("1 left · 2 in tier")
+
+
 def test_state_persists_across_reload(page):
     page.locator('.row[data-rk="3"]').click()
     page.reload()

@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P0
 
-- [ ] P0 — Tier-break warning counts visible rows, not the tier
-  Why: with a position filter active, a full tier holding one QB reads "1 left · Tier break" — the product's core signal is wrong exactly when the user narrows the view.
-  Evidence: `src/fantasyleague/assets/board.js` `paint()` derives `left` from rows without `.hide`; RESEARCH.md §Security.
-  Touches: `assets/board.js` (`paint`), `tests/test_assets.py`.
-  Acceptance: filter to TE with tier 3 untouched → header shows "1 left" for TE view but no "Tier break" badge; badge appears only when the whole tier (all positions) has ≤2 undrafted.
-  Complexity: S
-
 - [ ] P0 — Escape `--title` and `plan[].guidance`; add a CSP meta tag
   Why: `--data` / `--title` from an untrusted file is stored XSS in the generated page.
   Evidence: `src/fantasyleague/render.py` `__TITLE__` inserted raw; `assets/board.js` `buildShell()` inserts `guidance` as HTML; no `<meta http-equiv="Content-Security-Policy">` in `assets/board.html.template`.
@@ -160,13 +153,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Touches: `sources/fantasypros.py` (`FANTASYPROS_API_KEY` env / `--ecr-key`, half-PPR draft rankings endpoint, on-disk cache), `board.py` (adopt `adp`, `rank_std`, `bye`), tests with fixture JSON.
   Acceptance: with a key, `refresh --ecr` populates `adp`/`sd`/`bye` for ≥90 % of board players by id/name; without a key the command explains how to get one and exits 0.
   Complexity: M — feeds **Live ADP fetch** and **Snake-draft awareness**.
-
-- [ ] P2 — Single source for the tier-break threshold
-  Why: `TIER_BREAK_THRESHOLD` (Python) and `TIER_BREAK` (JS) are duplicated and only a test keeps them aligned.
-  Evidence: `board.py`, `assets/board.js`, `tests/test_assets.py::test_tier_break_threshold_matches_python`.
-  Touches: `render.py` (emit `DATA.tier_break`), `board.js` (read it), delete the drift test.
-  Acceptance: changing the constant in Python changes the rendered behaviour with no JS edit.
-  Complexity: S
 
 - [ ] P2 — Unpin ruff and adopt the 0.16 default rule set
   Why: the 0.8.2 pin exists for an unrelated repo; ruff 0.16.0 (2026-07-23) enables 413 default rules and diff-rendered fixes.

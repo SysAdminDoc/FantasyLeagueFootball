@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P1
 
-- [ ] P1 — Yahoo live draft sync (optional extra)
-  Why: the author drafts on Yahoo; `draftresults` returns picks made so far when called mid-draft, so polling works without a Chrome extension.
-  Evidence: yahoo-fantasy-api docs ("if called during the draft, includes players drafted thus far"); Yahoo API `league/{key}/draftresults`, `settings.roster_positions`, `is_auction_draft`; yfpy is GPL-3.0 (keep out of core), `yahoo-fantasy-api` alternative; derekrbreese MCP self-limits to 900 req/hr.
-  Touches: `pyproject.toml` (`[project.optional-dependencies] yahoo = [...]`), new `sync/yahoo.py` (OAuth 2.0 token file under user config dir, `--league-key`, poll every 5 s, map `player_key` numeric id → `ids.yahoo`), `cli.py` (`sync yahoo --league-key … `), README (app-registration steps), tests with fixtures.
-  Acceptance: after one-time browser auth, `sync yahoo` follows a Yahoo mock draft pick-by-pick into the served board; token refresh survives the 1-hour expiry mid-draft.
-  Complexity: L — depends on **serve** and **ID crosswalk**.
-
 - [ ] P1 — Injury/status refresh and Sleeper trending in the rails
   Why: the injury board is typed by hand and goes stale by kickoff; Sleeper publishes `injury_status`, `injury_body_part`, `injury_notes`, `practice_participation`, `news_updated` free of charge, and its trending-adds feed is a live late-round radar.
   Evidence: verified 2026-08-16 against `players/nfl?position=QB&active=true` and `/players/nfl/trending/add?lookback_hours=24` (top add: Darren Waller TE CAR, 53,190); docs say cache `players/nfl` daily.
@@ -74,13 +67,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Touches: new `sources/borischen.py` (fetch, parse "Tier N: a, b, c", HEAD for Last-Modified, refuse if older than `--max-age-days 14`), `cli.py` (`tiers import borischen --scoring half`), `board.py` (re-tier players by name → ids), tests with fixture text.
   Acceptance: import refuses stale files with the date in the message; when fresh, `list` shows tiers matching the text file for every matched player and lists unmatched names.
   Complexity: S — needs live validation once the 2026 files publish.
-
-- [ ] P2 — Optional FantasyPros ECR provider
-  Why: one authenticated call yields `rank_ecr`, `tier`, `rank_std`, `adp`, `player_bye_week` — the honest σ for availability odds and a real tier source — for users who hold a HOF key.
-  Evidence: fantasypros.com/api-data; support article 49749297704475 (HOF keys); `api.fantasypros.com/v2/docs` (403 unauthenticated).
-  Touches: `sources/fantasypros.py` (`FANTASYPROS_API_KEY` env / `--ecr-key`, half-PPR draft rankings endpoint, on-disk cache), `board.py` (adopt `adp`, `rank_std`, `bye`), tests with fixture JSON.
-  Acceptance: with a key, `refresh --ecr` populates `adp`/`sd`/`bye` for ≥90 % of board players by id/name; without a key the command explains how to get one and exits 0.
-  Complexity: M — feeds **Live ADP fetch** and **Snake-draft awareness**.
 
 - [ ] P2 — Unpin ruff and adopt the 0.16 default rule set
   Why: the 0.8.2 pin exists for an unrelated repo; ruff 0.16.0 (2026-07-23) enables 413 default rules and diff-rendered fixes.

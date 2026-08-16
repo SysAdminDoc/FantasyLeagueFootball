@@ -19,15 +19,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 
 Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause fixes, then trust/reliability, then quick wins, then larger bets.
 
-### P2
-
-- [ ] P2 — Boris Chen tier importer with a staleness guard
-  Why: GMM-over-consensus tiers are the community standard and his per-position text files are trivially parseable — but they were last modified 2025-12-26 as of 2026-08-16.
-  Evidence: `https://s3-us-west-1.amazonaws.com/fftiers/out/text_{RB,WR,TE,FLX}-HALF.txt`, `text_QB.txt`, `text_K.txt`, `text_DST.txt` return 200 (`text_ALL-HALF.txt` is 403); `Last-Modified: Fri, 26 Dec 2025`; borischen.co methodology page.
-  Touches: new `sources/borischen.py` (fetch, parse "Tier N: a, b, c", HEAD for Last-Modified, refuse if older than `--max-age-days 14`), `cli.py` (`tiers import borischen --scoring half`), `board.py` (re-tier players by name → ids), tests with fixture text.
-  Acceptance: import refuses stale files with the date in the message; when fresh, `list` shows tiers matching the text file for every matched player and lists unmatched names.
-  Complexity: S — needs live validation once the 2026 files publish.
-
 ### P3
 
 - [ ] P3 — Opponent roster-need tracking

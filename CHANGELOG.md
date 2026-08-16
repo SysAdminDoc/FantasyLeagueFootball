@@ -22,6 +22,12 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `fantasyleague tiers` imports Boris Chen's published consensus tiers (Gaussian-mixture
+  clustering over FantasyPros ECR), mapping each position into its own tier block so a
+  "tier 1 RB" and a "tier 1 WR" stay distinct. **It refuses files older than 14 days**:
+  as of 2026-08-16 every published file is still from 2025-12-26, and re-tiering a 2026
+  board with last season's opinions would be worse than not importing at all.
+  `--allow-stale` overrides; a test acts as a canary for when the 2026 files land.
 - Board expanded from 99 to **200 players**. Ranks 1–75 stay curated; 76–176 are filled in
   live half-PPR ADP order from Fantasy Football Calculator (all 101 matched to Sleeper ids),
   in three new tiers — Rounds 7–9, Rounds 10–12, Last rounds. Kickers and defenses move to

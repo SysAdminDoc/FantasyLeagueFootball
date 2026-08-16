@@ -75,6 +75,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
 | `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
 | `fantasyleague export [-o PATH] [--pos …] [--flag …]` | Write the board as CSV — stdout by default. |
+| `fantasyleague tiers [--scoring half\|ppr\|standard] [--allow-stale]` | Re-tier the board from Boris Chen's published consensus tiers. Refuses files older than 14 days — as of 2026-08-16 the published set is still from December 2025. |
 | `fantasyleague validate [PATH]` | Check a dataset and print every problem found, each with a JSON pointer. Exits non-zero if any. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |

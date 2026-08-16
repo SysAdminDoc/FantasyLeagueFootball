@@ -18,6 +18,7 @@ from . import render as render_mod
 from . import schema as schema_mod
 from . import serve as serve_mod
 from .sync import adp as adp_mod
+from .sync import borischen as borischen_mod
 from .sync import players as players_mod
 from .sync import sleeper as sleeper_mod
 
@@ -233,6 +234,42 @@ def cmd_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_tiers(args: argparse.Namespace) -> int:
+    """Re-tier the board from Boris Chen's published consensus tiers."""
+    data = board_mod.load(args.data)
+    fetched: dict[str, dict[str, int]] = {}
+    ages: list[float] = []
+    for pos in ("QB", "RB", "WR", "TE", "K", "DST"):
+        try:
+            mapping, age = borischen_mod.fetch(
+                pos, scoring=args.scoring, max_age_days=args.max_age_days, allow_stale=args.allow_stale
+            )
+        except borischen_mod.StaleTiers as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 1
+        except (OSError, ValueError) as exc:
+            print(f"error: could not fetch {pos} tiers ({exc})", file=sys.stderr)
+            return 1
+        fetched[pos] = mapping
+        if age is not None:
+            ages.append(age)
+        print(f"  {pos}: {len(mapping)} players, {max(mapping.values())} tiers"
+              + (f", published {age:.0f}d ago" if age is not None else ""))
+
+    data, unmatched = borischen_mod.apply(data, fetched)
+    print(f"Re-tiered {len(data.players) - len(unmatched)} of {len(data.players)} players "
+          f"into {len(data.tiers)} tiers")
+    for name in unmatched[: args.limit]:
+        print(f"  no published tier: {name}")
+    if len(unmatched) > args.limit:
+        print(f"  ... and {len(unmatched) - args.limit} more")
+
+    out = args.out or args.data or _packaged_data_path()
+    board_mod.save(data, out)
+    print(f"Wrote {out}")
+    return 0
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     """Report every structural problem in a dataset, not just the first."""
     target = args.path or args.data or _packaged_data_path()
@@ -342,6 +379,22 @@ def build_parser() -> argparse.ArgumentParser:
         "off by default so curated flags are not silently replaced",
     )
     rf.set_defaults(func=cmd_refresh)
+
+    ti = sub.add_parser("tiers", help="re-tier the board from Boris Chen's published tiers")
+    ti.add_argument("-o", "--out", help="write here instead of updating the dataset in place")
+    ti.add_argument(
+        "--scoring", default="half", choices=list(borischen_mod.FILES), help="scoring format"
+    )
+    ti.add_argument(
+        "--max-age-days", type=float, default=borischen_mod.MAX_AGE_DAYS,
+        help=f"refuse files older than this (default {borischen_mod.MAX_AGE_DAYS:g})",
+    )
+    ti.add_argument(
+        "--allow-stale", action="store_true",
+        help="import even if the published files are older than --max-age-days",
+    )
+    ti.add_argument("--limit", type=int, default=10, help="how many unmatched names to print")
+    ti.set_defaults(func=cmd_tiers)
 
     va = sub.add_parser("validate", help="check a dataset and report every problem found")
     va.add_argument("path", nargs="?", help="dataset to check (default: --data, else the packaged board)")

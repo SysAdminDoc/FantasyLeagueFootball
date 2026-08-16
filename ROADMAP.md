@@ -7,7 +7,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 
 ## Later
 
-- [ ] Superflex and full-PPR variants of the ranking set.
 - [ ] Keeper/dynasty mode — age and contract context on each row.
       *Research 2026-08-16:* Sleeper picks carry `is_keeper`; Sleeper players carry `age`, `years_exp`.
 

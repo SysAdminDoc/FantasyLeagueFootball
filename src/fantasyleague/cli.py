@@ -17,6 +17,7 @@ from . import draft as draft_mod
 from . import render as render_mod
 from . import schema as schema_mod
 from . import serve as serve_mod
+from . import variant as variant_mod
 from .models import DEFAULT_LINEUP, DEFAULT_ROSTER_SIZE
 from .sync import adp as adp_mod
 from .sync import borischen as borischen_mod
@@ -295,6 +296,29 @@ def cmd_tiers(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_variant(args: argparse.Namespace) -> int:
+    """Write a board re-ranked for another scoring format."""
+    data = board_mod.load(args.data)
+    try:
+        built, notes = variant_mod.build(
+            data, args.scoring, teams=args.teams, budget=args.budget, roster_size=args.roster_size
+        )
+    except (OSError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    for note in notes:
+        print("  " + note)
+    top = built.players[:5]
+    print("\nTop of the board:")
+    for p in top:
+        money = f" ${p.value}" if p.value else ""
+        print(f"  {p.rank:>2}  {p.name} ({p.pos} {p.team}) ADP {p.adp}{money}")
+    out = args.out or f"board-{args.scoring}.json"
+    board_mod.save(built, out)
+    print(f"\nWrote {out} ({len(built.players)} players, {len(built.tiers)} tiers)")
+    return 0
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     """Report every structural problem in a dataset, not just the first."""
     target = args.path or args.data or _packaged_data_path()
@@ -425,6 +449,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ti.add_argument("--limit", type=int, default=10, help="how many unmatched names to print")
     ti.set_defaults(func=cmd_tiers)
+
+    vr = sub.add_parser("variant", help="build a board for another scoring format")
+    vr.add_argument(
+        "scoring", choices=list(variant_mod.VARIANTS), help="target format (2qb is superflex)"
+    )
+    vr.add_argument("-o", "--out", help="output path (default: board-<scoring>.json)")
+    vr.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size")
+    vr.add_argument("--budget", type=int, default=200, help="auction budget per team")
+    vr.add_argument("--roster-size", type=int, default=15, help="roster size for pricing")
+    vr.set_defaults(func=cmd_variant)
 
     va = sub.add_parser("validate", help="check a dataset and report every problem found")
     va.add_argument("path", nargs="?", help="dataset to check (default: --data, else the packaged board)")

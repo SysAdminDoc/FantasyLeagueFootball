@@ -22,6 +22,11 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `fantasyleague variant {half-ppr,ppr,standard,2qb,dynasty}` builds a board for another
+  scoring format: re-ranked by that format's own ADP, re-projected in its scoring, re-tiered,
+  and re-priced. Superflex prices off a two-QB lineup — with QB24 as replacement instead of
+  QB12, Josh Allen goes from $24 to $38 and opens the board, which is the entire point of
+  the format.
 - Projections and auction values. `refresh` pulls Sleeper's public season projections
   (`pts_half_ppr`/`pts_ppr`/`pts_std`, matched for 199 of 200 players) and prices every
   draftable player against a $200 budget; the dollar value shows on each row and the

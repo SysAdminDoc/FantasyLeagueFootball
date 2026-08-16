@@ -337,16 +337,21 @@
     if (!rows.length) { card.hidden = true; return; }
     card.hidden = false;
     // A position two or more managers still need is the one that will not last.
+    // Early on everyone needs everything, so a slot every listed manager wants
+    // says nothing — the warning is for contention, not for round one.
     var counts = {};
     rows.forEach(function (r) {
       r.open.forEach(function (slot) { counts[slot] = (counts[slot] || 0) + 1; });
     });
+    var contested = function (slot) { return counts[slot] >= 2 && counts[slot] < rows.length; };
     document.getElementById("opponents").innerHTML = rows.map(function (r) {
-      var threat = r.open.some(function (slot) { return counts[slot] >= 2; });
+      var threat = r.open.some(contested);
+      var shown = r.open.slice(0, 4).join("</b>, <b>");
+      var more = r.open.length > 4 ? " +" + (r.open.length - 4) + " more" : "";
       return '<div class="oppline' + (threat ? " threat" : "") + '">' +
         '<span class="who2">#' + r.pick + " · T" + r.slot + "</span>" +
         '<span class="needs2">' +
-        (r.open.length ? "needs <b>" + r.open.slice(0, 4).join("</b>, <b>") + "</b>" : "lineup full") +
+        (r.open.length ? "needs <b>" + shown + "</b>" + more : "lineup full") +
         "</span></div>";
     }).join("");
   }
@@ -615,7 +620,7 @@
       var stamp = DATA.refreshed.indexOf(DATA.updated) === 0
         ? DATA.refreshed.slice(DATA.updated.length).trim()
         : DATA.refreshed;
-      eyebrow.textContent = eyebrow.textContent.replace("Board is live", "Refreshed " + stamp);
+      eyebrow.textContent += " · Refreshed " + stamp;
     }
     if (DATA.league) {
       eyebrow.textContent += " · " + DATA.league;
@@ -646,6 +651,9 @@
 
     if (DATA.trending && DATA.trending.length) {
       document.getElementById("trendcard").hidden = false;
+      // The window is `refresh --hours`, not always a day.
+      document.getElementById("trendhead").textContent =
+        "Trending adds · " + (DATA.trending_hours || 24) + "h";
       document.getElementById("trend").innerHTML = DATA.trending.map(function (t) {
         return '<div class="statusline"><span class="s-nm">' + esc(t.name) +
           ' <span class="p">' + esc(t.pos) + " " + esc(t.team) + "</span></span>" +
@@ -751,7 +759,10 @@
     var el = document.getElementById("pickinfo");
     el.classList.remove("mine");
     if (!draft.slot) { el.textContent = "Set your slot for pick odds"; return; }
-    if (!mine.length) { el.innerHTML = "Pick <b>" + current + "</b> · no picks left"; return; }
+    if (!mine.length) {
+      el.innerHTML = "Pick <b>" + current + "</b> · your draft is done";
+      return;
+    }
     if (mine[0] === current) {
       el.classList.add("mine");
       el.innerHTML = "Pick <b>" + current + "</b> · <b>your pick</b>";

@@ -95,11 +95,6 @@ class Injury:
         if self.severity not in SEVERITIES:
             raise ValueError(f"{self.name}: unknown severity {self.severity!r}")
 
-    @property
-    def lines(self) -> list[str]:
-        """Status split on the pipe used to force a line break in the render."""
-        return self.status.split("|")
-
 
 @dataclass(frozen=True)
 class PlanItem:
@@ -147,8 +142,10 @@ class Dataset:
     adp: dict | None = None
     # Auction context {budget, roster_size, teams} when values were computed.
     auction: dict | None = None
-    # Most-added players in the last day, from the last `refresh`. [{name, pos, team, count}]
+    # Most-added players from the last `refresh`. [{name, pos, team, count}]
     trending: list = field(default_factory=list)
+    # The look-back window those adds cover, in hours (`refresh --hours`).
+    trending_hours: int | None = None
     # ISO-8601 timestamp of the last injury/trending refresh, or None.
     refreshed: str | None = None
 
@@ -181,6 +178,7 @@ class Dataset:
                 adp=raw.get("adp"),
                 auction=raw.get("auction"),
                 trending=raw.get("trending") or [],
+                trending_hours=raw.get("trending_hours"),
                 refreshed=raw.get("refreshed"),
             )
         except KeyError as exc:

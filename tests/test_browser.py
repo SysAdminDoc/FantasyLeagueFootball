@@ -128,7 +128,7 @@ def test_live_region_announces_tier_break_once(page):
 
 def test_enter_in_search_crosses_off_single_match(page):
     search = page.locator("#search")
-    assert search.get_attribute("placeholder") == "Search, then Enter to cross off"
+    assert search.get_attribute("placeholder") == "Search · Enter crosses off"
     search.fill("gibbs")
     search.press("Enter")
     assert page.locator('.row[data-rk="1"]').get_attribute("aria-pressed") == "true"

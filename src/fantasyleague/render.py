@@ -67,6 +67,7 @@ def render(
         "adp": data.adp,
         "auction": data.auction,
         "trending": data.trending,
+        "trending_hours": data.trending_hours,
         "refreshed": data.refreshed,
         "season": data.season,
         "scoring": data.scoring,

@@ -31,6 +31,44 @@ DEFAULT_OUT = Path("dist/draft-board.html")
 _COLS = "{:>4}  {:<24} {:<3} {:<4} {:>4}  {}"
 
 
+def _bounded_int(text: str, low: int, what: str) -> int:
+    try:
+        value = int(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} is not a whole number") from None
+    if value < low:
+        raise argparse.ArgumentTypeError(f"{what} must be at least {low}, got {value}")
+    return value
+
+
+def _positive(text: str) -> int:
+    return _bounded_int(text, 1, "value")
+
+
+def _team_count(text: str) -> int:
+    return _bounded_int(text, 2, "league size")
+
+
+def _interval(text: str) -> float:
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} is not a number") from None
+    if value < 1.0:
+        # Below a second this hammers a public API for no benefit; Sleeper picks
+        # do not arrive faster than that.
+        raise argparse.ArgumentTypeError(f"polling interval must be at least 1 second, got {value:g}")
+    return value
+
+
+def _check_slot(args: argparse.Namespace) -> None:
+    """A slot outside the league silently produced a board with no picks at all."""
+    slot = getattr(args, "slot", None)
+    teams = getattr(args, "teams", None)
+    if slot is not None and teams is not None and not 1 <= slot <= teams:
+        raise ValueError(f"--slot must be between 1 and {teams} (--teams is {teams})")
+
+
 def _print_players(players, header: str) -> None:
     print(f"\n{header}\n")
     print(_COLS.format("RANK", "PLAYER", "POS", "TEAM", "TIER", "FLAG"))
@@ -62,7 +100,7 @@ def _print_odds(players, teams: int, slot: int, current: int, rounds: int) -> No
             odds = "  ".join(["   n/a"] * (2 if two else 1))
             call = ""
         else:
-            probs = [draft_mod.availability(p.adp, p.adp_sd, k) for k in mine[:2]]
+            probs = [draft_mod.player_availability(p, k) for k in mine[:2]]
             odds = "  ".join(f"{pr:>6.0%}" for pr in probs)
             call = draft_mod.band(probs[0])
         adp = f"{p.adp:>5.1f}" if p.adp is not None else "    -"
@@ -71,6 +109,7 @@ def _print_odds(players, teams: int, slot: int, current: int, rounds: int) -> No
 
 
 def cmd_build(args: argparse.Namespace) -> int:
+    _check_slot(args)
     data = board_mod.load(args.data)
     path = render_mod.write(
         data, args.out, title=args.title, league=args.league, teams=args.teams, slot=args.slot
@@ -85,8 +124,9 @@ def cmd_build(args: argparse.Namespace) -> int:
 def cmd_list(args: argparse.Namespace) -> int:
     data = board_mod.load(args.data)
     players = board_mod.filter_players(data, pos=args.pos, flag=args.flag)
+    # Not .capitalize(): that lowercases the rest, so --pos RB read "Rb players".
     label = " ".join(filter(None, [args.pos or "All", args.flag or "", "players"]))
-    _print_players(players[: args.limit], label.strip().capitalize())
+    _print_players(players[: args.limit], label[:1].upper() + label[1:])
     return 0
 
 
@@ -102,6 +142,7 @@ def cmd_values(args: argparse.Namespace) -> int:
 
 
 def cmd_next(args: argparse.Namespace) -> int:
+    _check_slot(args)
     data = board_mod.load(args.data)
     drafted = board_mod.resolve_many(data, args.drafted or [])
     avail = board_mod.best_available(data, pos=args.pos, drafted=drafted, limit=args.limit)
@@ -123,7 +164,26 @@ def cmd_next(args: argparse.Namespace) -> int:
 
 
 def cmd_serve(args: argparse.Namespace) -> int:
+    _check_slot(args)
     data = board_mod.load(args.data)
+    if getattr(args, "sleeper", None):
+        # Check the draft id before serving: otherwise a typo shows as "poll
+        # failed … retrying" every few seconds with no explanation.
+        try:
+            meta = sleeper_mod.fetch_draft(args.sleeper)
+            settings = meta.get("settings") or {}
+            teams = settings.get("teams")
+            print(
+                f"Sleeper draft {args.sleeper}: {meta.get('type', 'unknown')} draft, "
+                f"{teams or '?'} teams, status {meta.get('status', '?')}"
+            )
+            if teams and teams != args.teams:
+                print(f"  using the draft's league size ({teams}) instead of --teams {args.teams}")
+                args.teams = teams
+                _check_slot(args)
+        except (OSError, http.client.HTTPException, ValueError) as exc:
+            print(f"error: could not read Sleeper draft {args.sleeper} ({exc})", file=sys.stderr)
+            return 1
     try:
         server = serve_mod.BoardServer(
             data, host=args.host, port=args.port, title=args.title, league=args.league,
@@ -169,7 +229,7 @@ def cmd_serve(args: argparse.Namespace) -> int:
 
 
 def cmd_refresh(args: argparse.Namespace) -> int:
-    """Rebuild the injury board and trending rail from Sleeper's public data."""
+    """Refresh market data: ADP, projections, auction values, injuries and trending."""
     data = board_mod.load(args.data)
     try:
         players, origin = players_mod.fetch_players(max_age=0 if args.force else players_mod.MAX_AGE_SECONDS)
@@ -237,7 +297,11 @@ def cmd_refresh(args: argparse.Namespace) -> int:
     if not args.no_trending:
         try:
             rows = players_mod.trending(hours=args.hours, limit=args.trending_limit)
-            data = replace(data, trending=players_mod.name_trending(rows, players))
+            data = replace(
+                data,
+                trending=players_mod.name_trending(rows, players),
+                trending_hours=args.hours,
+            )
             print(f"Trending adds ({args.hours}h): {len(data.trending)}")
             for t in data.trending[:5]:
                 print(f"  +{t['count']:,} {t['name']} ({t['pos']} {t['team']})")
@@ -378,15 +442,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="league name; shown in the header and keeps this board's saved picks separate "
         "from other boards in the same browser",
     )
-    b.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
-    b.add_argument("--slot", type=int, help="your draft slot, 1-based; enables pick odds on the board")
+    b.add_argument("--teams", type=_team_count, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
+    b.add_argument("--slot", type=_positive, help="your draft slot, 1-based; enables pick odds on the board")
     b.add_argument("--open", action="store_true", help="open the board in a browser when done")
     b.set_defaults(func=cmd_build)
 
     ls = sub.add_parser("list", help="print the board as a table")
     ls.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST", "ALL"], help="filter by position")
     ls.add_argument("--flag", choices=["value", "avoid", "watch"], help="filter by flag")
-    ls.add_argument("--limit", type=int, default=100, help="max rows (default: 100)")
+    ls.add_argument("--limit", type=_positive, default=100, help="max rows (default: 100)")
     ls.set_defaults(func=cmd_list)
 
     v = sub.add_parser("values", help="show values, reaches, and the do-not-draft list")
@@ -401,10 +465,10 @@ def build_parser() -> argparse.ArgumentParser:
         "ambiguous names are rejected with the candidates listed)",
     )
     n.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST", "ALL"], help="limit to one position")
-    n.add_argument("--limit", type=int, default=10, help="how many to show (default: 10)")
-    n.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
-    n.add_argument("--slot", type=int, help="your draft slot, 1-based; adds survival odds at your next picks")
-    n.add_argument("--pick", type=int, help="current overall pick (default: number drafted + 1)")
+    n.add_argument("--limit", type=_positive, default=10, help="how many to show (default: 10)")
+    n.add_argument("--teams", type=_team_count, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
+    n.add_argument("--slot", type=_positive, help="your draft slot, 1-based; adds survival odds at your next picks")
+    n.add_argument("--pick", type=_positive, help="current overall pick (default: number drafted + 1)")
     n.set_defaults(func=cmd_next)
 
     sv = sub.add_parser("serve", help="serve the board over HTTP so every tab (and phone) stays in sync")
@@ -414,30 +478,30 @@ def build_parser() -> argparse.ArgumentParser:
     sv.add_argument("--port", type=int, default=8765, help="port (default 8765; 0 picks a free one)")
     sv.add_argument("--title", help="override the page title")
     sv.add_argument("--league", help="league name (see build --league)")
-    sv.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
-    sv.add_argument("--slot", type=int, help="your draft slot, 1-based")
+    sv.add_argument("--teams", type=_team_count, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
+    sv.add_argument("--slot", type=_positive, help="your draft slot, 1-based")
     sv.add_argument(
         "--sleeper", metavar="DRAFT_ID", help="follow this Sleeper draft and cross picks off live"
     )
     sv.add_argument(
-        "--every", type=float, default=sleeper_mod.DEFAULT_INTERVAL,
+        "--every", type=_interval, default=sleeper_mod.DEFAULT_INTERVAL,
         help=f"seconds between Sleeper polls (default {sleeper_mod.DEFAULT_INTERVAL:g})",
     )
     sv.add_argument("--open", action="store_true", help="open the board in a browser when up")
     sv.set_defaults(func=cmd_serve)
 
-    rf = sub.add_parser("refresh", help="update the injury board and trending rail from Sleeper")
+    rf = sub.add_parser("refresh", help="pull current ADP, projections, auction values, injuries and trending")
     rf.add_argument("-o", "--out", help="write here instead of updating the dataset in place")
     rf.add_argument("--force", action="store_true", help="ignore the 24h cache and re-download")
-    rf.add_argument("--hours", type=int, default=24, help="trending look-back window (default 24)")
-    rf.add_argument("--trending-limit", type=int, default=10, help="how many trending adds to keep")
+    rf.add_argument("--hours", type=_positive, default=24, help="trending look-back window (default 24)")
+    rf.add_argument("--trending-limit", type=_positive, default=10, help="how many trending adds to keep")
     rf.add_argument("--no-trending", action="store_true", help="only refresh injuries")
     rf.add_argument("--limit", type=int, default=15, help="how many injury lines to print")
     rf.add_argument("--no-adp", action="store_true", help="skip the ADP refresh")
     rf.add_argument(
         "--adp-format", default="half-ppr", choices=list(adp_mod.FORMATS), help="ADP scoring format"
     )
-    rf.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="ADP league size (default 12)")
+    rf.add_argument("--teams", type=_team_count, default=draft_mod.DEFAULT_TEAMS, help="ADP league size (default 12)")
     rf.add_argument(
         "--reflag",
         action="store_true",
@@ -445,9 +509,9 @@ def build_parser() -> argparse.ArgumentParser:
         "off by default so curated flags are not silently replaced",
     )
     rf.add_argument("--no-projections", action="store_true", help="skip projections and auction values")
-    rf.add_argument("--budget", type=int, default=200, help="auction budget per team (default 200)")
+    rf.add_argument("--budget", type=_positive, default=200, help="auction budget per team (default 200)")
     rf.add_argument(
-        "--roster-size", type=int, default=DEFAULT_ROSTER_SIZE, help="roster size for auction maths"
+        "--roster-size", type=_positive, default=DEFAULT_ROSTER_SIZE, help="roster size for auction maths"
     )
     rf.set_defaults(func=cmd_refresh)
 
@@ -472,9 +536,9 @@ def build_parser() -> argparse.ArgumentParser:
         "scoring", choices=list(variant_mod.VARIANTS), help="target format (2qb is superflex)"
     )
     vr.add_argument("-o", "--out", help="output path (default: board-<scoring>.json)")
-    vr.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size")
-    vr.add_argument("--budget", type=int, default=200, help="auction budget per team")
-    vr.add_argument("--roster-size", type=int, default=15, help="roster size for pricing")
+    vr.add_argument("--teams", type=_team_count, default=draft_mod.DEFAULT_TEAMS, help="league size")
+    vr.add_argument("--budget", type=_positive, default=200, help="auction budget per team")
+    vr.add_argument("--roster-size", type=_positive, default=15, help="roster size for pricing")
     vr.set_defaults(func=cmd_variant)
 
     va = sub.add_parser("validate", help="check a dataset and report every problem found")
@@ -485,7 +549,7 @@ def build_parser() -> argparse.ArgumentParser:
     ex.add_argument("-o", "--out", help="write to this file instead of stdout")
     ex.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST", "ALL"], help="filter by position")
     ex.add_argument("--flag", choices=["value", "avoid", "watch"], help="filter by flag")
-    ex.add_argument("--limit", type=int, default=1000, help="max rows")
+    ex.add_argument("--limit", type=_positive, default=1000, help="max rows")
     ex.set_defaults(func=cmd_export)
 
     return p

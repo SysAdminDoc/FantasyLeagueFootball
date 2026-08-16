@@ -23,6 +23,17 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   no longer turns it the same red as Reset.
 
 ### Changed
+- Nonsense arguments are refused instead of quietly producing wrong output:
+  `--slot` outside `--teams`, a one-team league, a zero budget or roster size, a
+  sub-second poll interval, a zero row limit. `serve --sleeper` now checks the
+  draft id before serving — a typo used to show only "poll failed … retrying"
+  every few seconds — and adopts the draft's own league size.
+- Wording: `list --pos RB` says "RB players" rather than "Rb players"; `refresh`'s
+  help describes what it actually pulls; the search placeholder fits the box; the
+  masthead no longer claims "Board is live" on an offline file; the trending card
+  shows the window `--hours` asked for instead of always "24h"; "no picks left"
+  became "your draft is done"; and the opponents rail stops flagging every
+  manager in round one, when everyone still needs everything.
 - Empty rails are hidden instead of rendering header-only cards and a stray rule
   where the plan would be — Trending already did this; the rest now match.
 - The printed sheet flattens the status colours: auction values printed light

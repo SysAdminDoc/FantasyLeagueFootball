@@ -16,7 +16,7 @@ __CSS__
 
   <header class="masthead">
     <div class="mast-l">
-      <div class="eyebrow" id="eyebrow">__UPDATED__ · Board is live</div>
+      <div class="eyebrow" id="eyebrow">__UPDATED__</div>
       <h1>__SEASON__ Draft<br> War Room</h1>
     </div>
     <div class="settings" id="settings"></div>
@@ -26,7 +26,7 @@ __CSS__
   <section class="plan" id="plan"></section>
 
   <div class="controls">
-    <input id="search" type="search" placeholder="Search, then Enter to cross off" aria-label="Search players; press Enter to cross off a single match">
+    <input id="search" type="search" placeholder="Search · Enter crosses off" aria-label="Search players; press Enter to cross off a single match">
     <div class="chips" id="chips" role="group" aria-label="Filter by position">
       <button class="chip" data-pos="ALL" aria-pressed="true">ALL</button>
       <button class="chip" data-pos="QB" aria-pressed="false">QB</button>
@@ -39,7 +39,7 @@ __CSS__
     <button class="ghost" id="liveval" type="button" aria-pressed="false">Live value</button>
     <button class="ghost" id="keeper" type="button" aria-pressed="false">Keeper info</button>
     <button class="ghost" id="print" type="button">Print sheet</button>
-    <button class="ghost" id="reset">Reset board</button>
+    <button class="ghost" id="reset" type="button">Reset board</button>
     <div class="tally" id="tally"></div>
     <div class="draftbar">
       <label class="numfield">Teams <input id="teams" type="number" min="2" max="24" inputmode="numeric"></label>
@@ -91,7 +91,7 @@ __CSS__
       </section>
 
       <section class="card" id="trendcard" hidden>
-        <h2>Trending adds · 24h</h2>
+        <h2 id="trendhead">Trending adds</h2>
         <div class="card-body tight" id="trend"></div>
       </section>
 

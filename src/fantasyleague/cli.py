@@ -56,7 +56,7 @@ def cmd_values(args: argparse.Namespace) -> int:
 
 def cmd_next(args: argparse.Namespace) -> int:
     data = board_mod.load(args.data)
-    drafted = set(args.drafted or [])
+    drafted = board_mod.resolve_many(data, args.drafted or [])
     _print_players(
         board_mod.best_available(data, pos=args.pos, drafted=drafted, limit=args.limit),
         "Best available",
@@ -103,7 +103,13 @@ def build_parser() -> argparse.ArgumentParser:
     v.set_defaults(func=cmd_values)
 
     n = sub.add_parser("next", help="best available given who is already gone")
-    n.add_argument("--drafted", type=int, nargs="*", metavar="RANK", help="ranks already off the board")
+    n.add_argument(
+        "--drafted",
+        nargs="*",
+        metavar="PLAYER",
+        help="players already off the board — ranks or names (case-insensitive, partial OK; "
+        "ambiguous names are rejected with the candidates listed)",
+    )
     n.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "ALL"], help="limit to one position")
     n.add_argument("--limit", type=int, default=10, help="how many to show (default: 10)")
     n.set_defaults(func=cmd_next)

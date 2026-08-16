@@ -94,13 +94,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Acceptance: cross off → toast "Gibbs crossed off · Undo" for 6 s; Reset → toast "Board reset · Undo" restores all; after 3 RBs in 4 consecutive picks a "RB run" chip appears on the RB filter.
   Complexity: M
 
-- [ ] P1 — `next --drafted` accepts names
-  Why: at the table nobody knows a player's rank; typing `--drafted 1 2 3 5 8` is unusable mid-draft.
-  Evidence: `src/fantasyleague/cli.py` `cmd_next` (`type=int`).
-  Touches: `cli.py` (accept mixed ints and strings; case-insensitive prefix/substring match; error listing candidates on ambiguity), `board.py` (`resolve(data, token)`), tests.
-  Acceptance: `next --drafted gibbs bijan "ja'marr"` works; `--drafted brown` errors with "ambiguous: Chase Brown, A.J. Brown".
-  Complexity: S
-
 - [ ] P1 — Print stylesheet: one-page cheat sheet
   Why: the printed one-pager is still the dominant draft-day artifact; competitors either sell it (BeatADP CSV export) or give it away as static PDFs that can't reflect your flags.
   Evidence: subvertadown Hold-My-BeerSheets one-pager; cheatsheetwarroom printable sheets; PFF/ESPN printable cheat sheets; BeatADP pricing page.

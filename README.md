@@ -65,7 +65,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague build [-o PATH] [--title T] [--league NAME] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser. |
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
-| `fantasyleague next [--drafted RANK …] [--pos …] [--limit N]` | Best available given who's gone, plus any tier down to its last two and a remaining-by-position count. |
+| `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
 
@@ -74,7 +74,7 @@ Examples:
 ```bash
 fantasyleague list --pos RB
 fantasyleague list --flag value
-fantasyleague next --drafted 1 2 3 5 8 --pos WR --limit 5
+fantasyleague next --drafted gibbs bijan chase 5 8 --pos WR --limit 5
 fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursday League"
 ```
 

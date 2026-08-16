@@ -130,6 +130,33 @@ def test_tier_breaks_ignore_empty_tiers(data):
     assert 1 not in {t.n for t in hits}
 
 
+def test_resolve_by_rank_and_name(data):
+    assert board.resolve(data, 1).name == "Jahmyr Gibbs"
+    assert board.resolve(data, "1").name == "Jahmyr Gibbs"
+    assert board.resolve(data, "gibbs").rank == 1
+    assert board.resolve(data, "JAHMYR GIBBS").rank == 1
+    assert board.resolve(data, "ja'marr").name == "Ja'Marr Chase"
+    assert board.resolve(data, "bijan").name == "Bijan Robinson"
+
+
+def test_resolve_prefers_exact_then_prefix_over_substring(data):
+    # "chase" is a prefix of Chase Brown and a substring of Ja'Marr Chase — prefix wins.
+    assert board.resolve(data, "chase").name == "Chase Brown"
+
+
+def test_resolve_rejects_ambiguous_and_unknown(data):
+    with pytest.raises(ValueError, match="ambiguous: .*Brown"):
+        board.resolve(data, "brown")
+    with pytest.raises(ValueError, match="no player matches"):
+        board.resolve(data, "zzzz")
+    with pytest.raises(ValueError, match="no player has rank 999"):
+        board.resolve(data, 999)
+
+
+def test_resolve_many_mixes_ranks_and_names(data):
+    assert board.resolve_many(data, ["1", "bijan", 3]) == {1, 2, 3}
+
+
 def test_position_counts_drop_as_players_go(data):
     before = board.position_counts(data)
     rb = next(p for p in data.players if p.pos == "RB")

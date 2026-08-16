@@ -12,6 +12,9 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `next --drafted` accepts player names as well as ranks (`--drafted gibbs bijan "ja'marr" 4`).
+  Matching is case-insensitive — exact name, then unique prefix, then unique substring —
+  and an ambiguous name is rejected with the candidates listed.
 - `build --league NAME` — shows the league in the header and page title, and keeps that
   board's saved picks separate from any other board opened in the same browser.
 - A visible notice in the controls bar when the browser refuses to persist picks

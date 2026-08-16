@@ -87,6 +87,44 @@ def tier_breaks(data: Dataset, drafted: set[int] | None = None) -> list[tuple[ob
     return out
 
 
+def resolve(data: Dataset, token: str | int) -> Player:
+    """Turn a rank or (part of) a name into exactly one player.
+
+    Digits mean rank. Text is matched case-insensitively: an exact name wins,
+    then a unique prefix, then a unique substring. Anything ambiguous raises
+    with the candidates listed so the caller can be more specific.
+    """
+    if isinstance(token, int) or str(token).strip().isdigit():
+        rank = int(token)
+        for p in data.players:
+            if p.rank == rank:
+                return p
+        raise ValueError(f"no player has rank {rank}")
+
+    q = str(token).strip().lower()
+    if not q:
+        raise ValueError("empty player name")
+    exact = [p for p in data.players if p.name.lower() == q]
+    if len(exact) == 1:
+        return exact[0]
+    prefix = [p for p in data.players if p.name.lower().startswith(q)]
+    if len(prefix) == 1:
+        return prefix[0]
+    within = [p for p in data.players if q in p.name.lower()]
+    if len(within) == 1:
+        return within[0]
+    candidates = prefix or within
+    if not candidates:
+        raise ValueError(f"no player matches {token!r}")
+    names = ", ".join(p.name for p in candidates[:8])
+    raise ValueError(f"{token!r} is ambiguous: {names}")
+
+
+def resolve_many(data: Dataset, tokens: list[str | int]) -> set[int]:
+    """Ranks for a mixed list of ranks and names; raises on the first bad token."""
+    return {resolve(data, t).rank for t in tokens}
+
+
 def position_counts(data: Dataset, drafted: set[int] | None = None) -> dict[str, int]:
     """How many players remain at each position."""
     taken = drafted or set()

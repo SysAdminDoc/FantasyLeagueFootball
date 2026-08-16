@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P2
 
-- [ ] P2 — `schema_version` + JSON Schema + `validate` subcommand for custom data
-  Why: `--data` authors have no contract beyond "match the packaged file"; a future field rename has no migration path.
-  Evidence: `models.py` `Dataset.from_dict` (no version key); README "Custom data" section.
-  Touches: `data/players_2026.json` (`"schema_version": 1`), new `data/schema.json` (draft-07, stdlib-only validation via a small checker or optional `jsonschema` extra), `cli.py` (`validate PATH`), `board.py` (`load()` warns on older versions and applies migrations), README, tests.
-  Acceptance: `fantasyleague validate my.json` prints each violation with a JSON pointer; loading a v0 file (no key) still works and prints an upgrade hint.
-  Complexity: M
-
 - [ ] P2 — Boris Chen tier importer with a staleness guard
   Why: GMM-over-consensus tiers are the community standard and his per-position text files are trivially parseable — but they were last modified 2025-12-26 as of 2026-08-16.
   Evidence: `https://s3-us-west-1.amazonaws.com/fftiers/out/text_{RB,WR,TE,FLX}-HALF.txt`, `text_QB.txt`, `text_K.txt`, `text_DST.txt` return 200 (`text_ALL-HALF.txt` is 403); `Last-Modified: Fri, 26 Dec 2025`; borischen.co methodology page.

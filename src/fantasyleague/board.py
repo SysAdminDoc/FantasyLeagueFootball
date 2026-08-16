@@ -17,7 +17,9 @@ def load(path: str | Path | None = None) -> Dataset:
     if path is None:
         text = resources.files(__package__).joinpath("data/players_2026.json").read_text("utf-8")
     else:
-        text = Path(path).read_text("utf-8")
+        # utf-8-sig: Notepad and PowerShell's Out-File write a BOM, and a hand-edited
+        # dataset must not fail with "Unexpected UTF-8 BOM".
+        text = Path(path).read_text("utf-8-sig")
     data = Dataset.from_dict(json.loads(text))
     validate(data)
     return data

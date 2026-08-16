@@ -73,6 +73,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague refresh [-o PATH] [--force] [--hours N] [--no-trending]` | Rebuild the injury board and trending-adds rail from Sleeper's public player data. Caches for 24h; works offline from cache. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
 | `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
+| `fantasyleague validate [PATH]` | Check a dataset and print every problem found, each with a JSON pointer. Exits non-zero if any. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
 
@@ -161,6 +162,7 @@ The shape is [`players_2026.json`](src/fantasyleague/data/players_2026.json). Th
 
 ```jsonc
 {
+  "schema_version": 1,
   "season": 2026, "scoring": "half_ppr", "format": "…", "updated": "2026-08-16",
   "tiers":   [{ "n": 1, "name": "The anchors", "range": "Picks 1–5", "note": "…" }],
   "players": [{ "rank": 1, "name": "Jahmyr Gibbs", "pos": "RB", "team": "DET", "tier": 1,
@@ -176,6 +178,8 @@ The shape is [`players_2026.json`](src/fantasyleague/data/players_2026.json). Th
 
 `guidance` text may use `**bold**` for emphasis; it is escaped before rendering, so HTML in any field shows up as literal text rather than markup.
 
+Run `fantasyleague validate my-league.json` while editing — it lists every problem at once with a JSON pointer to each, rather than stopping at the first. `schema_version` is stamped so a file written by a newer build is refused with an explanation. Files with a UTF-8 BOM (Notepad, PowerShell `Out-File`) are fine. Only `season`/`scoring`/`format`/`updated`/`tiers`/`players` are required — every rail is optional.
+
 Validation on load rejects: ranks that aren't exactly `1..N` (gaps or duplicates), duplicate player names, a `tier` that isn't defined in `tiers`, a `pos` outside `QB/RB/WR/TE/K/DST`, a duplicate external id, a `flag` outside `value/avoid/watch`, a `severity` outside `out/risk/ok`. Bad data fails at load with a message naming the problem — never a board with holes in it.
 
 ## Theming
@@ -187,7 +191,7 @@ Dark is the default. The page defines a complete light palette too and picks one
 ```bash
 pip install -e ".[dev]"
 python -m playwright install chromium   # only needed for the browser tests
-pytest                                  # 119 tests
+pytest                                  # 135 tests
 ruff check .
 python -m build                         # wheel + sdist into dist/
 ```

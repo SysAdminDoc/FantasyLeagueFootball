@@ -14,6 +14,7 @@ from . import __version__
 from . import board as board_mod
 from . import draft as draft_mod
 from . import render as render_mod
+from . import schema as schema_mod
 from . import serve as serve_mod
 from .sync import players as players_mod
 from .sync import sleeper as sleeper_mod
@@ -188,6 +189,24 @@ def cmd_refresh(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_validate(args: argparse.Namespace) -> int:
+    """Report every structural problem in a dataset, not just the first."""
+    target = args.path or args.data or _packaged_data_path()
+    problems = schema_mod.check_file(target)
+    if not problems:
+        try:
+            data = board_mod.load(target)
+        except (OSError, ValueError) as exc:
+            print(f"{target}: {exc}", file=sys.stderr)
+            return 1
+        print(f"{target}: valid — {len(data.players)} players in {len(data.tiers)} tiers")
+        return 0
+    print(f"{target}: {len(problems)} problem{'s' if len(problems) != 1 else ''}", file=sys.stderr)
+    for line in problems:
+        print(f"  {line}", file=sys.stderr)
+    return 1
+
+
 def _packaged_data_path() -> Path:
     from importlib import resources
 
@@ -268,6 +287,10 @@ def build_parser() -> argparse.ArgumentParser:
     rf.add_argument("--no-trending", action="store_true", help="only refresh injuries")
     rf.add_argument("--limit", type=int, default=15, help="how many injury lines to print")
     rf.set_defaults(func=cmd_refresh)
+
+    va = sub.add_parser("validate", help="check a dataset and report every problem found")
+    va.add_argument("path", nargs="?", help="dataset to check (default: --data, else the packaged board)")
+    va.set_defaults(func=cmd_validate)
 
     return p
 

@@ -98,8 +98,13 @@ class Source:
     url: str
 
 
+SCHEMA_VERSION = 1
+"""Bump when a change to the dataset shape needs a migration in `Dataset.from_dict`."""
+
+
 @dataclass
 class Dataset:
+    schema_version: int = field(default=SCHEMA_VERSION, kw_only=True)
     season: int
     scoring: str
     format: str
@@ -120,18 +125,27 @@ class Dataset:
 
     @classmethod
     def from_dict(cls, raw: dict) -> Dataset:
+        version = raw.get("schema_version", 0)
+        if version > SCHEMA_VERSION:
+            raise ValueError(
+                f"dataset schema_version {version} is newer than this build understands "
+                f"({SCHEMA_VERSION}) — upgrade fantasyleague"
+            )
+        # v0 (no key) is v1 without the stamp: every field it lacks already defaults.
         return cls(
+            schema_version=SCHEMA_VERSION,
             season=raw["season"],
             scoring=raw["scoring"],
             format=raw["format"],
             updated=raw["updated"],
             tiers=[Tier(**t) for t in raw["tiers"]],
             players=[Player(**p) for p in raw["players"]],
-            plan=[PlanItem(**p) for p in raw["plan"]],
-            do_not_draft=[Entry(**e) for e in raw["do_not_draft"]],
-            injuries=[Injury(**i) for i in raw["injuries"]],
-            sleepers=[Entry(**e) for e in raw["sleepers"]],
-            sources=[Source(**s) for s in raw["sources"]],
+            # Rails are optional: a hand-written board may carry none of them.
+            plan=[PlanItem(**p) for p in raw.get("plan") or []],
+            do_not_draft=[Entry(**e) for e in raw.get("do_not_draft") or []],
+            injuries=[Injury(**i) for i in raw.get("injuries") or []],
+            sleepers=[Entry(**e) for e in raw.get("sleepers") or []],
+            sources=[Source(**s) for s in raw.get("sources") or []],
             adp=raw.get("adp"),
             trending=raw.get("trending") or [],
             refreshed=raw.get("refreshed"),

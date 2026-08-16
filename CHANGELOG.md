@@ -7,6 +7,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Fixed
+- A dataset saved by Notepad or PowerShell's `Out-File` (both write a UTF-8 BOM) failed to
+  load with "Unexpected UTF-8 BOM"; datasets are now read as `utf-8-sig`.
+- `validate` accepted a dataset with no rails but `load` then raised `KeyError` on them —
+  the rails are genuinely optional now, so anything that validates will open.
 - The position-chip row overflowed a 390px phone once K and DST were added, scrolling the
   whole page sideways; chips now wrap.
 - Injury board rebuilt from live data: the hand-typed list is replaced by 11 current
@@ -18,6 +22,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `fantasyleague validate [PATH]` — reports **every** structural problem in a dataset at once,
+  each with a JSON pointer (`/players/12/pos: 'P' is not one of QB, RB, WR, TE, K, DST`), and
+  exits non-zero. Datasets carry `schema_version`; a file from a newer build is refused with
+  an explanation rather than failing somewhere deep in the load.
 - `fantasyleague refresh` — rebuilds the injury board from Sleeper's player database
   (`injury_status`, body part, practice participation) and adds a **Trending adds · 24h** rail.
   The 15 MB player file is cached for 24 hours in the platform cache dir (`FANTASYLEAGUE_CACHE`

@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P1
 
-- [ ] P1 — Sleeper live draft sync
-  Why: zero-auth, public, read-only — the cheapest possible live cross-off; Sleeper itself has no custom-rankings import, so a following board is the community's standard workaround.
-  Evidence: docs.sleeper.com `GET /v1/draft/{draft_id}/picks` (fields `player_id, picked_by, round, draft_slot, pick_no, metadata, is_keeper`); Draft Caddie polls every 3 s; rate guidance <1000 req/min; fantasyjoes.gg/sleeper-draft (no CSV import on Sleeper).
-  Touches: new `src/fantasyleague/sync/sleeper.py` (poll picks, map `player_id` → board rank via `ids.sleeper`, emit to `serve` bus), `cli.py` (`sync sleeper --draft ID [--every 3]`), tests with recorded fixture JSON.
-  Acceptance: against a live or mock Sleeper draft, each pick crosses the matching player off within one poll interval; unknown IDs are logged once, not repeatedly; the board's pick counter advances with `pick_no`.
-  Complexity: M — depends on **serve** and **ID crosswalk**.
-
 - [ ] P1 — Yahoo live draft sync (optional extra)
   Why: the author drafts on Yahoo; `draftresults` returns picks made so far when called mid-draft, so polling works without a Chrome extension.
   Evidence: yahoo-fantasy-api docs ("if called during the draft, includes players drafted thus far"); Yahoo API `league/{key}/draftresults`, `settings.roster_positions`, `is_auction_draft`; yfpy is GPL-3.0 (keep out of core), `yahoo-fantasy-api` alternative; derekrbreese MCP self-limits to 900 req/hr.

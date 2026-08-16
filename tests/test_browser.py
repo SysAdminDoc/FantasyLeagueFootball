@@ -365,6 +365,31 @@ def test_served_board_syncs_across_tabs_and_http(browser):
         ctx.close()
 
 
+def test_sleeper_sync_reaches_the_browser(browser, monkeypatch):
+    """Full chain: a Sleeper poll crosses a player off in an open tab."""
+    from fantasyleague import serve
+    from fantasyleague.sync import sleeper
+
+    picks = [{"player_id": "4984", "pick_no": 1}]  # Josh Allen -> rank 31
+    monkeypatch.setattr(sleeper, "fetch_picks", lambda _d, timeout=10.0: picks)
+
+    with serve.BoardServer(board.load(), port=0) as s:
+        ctx = browser.new_context()
+        pg = ctx.new_page()
+        pg.goto(f"http://127.0.0.1:{s.port}/")
+        pg.wait_for_selector(".row")
+        pg.wait_for_selector("#livepill:not([hidden])")
+
+        sync = sleeper.SleeperSync(board.load(), "abc", s.bus, interval=0.05).start()
+        try:
+            pg.wait_for_selector('.row[data-rk="31"].gone', timeout=5000)
+        finally:
+            sync.stop()
+        assert s.bus.state()["picks"][0]["source"] == "sleeper"
+        assert "Josh Allen crossed off (sleeper)." in _live(pg)
+        ctx.close()
+
+
 def test_light_theme_paints_its_own_ground(browser, page_url):
     ctx = browser.new_context(color_scheme="light")
     pg = ctx.new_page()

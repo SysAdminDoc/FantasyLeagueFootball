@@ -13,6 +13,7 @@ from . import board as board_mod
 from . import draft as draft_mod
 from . import render as render_mod
 from . import serve as serve_mod
+from .sync import sleeper as sleeper_mod
 
 DEFAULT_OUT = Path("dist/draft-board.html")
 
@@ -120,9 +121,19 @@ def cmd_serve(args: argparse.Namespace) -> int:
     print("Serving the board (Ctrl+C to stop):")
     for u in urls:
         print("  " + u)
+
+    sync = None
+    if getattr(args, "sleeper", None):
+        sync = sleeper_mod.SleeperSync(
+            data, args.sleeper, server.bus, interval=args.every,
+            on_event=lambda m: print(f"  sleeper: {m}", flush=True),
+        )
+        print(f"Following Sleeper draft {args.sleeper} every {args.every:g}s.")
     # flush: the process then sleeps forever, and piped stdout is block-buffered,
     # so a supervising process would otherwise see nothing at all.
     print("Picks made in any open tab, or POSTed to /state, appear everywhere within a second.", flush=True)
+    if sync:
+        sync.start()
     if args.open:
         webbrowser.open(urls[0])
     try:
@@ -131,6 +142,8 @@ def cmd_serve(args: argparse.Namespace) -> int:
     except KeyboardInterrupt:
         print("\nStopping.")
     finally:
+        if sync:
+            sync.stop()
         server.stop()
     return 0
 
@@ -191,6 +204,13 @@ def build_parser() -> argparse.ArgumentParser:
     sv.add_argument("--league", help="league name (see build --league)")
     sv.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
     sv.add_argument("--slot", type=int, help="your draft slot, 1-based")
+    sv.add_argument(
+        "--sleeper", metavar="DRAFT_ID", help="follow this Sleeper draft and cross picks off live"
+    )
+    sv.add_argument(
+        "--every", type=float, default=sleeper_mod.DEFAULT_INTERVAL,
+        help=f"seconds between Sleeper polls (default {sleeper_mod.DEFAULT_INTERVAL:g})",
+    )
     sv.add_argument("--open", action="store_true", help="open the board in a browser when up")
     sv.set_defaults(func=cmd_serve)
 

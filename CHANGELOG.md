@@ -14,6 +14,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Sleeper live draft sync: `serve --sleeper DRAFT_ID` polls Sleeper's public API (no key, no
+  browser extension) and crosses each pick off in every open tab. Picks join on `ids.sleeper`,
+  polling is idempotent, unknown players are logged once rather than every tick, and network
+  failures are logged and retried rather than ending the session.
 - `fantasyleague serve` — serves the board over HTTP with Server-Sent Events. Every open
   tab shows the same crossed-off state, `--host 0.0.0.0` makes it reachable from a phone on
   the LAN (the URL is printed), the served page keeps the screen awake via the Screen Wake

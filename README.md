@@ -70,7 +70,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|K\|DST\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
-| `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use. |
+| `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
 
@@ -100,7 +100,15 @@ curl -X POST localhost:8765/state -H 'Content-Type: application/json' -d '{"undo
 curl localhost:8765/state
 ```
 
-That endpoint is the seam live draft sync will plug into — no browser extension required.
+That endpoint is the seam draft sync plugs into — no browser extension required.
+
+### Following a Sleeper draft
+
+```bash
+fantasyleague serve --sleeper 1234567890123456789 --slot 5
+```
+
+Every pick made in the Sleeper room is crossed off your board within a few seconds. The draft ID is the last path segment of the Sleeper draft URL. Picks are matched on Sleeper player IDs, so a name that differs between sources still lands on the right row; anyone drafted who isn't on this board is logged once and ignored.
 
 ## The 2026 board
 
@@ -211,7 +219,7 @@ docs/                        README screenshots
 ## Known limitations (v0.0.1)
 
 - Skill-position board is 75 deep — runs out around round 7 in a 12-team league; the sleeper rail carries the late rounds.
-- No bye weeks; no roster tracking; no live sync yet.
+- No roster tracking; Yahoo live sync isn't wired up yet (Sleeper is).
 
 ## License
 

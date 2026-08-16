@@ -515,3 +515,20 @@ def test_light_theme_paints_its_own_ground(browser, page_url):
     assert bg not in ("rgba(0, 0, 0, 0)", "transparent")
     # Light ground token is #F2EDE4.
     assert bg == "rgb(242, 237, 228)"
+
+
+def test_roster_csv_export(browser, page_url):
+    ctx = browser.new_context(permissions=["clipboard-read", "clipboard-write"])
+    pg = ctx.new_page()
+    pg.goto(page_url)
+    pg.wait_for_selector(".row")
+    pg.locator("#slot").fill("1")
+    pg.locator('.row[data-rk="1"]').click()          # auto-claimed at slot 1
+    pg.locator("#exportRoster").click()
+    pg.wait_for_timeout(200)
+    csv_text = pg.evaluate("navigator.clipboard.readText()")
+    lines = csv_text.splitlines()
+    assert lines[0] == "slot,rank,name,pos,team,bye,adp"
+    assert lines[1].startswith("RB,1,Jahmyr Gibbs,RB,DET,")
+    assert pg.locator("#exportRoster").text_content() == "Copied"
+    ctx.close()

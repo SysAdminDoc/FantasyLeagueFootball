@@ -14,9 +14,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 - [ ] Superflex and full-PPR variants of the ranking set.
 - [ ] Keeper/dynasty mode — age and contract context on each row.
       *Research 2026-08-16:* Sleeper picks carry `is_keeper`; Sleeper players carry `age`, `years_exp`.
-- [ ] Export a drafted roster to CSV.
-      *Research 2026-08-16:* BeatADP sells CSV export "for printing physical cheat sheets" — pair
-      with the print stylesheet item below.
 - [ ] Auction values as an alternate mode ($200 budget default).
       *Research 2026-08-16:* standard method is VBD points-over-replacement → share of total budget
       (FantasyPros calculator; DraftExpert publishes Fair/Target/Max). Yahoo `settings.is_auction_draft`

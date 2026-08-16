@@ -74,6 +74,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague refresh [-o PATH] [--force] [--reflag] [--no-adp] [--no-trending]` | Pull current ADP + spread + byes (Fantasy Football Calculator) and rebuild the injury board and trending rail (Sleeper). Caches for 24h; works offline from cache. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
 | `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
+| `fantasyleague export [-o PATH] [--pos …] [--flag …]` | Write the board as CSV — stdout by default. |
 | `fantasyleague validate [PATH]` | Check a dataset and print every problem found, each with a JSON pointer. Exits non-zero if any. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
@@ -83,6 +84,7 @@ Examples:
 ```bash
 fantasyleague list --pos RB
 fantasyleague list --flag value
+fantasyleague export --pos RB -o rbs.csv
 fantasyleague next --drafted gibbs bijan chase 5 8 --pos WR --limit 5
 fantasyleague next --teams 12 --slot 5 --drafted 1 2 3 4     # odds at picks 5 and 20
 fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursday League"

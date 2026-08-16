@@ -68,6 +68,7 @@ __CSS__
           <div id="roster"></div>
           <div class="needs" id="needs"></div>
           <div class="byewarn" id="byewarn" hidden></div>
+          <button type="button" class="ghost rosterexport" id="exportRoster">Copy as CSV</button>
         </div>
       </section>
 

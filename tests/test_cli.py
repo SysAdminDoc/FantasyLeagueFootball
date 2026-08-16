@@ -67,3 +67,35 @@ def test_build_writes_file_with_league_and_slot(capsys, tmp_path):
     assert "Built" in out
     html = out_path.read_text("utf-8")
     assert '"draft": {"teams": 10, "slot": 3}' in html
+
+
+def test_export_writes_csv_to_stdout(capsys):
+    code, out, _ = run(capsys, "export", "--pos", "TE", "--limit", "2")
+    assert code == 0
+    lines = [ln for ln in out.splitlines() if ln.strip()]
+    assert lines[0] == "rank,name,pos,team,tier,flag,adp,adp_sd,bye,note"
+    assert lines[1].startswith("17,Brock Bowers,TE,LV,3,")
+    assert len(lines) == 3
+
+
+def test_export_writes_a_file_and_quotes_commas(capsys, tmp_path):
+    out_path = tmp_path / "board.csv"
+    code, out, _ = run(capsys, "export", "-o", str(out_path))
+    assert code == 0 and "Wrote" in out
+    text = out_path.read_text(encoding="utf-8")
+    assert text.startswith("rank,name,pos,team,tier,flag,adp,adp_sd,bye,note")
+    # A note containing a comma must be quoted, not split into extra columns.
+    import csv as _csv
+
+    rows = list(_csv.reader(text.splitlines()))
+    assert all(len(r) == 10 for r in rows), "every row must have exactly 10 columns"
+    assert len(rows) == 100  # header + 99 players
+
+
+def test_export_filters_compose(capsys):
+    code, out, _ = run(capsys, "export", "--flag", "value", "--pos", "RB")
+    assert code == 0
+    import csv as _csv
+
+    rows = list(_csv.DictReader(out.splitlines()))
+    assert rows and all(r["flag"] == "value" and r["pos"] == "RB" for r in rows)

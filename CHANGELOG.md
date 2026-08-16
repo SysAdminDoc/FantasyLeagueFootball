@@ -22,6 +22,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `fantasyleague export` writes the board as CSV to stdout or a file, with the same
+  `--pos`/`--flag` filters as `list`. On the board, "Copy as CSV" puts your drafted roster
+  on the clipboard (lineup slot, rank, name, pos, team, bye, ADP), falling back to a
+  copyable prompt where the clipboard API is unavailable.
 - `refresh` now also pulls ADP, its spread, and bye weeks from Fantasy Football Calculator's
   public API (`--adp-format`, `--teams`, `--no-adp`), storing the sample's provenance.
   `--reflag` recomputes value/reach from the gap between this board's rank and the market —

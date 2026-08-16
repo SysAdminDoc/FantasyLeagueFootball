@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import sys
 import time
 import webbrowser
@@ -209,6 +210,29 @@ def cmd_refresh(args: argparse.Namespace) -> int:
     return 0
 
 
+CSV_COLUMNS = ("rank", "name", "pos", "team", "tier", "flag", "adp", "adp_sd", "bye", "note")
+
+
+def cmd_export(args: argparse.Namespace) -> int:
+    """Write the board as CSV — for a spreadsheet, or to paste into another tool."""
+    data = board_mod.load(args.data)
+    rows = board_mod.filter_players(data, pos=args.pos, flag=args.flag)[: args.limit]
+
+    def write_rows(handle) -> None:
+        writer = csv.writer(handle)
+        writer.writerow(CSV_COLUMNS)
+        for p in rows:
+            writer.writerow([getattr(p, c) if getattr(p, c) is not None else "" for c in CSV_COLUMNS])
+
+    if args.out:
+        with Path(args.out).open("w", newline="", encoding="utf-8") as fh:
+            write_rows(fh)
+        print(f"Wrote {args.out} ({len(rows)} players)")
+    else:
+        write_rows(sys.stdout)
+    return 0
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     """Report every structural problem in a dataset, not just the first."""
     target = args.path or args.data or _packaged_data_path()
@@ -322,6 +346,13 @@ def build_parser() -> argparse.ArgumentParser:
     va = sub.add_parser("validate", help="check a dataset and report every problem found")
     va.add_argument("path", nargs="?", help="dataset to check (default: --data, else the packaged board)")
     va.set_defaults(func=cmd_validate)
+
+    ex = sub.add_parser("export", help="write the board as CSV (stdout by default)")
+    ex.add_argument("-o", "--out", help="write to this file instead of stdout")
+    ex.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST", "ALL"], help="filter by position")
+    ex.add_argument("--flag", choices=["value", "avoid", "watch"], help="filter by flag")
+    ex.add_argument("--limit", type=int, default=1000, help="max rows")
+    ex.set_defaults(func=cmd_export)
 
     return p
 

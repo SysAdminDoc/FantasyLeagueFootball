@@ -3,6 +3,11 @@
   "use strict";
 
   var TIER_BREAK = DATA.tier_break;   // single source of truth: board.TIER_BREAK_THRESHOLD
+  // CSV quoting constants: a field needs quotes if it holds a comma, quote or newline.
+  var QUOTE = String.fromCharCode(34);
+  var NEWLINE = String.fromCharCode(10);
+  var NEEDS_QUOTE = new RegExp("[," + QUOTE + NEWLINE + "]");
+  var DQ = new RegExp(QUOTE, "g");
   var FLAG_LABEL = { value: "Value", avoid: "Reach", watch: "Watch" };
   // Keyed by board identity (season + ordered roster + league), not just season:
   // on file:// some browsers give every local page one storage origin, so two
@@ -577,6 +582,47 @@
   });
 
   document.getElementById("print").addEventListener("click", function () { window.print(); });
+
+  // Roster as CSV. Clipboard first (works everywhere the page does); if the browser
+  // refuses, fall back to selecting the text in a prompt the user can copy by hand.
+  document.getElementById("exportRoster").addEventListener("click", function () {
+    var btn = this;
+    var rows = [["slot", "rank", "name", "pos", "team", "bye", "adp"]];
+    var res = fillLineup(myPlayers());
+    res.filled.forEach(function (r) {
+      if (r.player) {
+        rows.push([r.slot, r.player.rank, r.player.name, r.player.pos, r.player.team,
+                   r.player.bye || "", r.player.adp == null ? "" : r.player.adp]);
+      }
+    });
+    res.bench.forEach(function (p) {
+      rows.push(["BN", p.rank, p.name, p.pos, p.team, p.bye || "", p.adp == null ? "" : p.adp]);
+    });
+    var csv = rows.map(function (r) {
+      return r.map(function (c) {
+        c = String(c);
+        return NEEDS_QUOTE.test(c) ? QUOTE + c.replace(DQ, QUOTE + QUOTE) + QUOTE : c;
+      }).join(",");
+    }).join(NEWLINE);
+
+    var done = function (ok) {
+      btn.textContent = ok ? "Copied" : "Press Ctrl+C";
+      btn.classList.toggle("done", ok);
+      say(ok ? "Roster copied as CSV." : "Copy it from the box.");
+      setTimeout(function () {
+        btn.textContent = "Copy as CSV";
+        btn.classList.remove("done");
+      }, 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv)
+        .then(function () { done(true); })
+        .catch(function () { window.prompt("Your roster as CSV", csv); done(false); });
+    } else {
+      window.prompt("Your roster as CSV", csv);
+      done(false);
+    }
+  });
 
   var teamsIn = document.getElementById("teams");
   var slotIn = document.getElementById("slot");

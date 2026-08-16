@@ -4,6 +4,27 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+- `POST /state` refuses cross-origin writes. A JSON content type is now required
+  (which forces a browser into a CORS preflight that cannot succeed, since no
+  `Access-Control-Allow-*` header is ever sent), an `Origin` that disagrees with
+  `Host` is rejected, and `Host` must name an address rather than a domain, which
+  blunts DNS rebinding. Anything that can reach the socket directly — curl, a sync
+  script, a phone on the LAN — still drives the board as before. `X-Source` is
+  restricted to a short token instead of being stored verbatim.
+
+### Fixed
+- Running `serve` twice on the same port used to bind silently on Windows: the
+  second board reported success and never received a request. The port is now
+  exclusive there, and the CLI says which port is busy and suggests `--port 0`.
+- Malformed live-sync requests return a JSON 400 instead of killing the request
+  thread with a traceback and dropping the connection: `{"undo": null}`,
+  `{"pick": "gibbs"}`, a non-object body, and an unparseable `Content-Length` are
+  all handled, bodies over 64 KB get a 413, and a closed tab no longer prints a
+  `ConnectionAbortedError` traceback over the pick log mid-draft.
+
 ## [0.1.0] — 2026-08-16
 
 ### Fixed

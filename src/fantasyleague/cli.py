@@ -122,10 +122,18 @@ def cmd_next(args: argparse.Namespace) -> int:
 
 def cmd_serve(args: argparse.Namespace) -> int:
     data = board_mod.load(args.data)
-    server = serve_mod.BoardServer(
-        data, host=args.host, port=args.port, title=args.title, league=args.league,
-        teams=args.teams, slot=args.slot,
-    )
+    try:
+        server = serve_mod.BoardServer(
+            data, host=args.host, port=args.port, title=args.title, league=args.league,
+            teams=args.teams, slot=args.slot,
+        )
+    except OSError as exc:
+        print(
+            f"error: could not bind {args.host}:{args.port} ({exc.strerror or exc}). "
+            "Another board may already be serving — pass --port 0 to pick a free one.",
+            file=sys.stderr,
+        )
+        return 1
     server.start()
     urls = server.urls()
     print("Serving the board (Ctrl+C to stop):")

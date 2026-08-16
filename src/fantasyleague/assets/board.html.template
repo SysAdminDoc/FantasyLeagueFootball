@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="FantasyLeageFootball v__VERSION__">
+<title>__TITLE__</title>
+<style>
+__CSS__
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="mast-l">
+      <div class="eyebrow">__UPDATED__ · Board is live</div>
+      <h1>__SEASON__ Draft<br>War Room</h1>
+    </div>
+    <div class="settings" id="settings"></div>
+  </header>
+
+  <section class="plan" id="plan"></section>
+
+  <div class="controls">
+    <input id="search" type="search" placeholder="Type a name to cross them off…" aria-label="Search players">
+    <div class="chips" id="chips" role="group" aria-label="Filter by position">
+      <button class="chip" data-pos="ALL" aria-pressed="true">ALL</button>
+      <button class="chip" data-pos="QB" aria-pressed="false">QB</button>
+      <button class="chip" data-pos="RB" aria-pressed="false">RB</button>
+      <button class="chip" data-pos="WR" aria-pressed="false">WR</button>
+      <button class="chip" data-pos="TE" aria-pressed="false">TE</button>
+    </div>
+    <button class="ghost" id="reset">Reset board</button>
+    <div class="tally" id="tally"></div>
+  </div>
+
+  <div class="grid">
+    <main id="board"></main>
+
+    <aside class="rail">
+      <section class="card hot">
+        <h2>Best available</h2>
+        <div class="card-body"><div class="ba" id="bestAvail"></div></div>
+      </section>
+
+      <section class="card">
+        <h2>Do not draft</h2>
+        <div class="card-body"><ul class="listing" id="dnd"></ul></div>
+      </section>
+
+      <section class="card">
+        <h2>Injury board</h2>
+        <div class="card-body tight" id="inj"></div>
+      </section>
+
+      <section class="card">
+        <h2>Late-round targets</h2>
+        <div class="card-body"><ul class="listing" id="slp"></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <div><strong>How to use this.</strong> Click any player to cross them off as they're taken — the board saves itself, so a refresh won't lose your draft. Best available and the tier-break warnings update as you go. When a tier drops to two players left, that's your cue to reach rather than wait for the turn.</div>
+    <div>Ranks follow the Rotoworld/NBC Sports top-200 consensus. Value and reach flags compare Yahoo ADP against Yahoo's projected finish. Data current through __UPDATED__ — recheck the injury board before you draft.</div>
+    <div class="srcs" id="srcs"></div>
+    <div>FantasyLeageFootball v__VERSION__</div>
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+</script>
+<script>
+__JS__
+</script>
+</body>
+</html>

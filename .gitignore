@@ -1,0 +1,41 @@
+# --- agent working notes (never commit) ---
+CLAUDE.md
+CODEX_CHANGELOG.md
+.claude/
+
+# --- build artifacts ---
+dist/
+build/
+*.egg-info/
+.eggs/
+wheels/
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# --- test / lint caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# --- editors / os ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

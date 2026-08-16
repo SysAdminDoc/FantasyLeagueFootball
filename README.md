@@ -187,7 +187,7 @@ Dark is the default. The page defines a complete light palette too and picks one
 ```bash
 pip install -e ".[dev]"
 python -m playwright install chromium   # only needed for the browser tests
-pytest                                  # 42 tests
+pytest                                  # 119 tests
 ruff check .
 python -m build                         # wheel + sdist into dist/
 ```

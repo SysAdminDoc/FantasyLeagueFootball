@@ -83,6 +83,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   promoted after escaping, so an untrusted `--data` file cannot inject markup.
 
 ### Changed
+- Linting moves to ruff >= 0.16 (413 default rules, up from 59) plus RUF/PTH/C4/PIE/RET.
+  Fixed what it surfaced: a no-op dict copy in `board.save`, `__enter__` annotated with the
+  concrete class instead of `Self`, `re.S` aliases, single-element slices, and list
+  concatenation where unpacking reads better.
 - Browser storage is keyed by board identity (season + ordered roster + league) rather than
   season alone. Saved picks survive note edits and are dropped when the board is re-ranked,
   which is the only case where rank-based state would be wrong.

@@ -22,7 +22,7 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff==0.8.2", "playwright>=1.60"]
+dev = ["pytest>=8", "ruff>=0.16", "playwright>=1.60"]
 
 [project.scripts]
 fantasyleague = "fantasyleague.cli:main"
@@ -39,7 +39,10 @@ line-length = 110
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM"]
+# 0.16 enables a much larger default set; keep these on top of it.
+extend-select = ["I", "UP", "B", "SIM", "RUF", "PTH", "C4", "PIE", "RET"]
+# The probability docs deliberately use real math glyphs.
+allowed-confusables = ["σ", "−", "·", "Φ"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

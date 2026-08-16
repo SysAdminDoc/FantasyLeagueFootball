@@ -35,7 +35,8 @@ def fetch_picks(draft_id: str, timeout: float = 10.0) -> list[dict]:
     """Every pick made so far in *draft_id*, oldest first."""
     picks = _get(f"{API}/draft/{draft_id}/picks", timeout=timeout)
     if not isinstance(picks, list):
-        raise ValueError(f"unexpected response for draft {draft_id!r}")
+        # ValueError, not TypeError: callers convert it to a logged retry.
+        raise ValueError(f"unexpected response for draft {draft_id!r}")  # noqa: TRY004
     return sorted(picks, key=lambda p: p.get("pick_no") or 0)
 
 

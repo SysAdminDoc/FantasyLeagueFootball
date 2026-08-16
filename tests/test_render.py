@@ -39,7 +39,7 @@ def test_no_external_requests(html):
 
 
 def test_data_payload_round_trips(html):
-    raw = re.search(r"const DATA = (\{.*?\});", html, re.S).group(1)
+    raw = re.search(r"const DATA = (\{.*?\});", html, re.DOTALL).group(1)
     payload = json.loads(raw.replace("<\\/", "</"))
     assert len(payload["players"]) == 99
     assert payload["season"] == 2026
@@ -49,7 +49,7 @@ def test_data_payload_round_trips(html):
 def test_payload_carries_tier_break_threshold(html):
     from fantasyleague.board import TIER_BREAK_THRESHOLD
 
-    raw = re.search(r"const DATA = (\{.*?\});", html, re.S).group(1)
+    raw = re.search(r"const DATA = (\{.*?\});", html, re.DOTALL).group(1)
     assert json.loads(raw.replace("<\\/", "</"))["tier_break"] == TIER_BREAK_THRESHOLD
 
 
@@ -89,7 +89,7 @@ def test_title_is_escaped():
 def test_league_shapes_title_and_payload():
     html = render.render(board.load(), league="Thursday Night")
     assert "<title>Thursday Night · 2026 Draft War Room</title>" in html
-    raw = re.search(r"const DATA = (\{.*?\});", html, re.S).group(1)
+    raw = re.search(r"const DATA = (\{.*?\});", html, re.DOTALL).group(1)
     payload = json.loads(raw.replace("<\\/", "</"))
     assert payload["league"] == "Thursday Night"
     assert payload["board_id"].endswith("-thursday-night")
@@ -107,12 +107,12 @@ def test_board_id_stable_across_note_edits_but_not_reranks():
     base = render.board_id(data)
     assert len(base) == 10
 
-    edited = replace(data, players=[replace(data.players[0], note="new note")] + data.players[1:])
+    edited = replace(data, players=[replace(data.players[0], note="new note"), *data.players[1:]])
     assert render.board_id(edited) == base, "a note edit must not orphan saved picks"
 
     swapped = replace(
         data,
-        players=[replace(data.players[1], rank=1), replace(data.players[0], rank=2)] + data.players[2:],
+        players=[replace(data.players[1], rank=1), replace(data.players[0], rank=2), *data.players[2:]],
     )
     assert render.board_id(swapped) != base, "a re-ranked board must get a fresh key"
 

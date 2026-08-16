@@ -22,6 +22,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from typing import Self
 
 from . import board as board_mod
 from . import render as render_mod
@@ -153,7 +154,8 @@ def make_handler(bus: Bus, html: bytes):
             try:
                 body = json.loads(raw or b"{}")
                 if not isinstance(body, dict):
-                    raise ValueError("body must be a JSON object")
+                    # ValueError, not TypeError: the handler turns it into a 400.
+                    raise ValueError("body must be a JSON object")  # noqa: TRY004
                 self._json(200, bus.apply(body, source=self.headers.get("X-Source", "http")))
             except (ValueError, json.JSONDecodeError) as exc:
                 self._json(400, {"error": str(exc)})
@@ -219,7 +221,7 @@ class BoardServer:
                 out.append(f"http://{ip}:{self.port}/")
         return out
 
-    def start(self) -> BoardServer:
+    def start(self) -> Self:
         self._thread = threading.Thread(
             target=self.httpd.serve_forever, name="fantasyleague-serve", daemon=True
         )
@@ -230,7 +232,7 @@ class BoardServer:
         self.httpd.shutdown()
         self.httpd.server_close()
 
-    def __enter__(self) -> BoardServer:
+    def __enter__(self) -> Self:
         return self.start()
 
     def __exit__(self, *exc) -> None:

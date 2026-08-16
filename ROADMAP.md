@@ -59,13 +59,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Acceptance: import refuses stale files with the date in the message; when fresh, `list` shows tiers matching the text file for every matched player and lists unmatched names.
   Complexity: S — needs live validation once the 2026 files publish.
 
-- [ ] P2 — Unpin ruff and adopt the 0.16 default rule set
-  Why: the 0.8.2 pin exists for an unrelated repo; ruff 0.16.0 (2026-07-23) enables 413 default rules and diff-rendered fixes.
-  Evidence: astral.sh/blog/ruff-v0.16.0; `pyproject.toml` `ruff==0.8.2`; global CLAUDE.md note that the pin is NexRay-specific.
-  Touches: `pyproject.toml` (`ruff>=0.16`), fix whatever the new defaults flag, CLAUDE.md.
-  Acceptance: `python -m ruff check .` clean on ≥0.16.
-  Complexity: S
-
 - [ ] P2 — Mobile touch pass
   Why: the phone-at-the-table case (via `serve`) needs rows that are comfortably tappable; rows are ~40 px tall as of v0.0.1.
   Evidence: `board.css` `.row` padding 9 px; Apple HIG 44 pt; WCAG 2.5.8 min 24 px.

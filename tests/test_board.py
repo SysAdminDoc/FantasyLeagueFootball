@@ -122,7 +122,7 @@ def test_tier_breaks_fire_at_threshold(data):
     drafted = set(tier1[: len(tier1) - 2])
     hits = dict(board.tier_breaks(data, drafted=drafted))
     assert 1 in {t.n for t in hits}
-    assert list(hits.values())[0] == 2
+    assert next(iter(hits.values())) == 2
 
 
 def test_tier_breaks_ignore_empty_tiers(data):
@@ -146,7 +146,7 @@ def test_resolve_prefers_exact_then_prefix_over_substring(data):
 
 
 def test_resolve_rejects_ambiguous_and_unknown(data):
-    with pytest.raises(ValueError, match="ambiguous: .*Brown"):
+    with pytest.raises(ValueError, match=r"ambiguous: .*Brown"):
         board.resolve(data, "brown")
     with pytest.raises(ValueError, match="no player matches"):
         board.resolve(data, "zzzz")

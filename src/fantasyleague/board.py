@@ -28,7 +28,6 @@ def save(data: Dataset, path: str | Path) -> Path:
     from dataclasses import asdict
 
     raw = asdict(data)
-    raw["injuries"] = [{k: v for k, v in i.items()} for i in raw["injuries"]]
     out = Path(path)
     out.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     return out

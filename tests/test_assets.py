@@ -54,7 +54,7 @@ def test_template_ids_are_unique(template):
 def test_flag_labels_cover_every_flag(js):
     from fantasyleague.models import FLAGS
 
-    labels = re.search(r"FLAG_LABEL = \{(.*?)\}", js, re.S).group(1)
+    labels = re.search(r"FLAG_LABEL = \{(.*?)\}", js, re.DOTALL).group(1)
     for flag in FLAGS:
         assert f"{flag}:" in labels, f"board.js has no label for flag {flag!r}"
 

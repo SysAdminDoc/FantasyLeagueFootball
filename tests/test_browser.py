@@ -27,7 +27,7 @@ def browser():
     with playwright.sync_playwright() as p:
         try:
             b = p.chromium.launch()
-        except Exception as exc:  # no browser build installed
+        except Exception as exc:  # noqa: BLE001 - any launch failure means skip
             pytest.skip(f"chromium unavailable: {exc}")
         yield b
         b.close()

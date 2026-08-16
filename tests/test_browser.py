@@ -47,7 +47,7 @@ def page(browser, page_url):
 
 
 def test_boots_without_js_errors(page):
-    assert page.locator(".row").count() == 75
+    assert page.locator(".row").count() == 99
     assert page.errors == []
     assert page.locator("#bestAvail .ba-item").first.inner_text().startswith("1")
 
@@ -57,7 +57,7 @@ def test_click_crosses_off_and_updates_best_available(page):
     assert page.locator('.row[data-rk="1"]').get_attribute("aria-pressed") == "true"
     assert page.locator(".row.gone").count() == 1
     assert "Bijan Robinson" in page.locator("#bestAvail .ba-item").first.inner_text()
-    assert page.locator("#tally").inner_text().startswith("74")
+    assert page.locator("#tally").inner_text().startswith("98")
 
 
 def test_tier_break_fires_at_two_left(page):
@@ -133,7 +133,7 @@ def test_enter_in_search_crosses_off_single_match(page):
     search.press("Enter")
     assert page.locator('.row[data-rk="1"]').get_attribute("aria-pressed") == "true"
     assert search.input_value() == "", "a successful cross-off clears the search"
-    assert page.locator(".row:not(.hide)").count() == 75
+    assert page.locator(".row:not(.hide)").count() == 99
 
     search.fill("brown")  # Chase Brown, A.J. Brown, Amon-Ra St. Brown
     search.press("Enter")

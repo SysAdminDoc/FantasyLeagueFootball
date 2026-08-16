@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P1
 
-- [ ] P1 — Player ID crosswalk and K/DST positions in the dataset
-  Why: every sync/refresh source keys on `sleeper_id`/`yahoo_id`; name matching is not a join. Yahoo's default roster starts a K and a DEF the board can't represent.
-  Evidence: Sleeper `players/nfl` verified 2026-08-16 to carry `yahoo_id`, `espn_id`, `gsis_id` (12,219 records, 14.6 MB); `models.POSITIONS = ("QB","RB","WR","TE")`; help.yahoo.com SLN22673 default lineup.
-  Touches: `models.py` (`POSITIONS` += `K`,`DST`; `Player.ids: dict`), `data/players_2026.json` (ids for all 75 + a K/DST tier each), `board.py` `validate()` (ids unique), `board.js` chips (K, DST), tests.
-  Acceptance: `python -m fantasyleague list --pos K` prints a K tier; `validate()` rejects duplicate `ids.sleeper`; every existing player has `ids.sleeper` and `ids.yahoo`.
-  Complexity: M
-
 - [ ] P1 — Snake-draft awareness: your next pick and projected availability
   Why: the board answers "who's best" but not "who survives to my turn" — the one question every commercial tool answers (DraftKick, FantasyPros Pick Predictor, Draft Caddie survival odds).
   Evidence: draftkick.com/blog/projected-availability (mean = ADP, σ ≈ ADP/4, `1 − Φ(next_pick)`, show next two picks; wait ≥60–70 %, draft ≤20–30 %); FantasyPros API `rank_std` as a better σ when available.

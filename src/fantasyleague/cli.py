@@ -94,7 +94,7 @@ def build_parser() -> argparse.ArgumentParser:
     b.set_defaults(func=cmd_build)
 
     ls = sub.add_parser("list", help="print the board as a table")
-    ls.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "ALL"], help="filter by position")
+    ls.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST", "ALL"], help="filter by position")
     ls.add_argument("--flag", choices=["value", "avoid", "watch"], help="filter by flag")
     ls.add_argument("--limit", type=int, default=100, help="max rows (default: 100)")
     ls.set_defaults(func=cmd_list)
@@ -110,7 +110,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="players already off the board — ranks or names (case-insensitive, partial OK; "
         "ambiguous names are rejected with the candidates listed)",
     )
-    n.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "ALL"], help="limit to one position")
+    n.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST", "ALL"], help="limit to one position")
     n.add_argument("--limit", type=int, default=10, help="how many to show (default: 10)")
     n.set_defaults(func=cmd_next)
 

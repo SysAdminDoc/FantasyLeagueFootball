@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-POSITIONS = ("QB", "RB", "WR", "TE")
+POSITIONS = ("QB", "RB", "WR", "TE", "K", "DST")
 FLAGS = ("value", "avoid", "watch")
 SEVERITIES = ("out", "risk", "ok")
+ID_SOURCES = ("sleeper", "yahoo", "espn")
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,9 @@ class Player:
     tier: int
     flag: str | None = None
     note: str = ""
+    # External identities keyed by source (sleeper/yahoo/espn). Sync and refresh
+    # join on these; the display name is never used as a key.
+    ids: dict = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.pos not in POSITIONS:
@@ -26,6 +30,14 @@ class Player:
             raise ValueError(f"{self.name}: unknown flag {self.flag!r}")
         if self.rank < 1:
             raise ValueError(f"{self.name}: rank must be positive")
+        unknown = set(self.ids) - set(ID_SOURCES)
+        if unknown:
+            raise ValueError(f"{self.name}: unknown id source(s) {sorted(unknown)}")
+
+    def id_for(self, source: str) -> str | None:
+        """External id as a string, or None when the source has none for this player."""
+        v = self.ids.get(source)
+        return None if v is None else str(v)
 
 
 @dataclass(frozen=True)

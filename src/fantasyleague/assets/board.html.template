@@ -32,6 +32,8 @@ __CSS__
       <button class="chip" data-pos="RB" aria-pressed="false">RB</button>
       <button class="chip" data-pos="WR" aria-pressed="false">WR</button>
       <button class="chip" data-pos="TE" aria-pressed="false">TE</button>
+      <button class="chip" data-pos="K" aria-pressed="false">K</button>
+      <button class="chip" data-pos="DST" aria-pressed="false">DST</button>
     </div>
     <button class="ghost" id="reset">Reset board</button>
     <div class="tally" id="tally"></div>

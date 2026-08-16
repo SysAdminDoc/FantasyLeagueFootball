@@ -19,8 +19,8 @@ def data():
 def test_packaged_board_loads_and_validates(data):
     assert data.season == 2026
     assert data.scoring == "half_ppr"
-    assert len(data.players) == 75
-    assert len(data.tiers) == 7
+    assert len(data.players) == 99  # 75 skill players + 12 K + 12 DST
+    assert len(data.tiers) == 9
 
 
 def test_every_player_belongs_to_a_defined_tier(data):
@@ -29,7 +29,7 @@ def test_every_player_belongs_to_a_defined_tier(data):
 
 
 def test_ranks_are_contiguous_from_one(data):
-    assert [p.rank for p in data.players] == list(range(1, 76))
+    assert [p.rank for p in data.players] == list(range(1, len(data.players) + 1))
 
 
 def test_rails_are_populated(data):
@@ -39,8 +39,9 @@ def test_rails_are_populated(data):
 
 def test_every_position_is_represented(data):
     counts = board.position_counts(data)
-    assert set(counts) == {"QB", "RB", "WR", "TE"}
-    assert sum(counts.values()) == 75
+    assert set(counts) == {"QB", "RB", "WR", "TE", "K", "DST"}
+    assert counts["K"] == 12 and counts["DST"] == 12
+    assert sum(counts.values()) == len(data.players)
 
 
 # --- validation --------------------------------------------------------------
@@ -83,7 +84,7 @@ def test_validate_rejects_orphan_tier():
 
 def test_player_rejects_unknown_position():
     with pytest.raises(ValueError, match="unknown position"):
-        Player(1, "A", "K", "DET", 1)
+        Player(1, "A", "P", "DET", 1)
 
 
 def test_player_rejects_unknown_flag():
@@ -162,3 +163,44 @@ def test_position_counts_drop_as_players_go(data):
     rb = next(p for p in data.players if p.pos == "RB")
     after = board.position_counts(data, drafted={rb.rank})
     assert after["RB"] == before["RB"] - 1
+
+
+# --- external ids ------------------------------------------------------------
+
+
+def test_every_player_has_a_sleeper_id(data):
+    missing = [p.name for p in data.players if p.id_for("sleeper") is None]
+    assert not missing, f"players without a Sleeper id: {missing}"
+
+
+def test_external_ids_are_unique(data):
+    for source in ("sleeper", "yahoo", "espn"):
+        ids = [p.id_for(source) for p in data.players if p.id_for(source) is not None]
+        assert len(ids) == len(set(ids)), f"duplicate {source} ids"
+
+
+def test_by_external_id_joins_on_string_keys(data):
+    m = board.by_external_id(data, "sleeper")
+    assert m["4984"].name == "Josh Allen"
+    assert m["HOU"].pos == "DST"
+    assert "yahoo" in data.players[0].ids
+
+
+def test_validate_rejects_duplicate_external_ids():
+    a = Player(1, "A", "RB", "DET", 1, ids={"sleeper": "1"})
+    b = Player(2, "B", "WR", "LAR", 1, ids={"sleeper": 1})  # int and str must collide
+    d = _mk([a, b])
+    with pytest.raises(ValueError, match="duplicate sleeper id 1"):
+        board.validate(d)
+
+
+def test_player_rejects_unknown_id_source():
+    with pytest.raises(ValueError, match="unknown id source"):
+        Player(1, "A", "RB", "DET", 1, ids={"nfl": "x"})
+
+
+def test_k_and_dst_sit_in_their_own_tiers(data):
+    assert {p.tier for p in data.players if p.pos == "K"} == {8}
+    assert {p.tier for p in data.players if p.pos == "DST"} == {9}
+    assert board.best_available(data, pos="K", limit=1)[0].name == "Brandon Aubrey"
+    assert board.best_available(data, pos="DST", limit=1)[0].team == "HOU"

@@ -7,11 +7,19 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Fixed
+- A.J. Brown listed as PHI; he was traded to New England this offseason (caught by the
+  Sleeper crosswalk — the only team mismatch across all 99 players).
 - Tier-break badge is computed from the whole tier, not the rows left visible by a
   position filter or search — filtering to TE no longer marks a full tier "Tier break".
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Kickers and defenses: 12 K (tier 8, FantasyPros tiers 2026-08-14) and 12 D/ST (tier 9,
+  FantasyLife rankings 2026-08-08) at ranks 76–99, with K and DST position chips and CLI
+  filters. Yahoo's default lineup starts one of each; the board can finally represent it.
+- Every player carries external ids (`ids.sleeper`, `ids.yahoo`, `ids.espn`) resolved from
+  Sleeper's public player database, so sync and refresh can join on ids rather than names.
+  `board.by_external_id()` exposes the map; validation rejects duplicate ids.
 - `next --drafted` accepts player names as well as ranks (`--drafted gibbs bijan "ja'marr" 4`).
   Matching is case-insensitive — exact name, then unique prefix, then unique substring —
   and an ambiguous name is rejected with the candidates listed.

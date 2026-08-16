@@ -9,7 +9,7 @@
 
 A draft-day board for **Yahoo half-PPR fantasy football**. Renders one self-contained HTML page you keep open on a second screen while you draft — click players off as they go, watch tiers drain, and get warned the moment a tier is about to break.
 
-Ships with a ranked 2026 board (75 players, 7 tiers) plus value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies. No account, no network calls, no telemetry — the page works from `file://` with the Wi-Fi off.
+Ships with a ranked 2026 board (75 skill players in 7 tiers, plus 12 kickers and 12 defenses in two more) with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies. No account, no network calls, no telemetry — the page works from `file://` with the Wi-Fi off.
 
 ![Draft board, dark theme](docs/screenshot-dark.png)
 
@@ -25,7 +25,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Click to cross off.** Every row is a button. State is saved in the browser, so a refresh mid-draft doesn't lose your place. Reset with one click.
 - **Tier-break warnings.** Each tier header shows how many are left and lights up at two.
 - **Best available** updates as you go, overall or filtered to one position.
-- **Position filters + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
+- **Position filters (QB/RB/WR/TE/K/DST) + name search** so you can answer "best RB left?" in one tap. Type a name and press Enter to cross off the match without touching the mouse.
 - **Value / Reach / Watch flags** on rows — Yahoo ADP versus Yahoo's own projected finish, plus active injury notes.
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, late-round targets.
 - **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
@@ -63,7 +63,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | Command | What it does |
 |---|---|
 | `fantasyleague build [-o PATH] [--title T] [--league NAME] [--open]` | Render the board. Default output `dist/draft-board.html`. `--league` shows the name in the header and keeps that board's saved picks separate from other boards in the same browser. |
-| `fantasyleague list [--pos QB\|RB\|WR\|TE\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
+| `fantasyleague list [--pos QB\|RB\|WR\|TE\|K\|DST\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
@@ -80,7 +80,7 @@ fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursd
 
 ## The 2026 board
 
-**Format assumptions:** Yahoo defaults — half-PPR, single QB. Ranks 1–75 follow the Rotoworld/NBC Sports top-200 consensus; flags compare Yahoo ADP against Yahoo's projected finish; the injury board is compiled from Yahoo's training-camp report. Data is current through **August 16, 2026**. Fantasy data goes stale fast — recheck the injury board before you draft.
+**Format assumptions:** Yahoo defaults — half-PPR, single QB, 1 K, 1 DEF. Ranks 1–75 follow the Rotoworld/NBC Sports top-200 consensus; kickers (76–87) follow FantasyPros' 2026-08-14 tiers and defenses (88–99) FantasyLife's 2026-08-08 rankings; flags compare Yahoo ADP against Yahoo's projected finish; the injury board is compiled from Yahoo's training-camp report. Player teams and external ids come from Sleeper's public player database. Data is current through **August 16, 2026**. Fantasy data goes stale fast — recheck the injury board before you draft.
 
 ### Tiers
 
@@ -93,6 +93,8 @@ fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursd
 | 5 | Rounds 3–4 | 31–42 | Elite QBs enter. So do the first traps. |
 | 6 | Rounds 4–5 | 43–56 | Third RB deadline. Don't drift past it. |
 | 7 | Rounds 5–7 | 57–75 | The value pocket. Most of your edge is here. |
+| 8 | Kickers | last two rounds | Aubrey, then wait. Accuracy is sticky; volume isn't. |
+| 9 | Defenses | last two rounds | Matchups beat talent. Take one, stream after Week 1. |
 
 ### Flags
 
@@ -123,8 +125,8 @@ The shape is [`players_2026.json`](src/fantasyleague/data/players_2026.json). Th
 {
   "season": 2026, "scoring": "half_ppr", "format": "…", "updated": "2026-08-16",
   "tiers":   [{ "n": 1, "name": "The anchors", "range": "Picks 1–5", "note": "…" }],
-  "players": [{ "rank": 1, "name": "Jahmyr Gibbs", "pos": "RB", "team": "DET",
-                "tier": 1, "flag": null, "note": "" }],
+  "players": [{ "rank": 1, "name": "Jahmyr Gibbs", "pos": "RB", "team": "DET", "tier": 1,
+                "flag": null, "note": "", "ids": { "sleeper": "4984", "yahoo": 30977, "espn": 3918298 } }],
   "plan":         [{ "position": "Running back", "guidance": "…" }],
   "do_not_draft": [{ "name": "…", "pos": "QB", "team": "LAC", "why": "…" }],
   "injuries":     [{ "name": "…", "team": "SF", "severity": "out|risk|ok", "status": "line one|line two" }],
@@ -135,7 +137,7 @@ The shape is [`players_2026.json`](src/fantasyleague/data/players_2026.json). Th
 
 `guidance` text may use `**bold**` for emphasis; it is escaped before rendering, so HTML in any field shows up as literal text rather than markup.
 
-Validation on load rejects: ranks that aren't exactly `1..N` (gaps or duplicates), duplicate player names, a `tier` that isn't defined in `tiers`, a `pos` outside `QB/RB/WR/TE`, a `flag` outside `value/avoid/watch`, a `severity` outside `out/risk/ok`. Bad data fails at load with a message naming the problem — never a board with holes in it.
+Validation on load rejects: ranks that aren't exactly `1..N` (gaps or duplicates), duplicate player names, a `tier` that isn't defined in `tiers`, a `pos` outside `QB/RB/WR/TE/K/DST`, a duplicate external id, a `flag` outside `value/avoid/watch`, a `severity` outside `out/risk/ok`. Bad data fails at load with a message naming the problem — never a board with holes in it.
 
 ## Theming
 
@@ -179,8 +181,8 @@ docs/                        README screenshots
 
 ## Known limitations (v0.0.1)
 
-- Board is 75 deep — runs out around round 7 in a 12-team league; the sleeper rail carries the late rounds.
-- No K or DEF positions yet; no bye weeks; no roster tracking; no live sync.
+- Skill-position board is 75 deep — runs out around round 7 in a 12-team league; the sleeper rail carries the late rounds.
+- No bye weeks; no roster tracking; no live sync yet.
 
 ## License
 

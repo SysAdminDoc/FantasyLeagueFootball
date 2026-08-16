@@ -44,6 +44,26 @@ def validate(data: Dataset) -> None:
         dupes = sorted({n for n in names if names.count(n) > 1})
         raise ValueError(f"duplicate players: {dupes}")
 
+    for source in ("sleeper", "yahoo", "espn"):
+        seen: dict[str, str] = {}
+        for p in data.players:
+            ext = p.id_for(source)
+            if ext is None:
+                continue
+            if ext in seen:
+                raise ValueError(f"duplicate {source} id {ext}: {seen[ext]} and {p.name}")
+            seen[ext] = p.name
+
+
+def by_external_id(data: Dataset, source: str) -> dict[str, Player]:
+    """Map from an external id (as a string) to the player, for sync/refresh joins."""
+    out: dict[str, Player] = {}
+    for p in data.players:
+        ext = p.id_for(source)
+        if ext is not None:
+            out[ext] = p
+    return out
+
 
 def by_tier(data: Dataset) -> list[tuple[object, list[Player]]]:
     """Tiers paired with their players, in board order."""

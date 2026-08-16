@@ -41,7 +41,7 @@ def test_no_external_requests(html):
 def test_data_payload_round_trips(html):
     raw = re.search(r"const DATA = (\{.*?\});", html, re.S).group(1)
     payload = json.loads(raw.replace("<\\/", "</"))
-    assert len(payload["players"]) == 75
+    assert len(payload["players"]) == 99
     assert payload["season"] == 2026
     assert payload["players"][0]["name"] == "Jahmyr Gibbs"
 

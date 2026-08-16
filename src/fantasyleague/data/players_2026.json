@@ -3,152 +3,1722 @@
   "scoring": "half_ppr",
   "format": "Yahoo default · 0.5 PPR · single QB",
   "updated": "2026-08-16",
-
   "tiers": [
-    { "n": 1, "name": "The anchors",        "range": "Picks 1–5",   "note": "No wrong answer. Take the board." },
-    { "n": 2, "name": "Round 1 turn",       "range": "Picks 6–13",  "note": "Where the first real preference shows up." },
-    { "n": 3, "name": "Early second",       "range": "Picks 14–20", "note": "Last of the every-week workhorses." },
-    { "n": 4, "name": "RB / WR crossroads", "range": "Picks 21–30", "note": "Your roster shape gets decided here." },
-    { "n": 5, "name": "Rounds 3–4",         "range": "Picks 31–42", "note": "Elite QBs enter. So do the first traps." },
-    { "n": 6, "name": "Rounds 4–5",         "range": "Picks 43–56", "note": "Third RB deadline. Don't drift past it." },
-    { "n": 7, "name": "Rounds 5–7",         "range": "Picks 57–75", "note": "The value pocket. Most of your edge is here." }
+    {
+      "n": 1,
+      "name": "The anchors",
+      "range": "Picks 1–5",
+      "note": "No wrong answer. Take the board."
+    },
+    {
+      "n": 2,
+      "name": "Round 1 turn",
+      "range": "Picks 6–13",
+      "note": "Where the first real preference shows up."
+    },
+    {
+      "n": 3,
+      "name": "Early second",
+      "range": "Picks 14–20",
+      "note": "Last of the every-week workhorses."
+    },
+    {
+      "n": 4,
+      "name": "RB / WR crossroads",
+      "range": "Picks 21–30",
+      "note": "Your roster shape gets decided here."
+    },
+    {
+      "n": 5,
+      "name": "Rounds 3–4",
+      "range": "Picks 31–42",
+      "note": "Elite QBs enter. So do the first traps."
+    },
+    {
+      "n": 6,
+      "name": "Rounds 4–5",
+      "range": "Picks 43–56",
+      "note": "Third RB deadline. Don't drift past it."
+    },
+    {
+      "n": 7,
+      "name": "Rounds 5–7",
+      "range": "Picks 57–75",
+      "note": "The value pocket. Most of your edge is here."
+    },
+    {
+      "n": 8,
+      "name": "Kickers",
+      "range": "Last two rounds",
+      "note": "Aubrey, then wait. Accuracy is sticky; volume isn't."
+    },
+    {
+      "n": 9,
+      "name": "Defenses",
+      "range": "Last two rounds",
+      "note": "Matchups beat talent. Take one, stream after Week 1."
+    }
   ],
-
   "players": [
-    { "rank": 1,  "name": "Jahmyr Gibbs",        "pos": "RB", "team": "DET", "tier": 1, "flag": null,    "note": "" },
-    { "rank": 2,  "name": "Bijan Robinson",      "pos": "RB", "team": "ATL", "tier": 1, "flag": null,    "note": "" },
-    { "rank": 3,  "name": "Ja'Marr Chase",       "pos": "WR", "team": "CIN", "tier": 1, "flag": null,    "note": "" },
-    { "rank": 4,  "name": "Puka Nacua",          "pos": "WR", "team": "LAR", "tier": 1, "flag": "watch", "note": "Groin soreness, called minor. Still a lock." },
-    { "rank": 5,  "name": "Jaxon Smith-Njigba",  "pos": "WR", "team": "SEA", "tier": 1, "flag": null,    "note": "" },
-    { "rank": 6,  "name": "Christian McCaffrey", "pos": "RB", "team": "SF",  "tier": 2, "flag": null,    "note": "" },
-    { "rank": 7,  "name": "Amon-Ra St. Brown",   "pos": "WR", "team": "DET", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 8,  "name": "Jonathan Taylor",     "pos": "RB", "team": "IND", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 9,  "name": "Justin Jefferson",    "pos": "WR", "team": "MIN", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 10, "name": "CeeDee Lamb",         "pos": "WR", "team": "DAL", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 11, "name": "James Cook",          "pos": "RB", "team": "BUF", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 12, "name": "Saquon Barkley",      "pos": "RB", "team": "PHI", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 13, "name": "De'Von Achane",       "pos": "RB", "team": "MIA", "tier": 2, "flag": null,    "note": "" },
-    { "rank": 14, "name": "Drake London",        "pos": "WR", "team": "ATL", "tier": 3, "flag": null,    "note": "" },
-    { "rank": 15, "name": "Ashton Jeanty",       "pos": "RB", "team": "LV",  "tier": 3, "flag": null,    "note": "" },
-    { "rank": 16, "name": "Nico Collins",        "pos": "WR", "team": "HOU", "tier": 3, "flag": null,    "note": "" },
-    { "rank": 17, "name": "Brock Bowers",        "pos": "TE", "team": "LV",  "tier": 3, "flag": null,    "note": "The one TE worth a premium pick." },
-    { "rank": 18, "name": "Derrick Henry",       "pos": "RB", "team": "BAL", "tier": 3, "flag": null,    "note": "" },
-    { "rank": 19, "name": "Kenneth Walker III",  "pos": "RB", "team": "KC",  "tier": 3, "flag": null,    "note": "" },
-    { "rank": 20, "name": "Chase Brown",         "pos": "RB", "team": "CIN", "tier": 3, "flag": null,    "note": "" },
-    { "rank": 21, "name": "A.J. Brown",          "pos": "WR", "team": "PHI", "tier": 4, "flag": null,    "note": "" },
-    { "rank": 22, "name": "Malik Nabers",        "pos": "WR", "team": "NYG", "tier": 4, "flag": "value", "note": "ACL rehab on track, running routes. ADP still correcting." },
-    { "rank": 23, "name": "Rashee Rice",         "pos": "WR", "team": "KC",  "tier": 4, "flag": "value", "note": "ADP 31, projects 20th." },
-    { "rank": 24, "name": "George Pickens",      "pos": "WR", "team": "DAL", "tier": 4, "flag": null,    "note": "" },
-    { "rank": 25, "name": "Omarion Hampton",     "pos": "RB", "team": "LAC", "tier": 4, "flag": null,    "note": "ADP 17 vs 18th projected — priced exactly right." },
-    { "rank": 26, "name": "Trey McBride",        "pos": "TE", "team": "ARI", "tier": 4, "flag": "avoid", "note": "ADP 24, projects 30th. Mild reach." },
-    { "rank": 27, "name": "Jeremiyah Love",      "pos": "RB", "team": "ARI", "tier": 4, "flag": null,    "note": "" },
-    { "rank": 28, "name": "Breece Hall",         "pos": "RB", "team": "NYJ", "tier": 4, "flag": "value", "note": "ADP 36, projects 22nd. Best RB value in the room." },
-    { "rank": 29, "name": "Kyren Williams",      "pos": "RB", "team": "LAR", "tier": 4, "flag": null,    "note": "ADP 28 vs 29th projected — fair." },
-    { "rank": 30, "name": "Travis Etienne Jr.",  "pos": "RB", "team": "NO",  "tier": 4, "flag": "value", "note": "ADP 41, projects 32nd." },
-    { "rank": 31, "name": "Josh Allen",          "pos": "QB", "team": "BUF", "tier": 5, "flag": null,    "note": "If you want the position solved, this is the only early price worth it." },
-    { "rank": 32, "name": "Josh Jacobs",         "pos": "RB", "team": "GB",  "tier": 5, "flag": "watch", "note": "Groin, out about a week." },
-    { "rank": 33, "name": "Javonte Williams",    "pos": "RB", "team": "DAL", "tier": 5, "flag": "value", "note": "ADP 34, projects 24th." },
-    { "rank": 34, "name": "Tetairoa McMillan",   "pos": "WR", "team": "CAR", "tier": 5, "flag": null,    "note": "" },
-    { "rank": 35, "name": "Colston Loveland",    "pos": "TE", "team": "CHI", "tier": 5, "flag": null,    "note": "" },
-    { "rank": 36, "name": "Tee Higgins",         "pos": "WR", "team": "CIN", "tier": 5, "flag": "avoid", "note": "ADP 32, projects 41st." },
-    { "rank": 37, "name": "Chris Olave",         "pos": "WR", "team": "NO",  "tier": 5, "flag": null,    "note": "" },
-    { "rank": 38, "name": "Bucky Irving",        "pos": "RB", "team": "TB",  "tier": 5, "flag": null,    "note": "" },
-    { "rank": 39, "name": "Lamar Jackson",       "pos": "QB", "team": "BAL", "tier": 5, "flag": null,    "note": "" },
-    { "rank": 40, "name": "Zay Flowers",         "pos": "WR", "team": "BAL", "tier": 5, "flag": null,    "note": "" },
-    { "rank": 41, "name": "Ladd McConkey",       "pos": "WR", "team": "LAC", "tier": 5, "flag": null,    "note": "" },
-    { "rank": 42, "name": "Emeka Egbuka",        "pos": "WR", "team": "TB",  "tier": 5, "flag": "watch", "note": "Minor toe. No change in approach." },
-    { "rank": 43, "name": "Cam Skattebo",        "pos": "RB", "team": "NYG", "tier": 6, "flag": "value", "note": "ADP 40, projects 31st." },
-    { "rank": 44, "name": "David Montgomery",    "pos": "RB", "team": "HOU", "tier": 6, "flag": null,    "note": "" },
-    { "rank": 45, "name": "DeVonta Smith",       "pos": "WR", "team": "PHI", "tier": 6, "flag": "avoid", "note": "ADP 27, projects 37th — and a hamstring on top." },
-    { "rank": 46, "name": "Garrett Wilson",      "pos": "WR", "team": "NYJ", "tier": 6, "flag": null,    "note": "" },
-    { "rank": 47, "name": "D'Andre Swift",       "pos": "RB", "team": "CHI", "tier": 6, "flag": null,    "note": "" },
-    { "rank": 48, "name": "Jayden Daniels",      "pos": "QB", "team": "WAS", "tier": 6, "flag": "value", "note": "ADP 52. The round 5 QB play if you want one." },
-    { "rank": 49, "name": "Quinshon Judkins",    "pos": "RB", "team": "CLE", "tier": 6, "flag": null,    "note": "" },
-    { "rank": 50, "name": "Mike Evans",          "pos": "WR", "team": "SF",  "tier": 6, "flag": null,    "note": "" },
-    { "rank": 51, "name": "Jaylen Waddle",       "pos": "WR", "team": "DEN", "tier": 6, "flag": "watch", "note": "Leg strain, back within a week. Popular breakout call." },
-    { "rank": 52, "name": "Bhayshul Tuten",      "pos": "RB", "team": "JAX", "tier": 6, "flag": null,    "note": "" },
-    { "rank": 53, "name": "TreVeyon Henderson",  "pos": "RB", "team": "NE",  "tier": 6, "flag": null,    "note": "" },
-    { "rank": 54, "name": "Joe Burrow",          "pos": "QB", "team": "CIN", "tier": 6, "flag": "avoid", "note": "ADP 42, projects 75th. Hard pass." },
-    { "rank": 55, "name": "Davante Adams",       "pos": "WR", "team": "LAR", "tier": 6, "flag": null,    "note": "" },
-    { "rank": 56, "name": "Jadarian Price",      "pos": "RB", "team": "SEA", "tier": 6, "flag": null,    "note": "ADP 63 vs 66th projected — fair." },
-    { "rank": 57, "name": "Drake Maye",          "pos": "QB", "team": "NE",  "tier": 7, "flag": null,    "note": "" },
-    { "rank": 58, "name": "Terry McLaurin",      "pos": "WR", "team": "WAS", "tier": 7, "flag": "value", "note": "ADP 55, projects 38th." },
-    { "rank": 59, "name": "Jameson Williams",    "pos": "WR", "team": "DET", "tier": 7, "flag": "value", "note": "ADP 60, projects 45th." },
-    { "rank": 60, "name": "Tyler Warren",        "pos": "TE", "team": "IND", "tier": 7, "flag": null,    "note": "" },
-    { "rank": 61, "name": "Luther Burden III",   "pos": "WR", "team": "CHI", "tier": 7, "flag": "avoid", "note": "Groin, misses preseason. ADP 58 hasn't moved yet." },
-    { "rank": 62, "name": "Carnell Tate",        "pos": "WR", "team": "TEN", "tier": 7, "flag": null,    "note": "" },
-    { "rank": 63, "name": "Jalen Hurts",         "pos": "QB", "team": "PHI", "tier": 7, "flag": "value", "note": "ADP 56, projects 62nd. The other round 5 QB." },
-    { "rank": 64, "name": "Christian Watson",    "pos": "WR", "team": "GB",  "tier": 7, "flag": "value", "note": "ADP 68, projects 56th." },
-    { "rank": 65, "name": "Rome Odunze",         "pos": "WR", "team": "CHI", "tier": 7, "flag": "value", "note": "Burden's groin pushes targets straight to him." },
-    { "rank": 66, "name": "D.J. Moore",          "pos": "WR", "team": "BUF", "tier": 7, "flag": null,    "note": "" },
-    { "rank": 67, "name": "Jaylen Warren",       "pos": "RB", "team": "PIT", "tier": 7, "flag": "value", "note": "ADP 73, projects 57th. Your third RB deadline." },
-    { "rank": 68, "name": "Blake Corum",         "pos": "RB", "team": "LAR", "tier": 7, "flag": "avoid", "note": "ADP 95, projects outside 115." },
-    { "rank": 69, "name": "Brian Thomas Jr.",    "pos": "WR", "team": "JAX", "tier": 7, "flag": "avoid", "note": "ADP 82, projects 90th." },
-    { "rank": 70, "name": "Parker Washington",   "pos": "WR", "team": "JAX", "tier": 7, "flag": null,    "note": "" },
-    { "rank": 71, "name": "Dak Prescott",        "pos": "QB", "team": "DAL", "tier": 7, "flag": null,    "note": "" },
-    { "rank": 72, "name": "Marvin Harrison Jr.", "pos": "WR", "team": "ARI", "tier": 7, "flag": "avoid", "note": "ADP 77, projects 85th." },
-    { "rank": 73, "name": "Tony Pollard",        "pos": "RB", "team": "TEN", "tier": 7, "flag": "value", "note": "ADP 85, projects 67th." },
-    { "rank": 74, "name": "Kyle Monangai",       "pos": "RB", "team": "CHI", "tier": 7, "flag": null,    "note": "" },
-    { "rank": 75, "name": "Harold Fannin",       "pos": "TE", "team": "CLE", "tier": 7, "flag": null,    "note": "" }
+    {
+      "rank": 1,
+      "name": "Jahmyr Gibbs",
+      "pos": "RB",
+      "team": "DET",
+      "tier": 1,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9221",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 2,
+      "name": "Bijan Robinson",
+      "pos": "RB",
+      "team": "ATL",
+      "tier": 1,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9509",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 3,
+      "name": "Ja'Marr Chase",
+      "pos": "WR",
+      "team": "CIN",
+      "tier": 1,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "7564",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 4,
+      "name": "Puka Nacua",
+      "pos": "WR",
+      "team": "LAR",
+      "tier": 1,
+      "flag": "watch",
+      "note": "Groin soreness, called minor. Still a lock.",
+      "ids": {
+        "sleeper": "9493",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 5,
+      "name": "Jaxon Smith-Njigba",
+      "pos": "WR",
+      "team": "SEA",
+      "tier": 1,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9488",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 6,
+      "name": "Christian McCaffrey",
+      "pos": "RB",
+      "team": "SF",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "4034",
+        "yahoo": 30121,
+        "espn": 3117251
+      }
+    },
+    {
+      "rank": 7,
+      "name": "Amon-Ra St. Brown",
+      "pos": "WR",
+      "team": "DET",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "7547",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 8,
+      "name": "Jonathan Taylor",
+      "pos": "RB",
+      "team": "IND",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "6813",
+        "yahoo": 32711,
+        "espn": 4242335
+      }
+    },
+    {
+      "rank": 9,
+      "name": "Justin Jefferson",
+      "pos": "WR",
+      "team": "MIN",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "6794",
+        "yahoo": 32692,
+        "espn": 4262921
+      }
+    },
+    {
+      "rank": 10,
+      "name": "CeeDee Lamb",
+      "pos": "WR",
+      "team": "DAL",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "6786",
+        "yahoo": 32687,
+        "espn": 4241389
+      }
+    },
+    {
+      "rank": 11,
+      "name": "James Cook",
+      "pos": "RB",
+      "team": "BUF",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8138",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 12,
+      "name": "Saquon Barkley",
+      "pos": "RB",
+      "team": "PHI",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "4866",
+        "yahoo": 30972,
+        "espn": 3929630
+      }
+    },
+    {
+      "rank": 13,
+      "name": "De'Von Achane",
+      "pos": "RB",
+      "team": "MIA",
+      "tier": 2,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9226",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 14,
+      "name": "Drake London",
+      "pos": "WR",
+      "team": "ATL",
+      "tier": 3,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8112",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 15,
+      "name": "Ashton Jeanty",
+      "pos": "RB",
+      "team": "LV",
+      "tier": 3,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12527",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 16,
+      "name": "Nico Collins",
+      "pos": "WR",
+      "team": "HOU",
+      "tier": 3,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "7569",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 17,
+      "name": "Brock Bowers",
+      "pos": "TE",
+      "team": "LV",
+      "tier": 3,
+      "flag": null,
+      "note": "The one TE worth a premium pick.",
+      "ids": {
+        "sleeper": "11604",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 18,
+      "name": "Derrick Henry",
+      "pos": "RB",
+      "team": "BAL",
+      "tier": 3,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "3198",
+        "yahoo": 29279,
+        "espn": 3043078
+      }
+    },
+    {
+      "rank": 19,
+      "name": "Kenneth Walker III",
+      "pos": "RB",
+      "team": "KC",
+      "tier": 3,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8151",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 20,
+      "name": "Chase Brown",
+      "pos": "RB",
+      "team": "CIN",
+      "tier": 3,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9224",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 21,
+      "name": "A.J. Brown",
+      "pos": "WR",
+      "team": "NE",
+      "tier": 4,
+      "flag": null,
+      "note": "Traded to New England this offseason — reunited with Vrabel.",
+      "ids": {
+        "sleeper": "5859",
+        "yahoo": 31883,
+        "espn": 4047646
+      }
+    },
+    {
+      "rank": 22,
+      "name": "Malik Nabers",
+      "pos": "WR",
+      "team": "NYG",
+      "tier": 4,
+      "flag": "value",
+      "note": "ACL rehab on track, running routes. ADP still correcting.",
+      "ids": {
+        "sleeper": "11632",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 23,
+      "name": "Rashee Rice",
+      "pos": "WR",
+      "team": "KC",
+      "tier": 4,
+      "flag": "value",
+      "note": "ADP 31, projects 20th.",
+      "ids": {
+        "sleeper": "10229",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 24,
+      "name": "George Pickens",
+      "pos": "WR",
+      "team": "DAL",
+      "tier": 4,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8137",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 25,
+      "name": "Omarion Hampton",
+      "pos": "RB",
+      "team": "LAC",
+      "tier": 4,
+      "flag": null,
+      "note": "ADP 17 vs 18th projected — priced exactly right.",
+      "ids": {
+        "sleeper": "12507",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 26,
+      "name": "Trey McBride",
+      "pos": "TE",
+      "team": "ARI",
+      "tier": 4,
+      "flag": "avoid",
+      "note": "ADP 24, projects 30th. Mild reach.",
+      "ids": {
+        "sleeper": "8130",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 27,
+      "name": "Jeremiyah Love",
+      "pos": "RB",
+      "team": "ARI",
+      "tier": 4,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "13287",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 28,
+      "name": "Breece Hall",
+      "pos": "RB",
+      "team": "NYJ",
+      "tier": 4,
+      "flag": "value",
+      "note": "ADP 36, projects 22nd. Best RB value in the room.",
+      "ids": {
+        "sleeper": "8155",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 29,
+      "name": "Kyren Williams",
+      "pos": "RB",
+      "team": "LAR",
+      "tier": 4,
+      "flag": null,
+      "note": "ADP 28 vs 29th projected — fair.",
+      "ids": {
+        "sleeper": "8150",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 30,
+      "name": "Travis Etienne Jr.",
+      "pos": "RB",
+      "team": "NO",
+      "tier": 4,
+      "flag": "value",
+      "note": "ADP 41, projects 32nd.",
+      "ids": {
+        "sleeper": "7543",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 31,
+      "name": "Josh Allen",
+      "pos": "QB",
+      "team": "BUF",
+      "tier": 5,
+      "flag": null,
+      "note": "If you want the position solved, this is the only early price worth it.",
+      "ids": {
+        "sleeper": "4984",
+        "yahoo": 30977,
+        "espn": 3918298
+      }
+    },
+    {
+      "rank": 32,
+      "name": "Josh Jacobs",
+      "pos": "RB",
+      "team": "GB",
+      "tier": 5,
+      "flag": "watch",
+      "note": "Groin, out about a week.",
+      "ids": {
+        "sleeper": "5850",
+        "yahoo": 31856,
+        "espn": 4047365
+      }
+    },
+    {
+      "rank": 33,
+      "name": "Javonte Williams",
+      "pos": "RB",
+      "team": "DAL",
+      "tier": 5,
+      "flag": "value",
+      "note": "ADP 34, projects 24th.",
+      "ids": {
+        "sleeper": "7588",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 34,
+      "name": "Tetairoa McMillan",
+      "pos": "WR",
+      "team": "CAR",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12526",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 35,
+      "name": "Colston Loveland",
+      "pos": "TE",
+      "team": "CHI",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12517",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 36,
+      "name": "Tee Higgins",
+      "pos": "WR",
+      "team": "CIN",
+      "tier": 5,
+      "flag": "avoid",
+      "note": "ADP 32, projects 41st.",
+      "ids": {
+        "sleeper": "6801",
+        "yahoo": 32703,
+        "espn": 4239993
+      }
+    },
+    {
+      "rank": 37,
+      "name": "Chris Olave",
+      "pos": "WR",
+      "team": "NO",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8144",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 38,
+      "name": "Bucky Irving",
+      "pos": "RB",
+      "team": "TB",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "11584",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 39,
+      "name": "Lamar Jackson",
+      "pos": "QB",
+      "team": "BAL",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "4881",
+        "yahoo": 31002,
+        "espn": 3916387
+      }
+    },
+    {
+      "rank": 40,
+      "name": "Zay Flowers",
+      "pos": "WR",
+      "team": "BAL",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9997",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 41,
+      "name": "Ladd McConkey",
+      "pos": "WR",
+      "team": "LAC",
+      "tier": 5,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "11635",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 42,
+      "name": "Emeka Egbuka",
+      "pos": "WR",
+      "team": "TB",
+      "tier": 5,
+      "flag": "watch",
+      "note": "Minor toe. No change in approach.",
+      "ids": {
+        "sleeper": "12514",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 43,
+      "name": "Cam Skattebo",
+      "pos": "RB",
+      "team": "NYG",
+      "tier": 6,
+      "flag": "value",
+      "note": "ADP 40, projects 31st.",
+      "ids": {
+        "sleeper": "12481",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 44,
+      "name": "David Montgomery",
+      "pos": "RB",
+      "team": "HOU",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "5892",
+        "yahoo": 31905,
+        "espn": 4035538
+      }
+    },
+    {
+      "rank": 45,
+      "name": "DeVonta Smith",
+      "pos": "WR",
+      "team": "PHI",
+      "tier": 6,
+      "flag": "avoid",
+      "note": "ADP 27, projects 37th — and a hamstring on top.",
+      "ids": {
+        "sleeper": "7525",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 46,
+      "name": "Garrett Wilson",
+      "pos": "WR",
+      "team": "NYJ",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8146",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 47,
+      "name": "D'Andre Swift",
+      "pos": "RB",
+      "team": "CHI",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "6790",
+        "yahoo": 32705,
+        "espn": 4259545
+      }
+    },
+    {
+      "rank": 48,
+      "name": "Jayden Daniels",
+      "pos": "QB",
+      "team": "WAS",
+      "tier": 6,
+      "flag": "value",
+      "note": "ADP 52. The round 5 QB play if you want one.",
+      "ids": {
+        "sleeper": "11566",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 49,
+      "name": "Quinshon Judkins",
+      "pos": "RB",
+      "team": "CLE",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12512",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 50,
+      "name": "Mike Evans",
+      "pos": "WR",
+      "team": "SF",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "2216",
+        "yahoo": 27535,
+        "espn": 16737
+      }
+    },
+    {
+      "rank": 51,
+      "name": "Jaylen Waddle",
+      "pos": "WR",
+      "team": "DEN",
+      "tier": 6,
+      "flag": "watch",
+      "note": "Leg strain, back within a week. Popular breakout call.",
+      "ids": {
+        "sleeper": "7526",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 52,
+      "name": "Bhayshul Tuten",
+      "pos": "RB",
+      "team": "JAX",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12490",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 53,
+      "name": "TreVeyon Henderson",
+      "pos": "RB",
+      "team": "NE",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12529",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 54,
+      "name": "Joe Burrow",
+      "pos": "QB",
+      "team": "CIN",
+      "tier": 6,
+      "flag": "avoid",
+      "note": "ADP 42, projects 75th. Hard pass.",
+      "ids": {
+        "sleeper": "6770",
+        "yahoo": 32671,
+        "espn": 3915511
+      }
+    },
+    {
+      "rank": 55,
+      "name": "Davante Adams",
+      "pos": "WR",
+      "team": "LAR",
+      "tier": 6,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "2133",
+        "yahoo": 27581,
+        "espn": 16800
+      }
+    },
+    {
+      "rank": 56,
+      "name": "Jadarian Price",
+      "pos": "RB",
+      "team": "SEA",
+      "tier": 6,
+      "flag": null,
+      "note": "ADP 63 vs 66th projected — fair.",
+      "ids": {
+        "sleeper": "13286",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 57,
+      "name": "Drake Maye",
+      "pos": "QB",
+      "team": "NE",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "11564",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 58,
+      "name": "Terry McLaurin",
+      "pos": "WR",
+      "team": "WAS",
+      "tier": 7,
+      "flag": "value",
+      "note": "ADP 55, projects 38th.",
+      "ids": {
+        "sleeper": "5927",
+        "yahoo": 31908,
+        "espn": 3121422
+      }
+    },
+    {
+      "rank": 59,
+      "name": "Jameson Williams",
+      "pos": "WR",
+      "team": "DET",
+      "tier": 7,
+      "flag": "value",
+      "note": "ADP 60, projects 45th.",
+      "ids": {
+        "sleeper": "8148",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 60,
+      "name": "Tyler Warren",
+      "pos": "TE",
+      "team": "IND",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12518",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 61,
+      "name": "Luther Burden III",
+      "pos": "WR",
+      "team": "CHI",
+      "tier": 7,
+      "flag": "avoid",
+      "note": "Groin, misses preseason. ADP 58 hasn't moved yet.",
+      "ids": {
+        "sleeper": "12519",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 62,
+      "name": "Carnell Tate",
+      "pos": "WR",
+      "team": "TEN",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "13279",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 63,
+      "name": "Jalen Hurts",
+      "pos": "QB",
+      "team": "PHI",
+      "tier": 7,
+      "flag": "value",
+      "note": "ADP 56, projects 62nd. The other round 5 QB.",
+      "ids": {
+        "sleeper": "6904",
+        "yahoo": 32723,
+        "espn": 4040715
+      }
+    },
+    {
+      "rank": 64,
+      "name": "Christian Watson",
+      "pos": "WR",
+      "team": "GB",
+      "tier": 7,
+      "flag": "value",
+      "note": "ADP 68, projects 56th.",
+      "ids": {
+        "sleeper": "8167",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 65,
+      "name": "Rome Odunze",
+      "pos": "WR",
+      "team": "CHI",
+      "tier": 7,
+      "flag": "value",
+      "note": "Burden's groin pushes targets straight to him.",
+      "ids": {
+        "sleeper": "11620",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 66,
+      "name": "D.J. Moore",
+      "pos": "WR",
+      "team": "BUF",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "4983",
+        "yahoo": 30994,
+        "espn": 3915416
+      }
+    },
+    {
+      "rank": 67,
+      "name": "Jaylen Warren",
+      "pos": "RB",
+      "team": "PIT",
+      "tier": 7,
+      "flag": "value",
+      "note": "ADP 73, projects 57th. Your third RB deadline.",
+      "ids": {
+        "sleeper": "8228",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 68,
+      "name": "Blake Corum",
+      "pos": "RB",
+      "team": "LAR",
+      "tier": 7,
+      "flag": "avoid",
+      "note": "ADP 95, projects outside 115.",
+      "ids": {
+        "sleeper": "11586",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 69,
+      "name": "Brian Thomas Jr.",
+      "pos": "WR",
+      "team": "JAX",
+      "tier": 7,
+      "flag": "avoid",
+      "note": "ADP 82, projects 90th.",
+      "ids": {
+        "sleeper": "11631",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 70,
+      "name": "Parker Washington",
+      "pos": "WR",
+      "team": "JAX",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "9487",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 71,
+      "name": "Dak Prescott",
+      "pos": "QB",
+      "team": "DAL",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "3294",
+        "yahoo": 29369,
+        "espn": 2577417
+      }
+    },
+    {
+      "rank": 72,
+      "name": "Marvin Harrison Jr.",
+      "pos": "WR",
+      "team": "ARI",
+      "tier": 7,
+      "flag": "avoid",
+      "note": "ADP 77, projects 85th.",
+      "ids": {
+        "sleeper": "11628",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 73,
+      "name": "Tony Pollard",
+      "pos": "RB",
+      "team": "TEN",
+      "tier": 7,
+      "flag": "value",
+      "note": "ADP 85, projects 67th.",
+      "ids": {
+        "sleeper": "5967",
+        "yahoo": 31960,
+        "espn": 3916148
+      }
+    },
+    {
+      "rank": 74,
+      "name": "Kyle Monangai",
+      "pos": "RB",
+      "team": "CHI",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12534",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 75,
+      "name": "Harold Fannin",
+      "pos": "TE",
+      "team": "CLE",
+      "tier": 7,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12506",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 76,
+      "name": "Brandon Aubrey",
+      "pos": "K",
+      "team": "DAL",
+      "tier": 8,
+      "flag": null,
+      "note": "Only Aubrey is worth a round early.",
+      "ids": {
+        "sleeper": "11533",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 77,
+      "name": "Ka'imi Fairbairn",
+      "pos": "K",
+      "team": "HOU",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "3451",
+        "yahoo": 29792,
+        "espn": 2971573
+      }
+    },
+    {
+      "rank": 78,
+      "name": "Cameron Dicker",
+      "pos": "K",
+      "team": "LAC",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "8259",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 79,
+      "name": "Jason Myers",
+      "pos": "K",
+      "team": "SEA",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "2747",
+        "yahoo": 28378,
+        "espn": 2473037
+      }
+    },
+    {
+      "rank": 80,
+      "name": "Cam Little",
+      "pos": "K",
+      "team": "JAX",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "11786",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 81,
+      "name": "Eddy Pineiro",
+      "pos": "K",
+      "team": "SF",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "5189",
+        "yahoo": 31482,
+        "espn": 4034949
+      }
+    },
+    {
+      "rank": 82,
+      "name": "Tyler Loop",
+      "pos": "K",
+      "team": "BAL",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12711",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 83,
+      "name": "Evan McPherson",
+      "pos": "K",
+      "team": "CIN",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "7839",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 84,
+      "name": "Jake Bates",
+      "pos": "K",
+      "team": "DET",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "11539",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 85,
+      "name": "Cairo Santos",
+      "pos": "K",
+      "team": "CHI",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "2020",
+        "yahoo": 28227,
+        "espn": 17427
+      }
+    },
+    {
+      "rank": 86,
+      "name": "Andy Borregales",
+      "pos": "K",
+      "team": "NE",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12713",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 87,
+      "name": "Harrison Mevis",
+      "pos": "K",
+      "team": "LAR",
+      "tier": 8,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "12015",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 88,
+      "name": "Texans D/ST",
+      "pos": "DST",
+      "team": "HOU",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "HOU",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 89,
+      "name": "Broncos D/ST",
+      "pos": "DST",
+      "team": "DEN",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "DEN",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 90,
+      "name": "Seahawks D/ST",
+      "pos": "DST",
+      "team": "SEA",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "SEA",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 91,
+      "name": "Rams D/ST",
+      "pos": "DST",
+      "team": "LAR",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "LAR",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 92,
+      "name": "Eagles D/ST",
+      "pos": "DST",
+      "team": "PHI",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "PHI",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 93,
+      "name": "Vikings D/ST",
+      "pos": "DST",
+      "team": "MIN",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "MIN",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 94,
+      "name": "Chargers D/ST",
+      "pos": "DST",
+      "team": "LAC",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "LAC",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 95,
+      "name": "Ravens D/ST",
+      "pos": "DST",
+      "team": "BAL",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "BAL",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 96,
+      "name": "Patriots D/ST",
+      "pos": "DST",
+      "team": "NE",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "NE",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 97,
+      "name": "Steelers D/ST",
+      "pos": "DST",
+      "team": "PIT",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "PIT",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 98,
+      "name": "Jaguars D/ST",
+      "pos": "DST",
+      "team": "JAX",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "JAX",
+        "yahoo": null,
+        "espn": null
+      }
+    },
+    {
+      "rank": 99,
+      "name": "Packers D/ST",
+      "pos": "DST",
+      "team": "GB",
+      "tier": 9,
+      "flag": null,
+      "note": "",
+      "ids": {
+        "sleeper": "GB",
+        "yahoo": null,
+        "espn": null
+      }
+    }
   ],
-
   "plan": [
-    { "position": "Running back",  "guidance": "Get **three RBs by the Jaylen Warren / Tony Pollard range** — roughly the end of round 5. The position thins hard right after that." },
-    { "position": "Wide receiver", "guidance": "Take **exactly two through rounds 5–6**. Don't front-load. The best WR values on this board all sit after pick 50." },
-    { "position": "Quarterback",   "guidance": "Two clean paths: **Daniels or Hurts in round 5**, or **wait and pair two QBs after pick 100**. Nothing in between is worth it." },
-    { "position": "Tight end",     "guidance": "Bowers or McBride early, or **skip to Mark Andrews** — he's the single biggest value on the board. Stream if both plans die." }
+    {
+      "position": "Running back",
+      "guidance": "Get **three RBs by the Jaylen Warren / Tony Pollard range** — roughly the end of round 5. The position thins hard right after that."
+    },
+    {
+      "position": "Wide receiver",
+      "guidance": "Take **exactly two through rounds 5–6**. Don't front-load. The best WR values on this board all sit after pick 50."
+    },
+    {
+      "position": "Quarterback",
+      "guidance": "Two clean paths: **Daniels or Hurts in round 5**, or **wait and pair two QBs after pick 100**. Nothing in between is worth it."
+    },
+    {
+      "position": "Tight end",
+      "guidance": "Bowers or McBride early, or **skip to Mark Andrews** — he's the single biggest value on the board. Stream if both plans die."
+    }
   ],
-
   "do_not_draft": [
-    { "name": "Justin Herbert",    "pos": "QB", "team": "LAC", "why": "ADP 66, projects 105th. Worst value on the board at any position." },
-    { "name": "Joe Burrow",        "pos": "QB", "team": "CIN", "why": "ADP 42, projects 75th. You are paying a round 4 price for a QB1 you can replicate in round 9." },
-    { "name": "Caleb Williams",    "pos": "QB", "team": "CHI", "why": "ADP 71, projects 97th — and Burden's groin thins the room." },
-    { "name": "Chuba Hubbard",     "pos": "RB", "team": "CAR", "why": "ADP 67, projects 95th, plus a week-to-week hamstring. Brooks is eating into the work." },
-    { "name": "R.J. Harvey",       "pos": "RB", "team": "DEN", "why": "ADP 90, projects outside 115." },
-    { "name": "Blake Corum",       "pos": "RB", "team": "LAR", "why": "ADP 95, projects outside 115. Kyren still owns the backfield." },
-    { "name": "Luther Burden III", "pos": "WR", "team": "CHI", "why": "Misses the whole preseason with a groin. ADP 58 hasn't corrected yet — let someone else eat it." }
+    {
+      "name": "Justin Herbert",
+      "pos": "QB",
+      "team": "LAC",
+      "why": "ADP 66, projects 105th. Worst value on the board at any position."
+    },
+    {
+      "name": "Joe Burrow",
+      "pos": "QB",
+      "team": "CIN",
+      "why": "ADP 42, projects 75th. You are paying a round 4 price for a QB1 you can replicate in round 9."
+    },
+    {
+      "name": "Caleb Williams",
+      "pos": "QB",
+      "team": "CHI",
+      "why": "ADP 71, projects 97th — and Burden's groin thins the room."
+    },
+    {
+      "name": "Chuba Hubbard",
+      "pos": "RB",
+      "team": "CAR",
+      "why": "ADP 67, projects 95th, plus a week-to-week hamstring. Brooks is eating into the work."
+    },
+    {
+      "name": "R.J. Harvey",
+      "pos": "RB",
+      "team": "DEN",
+      "why": "ADP 90, projects outside 115."
+    },
+    {
+      "name": "Blake Corum",
+      "pos": "RB",
+      "team": "LAR",
+      "why": "ADP 95, projects outside 115. Kyren still owns the backfield."
+    },
+    {
+      "name": "Luther Burden III",
+      "pos": "WR",
+      "team": "CHI",
+      "why": "Misses the whole preseason with a groin. ADP 58 hasn't corrected yet — let someone else eat it."
+    }
   ],
-
   "injuries": [
-    { "name": "Ricky Pearsall",    "team": "SF",  "severity": "out",  "status": "OUT — season|PCL surgery" },
-    { "name": "Chris Brazzell",    "team": "CAR", "severity": "out",  "status": "OUT — season|knee" },
-    { "name": "George Kittle",     "team": "SF",  "severity": "risk", "status": "PUP — Achilles|4 wks if unlisted" },
-    { "name": "Kenyon Sadiq",      "team": "NYJ", "severity": "risk", "status": "Hernia setback|will miss time" },
-    { "name": "Zach Charbonnet",   "team": "SEA", "severity": "risk", "status": "PUP — knee" },
-    { "name": "Luther Burden III", "team": "CHI", "severity": "risk", "status": "Groin — out preseason" },
-    { "name": "Jordyn Tyson",      "team": "NO",  "severity": "risk", "status": "Hamstring|Wk 1 in danger" },
-    { "name": "Chuba Hubbard",     "team": "CAR", "severity": "risk", "status": "Hamstring|week to week" },
-    { "name": "Tucker Kraft",      "team": "GB",  "severity": "ok",   "status": "Off PUP — ACL|tracking Wk 1" },
-    { "name": "Malik Nabers",      "team": "NYG", "severity": "ok",   "status": "ACL — running routes|tracking Wk 1" },
-    { "name": "Patrick Mahomes",   "team": "KC",  "severity": "ok",   "status": "Knee \"feels great\"|targeting Wk 1" },
-    { "name": "Isiah Pacheco",     "team": "DET", "severity": "ok",   "status": "MCL sprain|Wk 1 expected" },
-    { "name": "Puka Nacua",        "team": "LAR", "severity": "ok",   "status": "Groin — minor" },
-    { "name": "Jaylen Waddle",     "team": "DEN", "severity": "ok",   "status": "Leg strain — ~1 wk" },
-    { "name": "Josh Jacobs",       "team": "GB",  "severity": "ok",   "status": "Groin — ~1 wk" },
-    { "name": "DeVonta Smith",     "team": "PHI", "severity": "ok",   "status": "Hamstring — day to day" },
-    { "name": "Emeka Egbuka",      "team": "TB",  "severity": "ok",   "status": "Toe — minor" },
-    { "name": "Alec Pierce",       "team": "IND", "severity": "ok",   "status": "Ankle — off PUP soon" }
+    {
+      "name": "Ricky Pearsall",
+      "team": "SF",
+      "severity": "out",
+      "status": "OUT — season|PCL surgery"
+    },
+    {
+      "name": "Chris Brazzell",
+      "team": "CAR",
+      "severity": "out",
+      "status": "OUT — season|knee"
+    },
+    {
+      "name": "George Kittle",
+      "team": "SF",
+      "severity": "risk",
+      "status": "PUP — Achilles|4 wks if unlisted"
+    },
+    {
+      "name": "Kenyon Sadiq",
+      "team": "NYJ",
+      "severity": "risk",
+      "status": "Hernia setback|will miss time"
+    },
+    {
+      "name": "Zach Charbonnet",
+      "team": "SEA",
+      "severity": "risk",
+      "status": "PUP — knee"
+    },
+    {
+      "name": "Luther Burden III",
+      "team": "CHI",
+      "severity": "risk",
+      "status": "Groin — out preseason"
+    },
+    {
+      "name": "Jordyn Tyson",
+      "team": "NO",
+      "severity": "risk",
+      "status": "Hamstring|Wk 1 in danger"
+    },
+    {
+      "name": "Chuba Hubbard",
+      "team": "CAR",
+      "severity": "risk",
+      "status": "Hamstring|week to week"
+    },
+    {
+      "name": "Tucker Kraft",
+      "team": "GB",
+      "severity": "ok",
+      "status": "Off PUP — ACL|tracking Wk 1"
+    },
+    {
+      "name": "Malik Nabers",
+      "team": "NYG",
+      "severity": "ok",
+      "status": "ACL — running routes|tracking Wk 1"
+    },
+    {
+      "name": "Patrick Mahomes",
+      "team": "KC",
+      "severity": "ok",
+      "status": "Knee \"feels great\"|targeting Wk 1"
+    },
+    {
+      "name": "Isiah Pacheco",
+      "team": "DET",
+      "severity": "ok",
+      "status": "MCL sprain|Wk 1 expected"
+    },
+    {
+      "name": "Puka Nacua",
+      "team": "LAR",
+      "severity": "ok",
+      "status": "Groin — minor"
+    },
+    {
+      "name": "Jaylen Waddle",
+      "team": "DEN",
+      "severity": "ok",
+      "status": "Leg strain — ~1 wk"
+    },
+    {
+      "name": "Josh Jacobs",
+      "team": "GB",
+      "severity": "ok",
+      "status": "Groin — ~1 wk"
+    },
+    {
+      "name": "DeVonta Smith",
+      "team": "PHI",
+      "severity": "ok",
+      "status": "Hamstring — day to day"
+    },
+    {
+      "name": "Emeka Egbuka",
+      "team": "TB",
+      "severity": "ok",
+      "status": "Toe — minor"
+    },
+    {
+      "name": "Alec Pierce",
+      "team": "IND",
+      "severity": "ok",
+      "status": "Ankle — off PUP soon"
+    }
   ],
-
   "sleepers": [
-    { "name": "Mark Andrews",        "pos": "TE", "team": "BAL", "why": "ADP 115, projects 78th. Take him a full round early and still profit." },
-    { "name": "Jonathon Brooks",     "pos": "RB", "team": "CAR", "why": "Hubbard's hamstring is handing him touches right now." },
-    { "name": "Isaiah Likely",       "pos": "TE", "team": "NYJ", "why": "Efficient for years behind Andrews; finally gets volume as a Dart target." },
-    { "name": "Jayden Higgins",      "pos": "WR", "team": "HOU", "why": "Kirk gone, Dell rehabbing, Collins has a lower-body history. Third in targets as a rookie." },
-    { "name": "Stefon Diggs",        "pos": "WR", "team": "WAS", "why": "Signed Aug 7, going in round 12. That ADP climbs a round or two before Labor Day — buy now." },
-    { "name": "Josh Downs",          "pos": "WR", "team": "IND", "why": "Cheaper and steadier than Pierce out of the same offense." },
-    { "name": "Caleb Douglas",       "pos": "WR", "team": "MIA", "why": "Third-rounder into a gutted WR room — could start Week 1." },
-    { "name": "De'Zhaun Stribling",  "pos": "WR", "team": "SF",  "why": "Direct beneficiary of Pearsall's season-ending PCL." },
-    { "name": "Jordan Mason",        "pos": "RB", "team": "",    "why": "Standing handcuff value at a last-round price." },
-    { "name": "Mason Taylor",        "pos": "TE", "team": "NYJ", "why": "Sadiq's hernia setback opens the job." },
-    { "name": "Jake Tonges",         "pos": "TE", "team": "SF",  "why": "Pure streamer while Kittle sits on PUP." }
+    {
+      "name": "Mark Andrews",
+      "pos": "TE",
+      "team": "BAL",
+      "why": "ADP 115, projects 78th. Take him a full round early and still profit."
+    },
+    {
+      "name": "Jonathon Brooks",
+      "pos": "RB",
+      "team": "CAR",
+      "why": "Hubbard's hamstring is handing him touches right now."
+    },
+    {
+      "name": "Isaiah Likely",
+      "pos": "TE",
+      "team": "NYJ",
+      "why": "Efficient for years behind Andrews; finally gets volume as a Dart target."
+    },
+    {
+      "name": "Jayden Higgins",
+      "pos": "WR",
+      "team": "HOU",
+      "why": "Kirk gone, Dell rehabbing, Collins has a lower-body history. Third in targets as a rookie."
+    },
+    {
+      "name": "Stefon Diggs",
+      "pos": "WR",
+      "team": "WAS",
+      "why": "Signed Aug 7, going in round 12. That ADP climbs a round or two before Labor Day — buy now."
+    },
+    {
+      "name": "Josh Downs",
+      "pos": "WR",
+      "team": "IND",
+      "why": "Cheaper and steadier than Pierce out of the same offense."
+    },
+    {
+      "name": "Caleb Douglas",
+      "pos": "WR",
+      "team": "MIA",
+      "why": "Third-rounder into a gutted WR room — could start Week 1."
+    },
+    {
+      "name": "De'Zhaun Stribling",
+      "pos": "WR",
+      "team": "SF",
+      "why": "Direct beneficiary of Pearsall's season-ending PCL."
+    },
+    {
+      "name": "Jordan Mason",
+      "pos": "RB",
+      "team": "",
+      "why": "Standing handcuff value at a last-round price."
+    },
+    {
+      "name": "Mason Taylor",
+      "pos": "TE",
+      "team": "NYJ",
+      "why": "Sadiq's hernia setback opens the job."
+    },
+    {
+      "name": "Jake Tonges",
+      "pos": "TE",
+      "team": "SF",
+      "why": "Pure streamer while Kittle sits on PUP."
+    }
   ],
-
   "sources": [
-    { "label": "NBC Sports Top 200",        "url": "https://www.nbcsports.com/fantasy/football/news/2026-fantasy-football-top-200-overall-rankings" },
-    { "label": "Yahoo ADP vs. projections", "url": "https://sports.yahoo.com/fantasy/article/fantasy-football-using-player-projections-to-identify-the-best-and-worst-adps-on-yahoo-plus-where-to-draft-each-position-in-2026-154439610.html" },
-    { "label": "Yahoo camp injury report",  "url": "https://sports.yahoo.com/fantasy/article/nfl-training-camp-injury-report-tracking-the-latest-news-updates-for-2026-fantasy-football-163938278.html" },
-    { "label": "FantasyPros half-PPR ADP",  "url": "https://www.fantasypros.com/nfl/adp/half-point-ppr-overall.php" },
-    { "label": "NFL.com late-round sleepers","url": "https://www.nfl.com/news/2026-nfl-fantasy-football-six-late-round-sleepers-to-target" }
+    {
+      "label": "NBC Sports Top 200",
+      "url": "https://www.nbcsports.com/fantasy/football/news/2026-fantasy-football-top-200-overall-rankings"
+    },
+    {
+      "label": "Yahoo ADP vs. projections",
+      "url": "https://sports.yahoo.com/fantasy/article/fantasy-football-using-player-projections-to-identify-the-best-and-worst-adps-on-yahoo-plus-where-to-draft-each-position-in-2026-154439610.html"
+    },
+    {
+      "label": "Yahoo camp injury report",
+      "url": "https://sports.yahoo.com/fantasy/article/nfl-training-camp-injury-report-tracking-the-latest-news-updates-for-2026-fantasy-football-163938278.html"
+    },
+    {
+      "label": "FantasyPros half-PPR ADP",
+      "url": "https://www.fantasypros.com/nfl/adp/half-point-ppr-overall.php"
+    },
+    {
+      "label": "NFL.com late-round sleepers",
+      "url": "https://www.nfl.com/news/2026-nfl-fantasy-football-six-late-round-sleepers-to-target"
+    },
+    {
+      "label": "FantasyPros kicker tiers (2026-08-14)",
+      "url": "https://www.fantasypros.com/2026/08/fantasy-football-draft-rankings-tiers-kickers-2026-little-bates-aubrey/"
+    },
+    {
+      "label": "FantasyLife DST rankings (2026-08-08)",
+      "url": "https://www.fantasylife.com/articles/fantasy/defense-dst-rankings-for-2026-fantasy-football"
+    },
+    {
+      "label": "Sleeper players API (ids)",
+      "url": "https://docs.sleeper.com/"
+    }
   ]
 }

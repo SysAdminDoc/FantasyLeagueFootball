@@ -7,6 +7,13 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Changed
+- The board reads its starting lineup, format and provenance from the dataset
+  instead of assuming the packaged one. A `2qb` board is priced off two QB slots
+  but the page still showed "Yahoo default · 0.5 PPR · QB Single" and planned your
+  roster, your opponents' needs and live value over replacement with a single
+  quarterback — so the one format whose whole point is the second QB was the one
+  it got wrong. Datasets may now carry `lineup` and `provenance`; both are
+  optional and validated.
 - The phone layout leads with the readouts you use on the clock. Collapsing to one
   column used to append the rail *after* the board, putting Best available, your
   roster and the managers picking ahead of you some 15,000 px down; they now sit

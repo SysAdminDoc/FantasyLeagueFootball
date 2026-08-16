@@ -3,6 +3,7 @@
   "season": 2026,
   "scoring": "half_ppr",
   "format": "Yahoo default · 0.5 PPR · single QB",
+  "provenance": "Ranks follow the Rotoworld/NBC Sports top-200 consensus. Value and reach flags compare Yahoo ADP against Yahoo's projected finish.",
   "updated": "2026-08-16",
   "tiers": [
     {

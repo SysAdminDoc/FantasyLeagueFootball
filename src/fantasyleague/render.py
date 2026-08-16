@@ -13,7 +13,7 @@ from pathlib import Path
 
 from . import __version__
 from .board import TIER_BREAK_THRESHOLD
-from .models import Dataset
+from .models import DEFAULT_LINEUP, Dataset
 
 
 def _asset(name: str) -> str:
@@ -71,6 +71,10 @@ def render(
         "season": data.season,
         "scoring": data.scoring,
         "format": data.format,
+        # The page builds its roster slots, lineup needs and live value-over-
+        # replacement from this, so a superflex board prices and plans as one.
+        "lineup": data.lineup or DEFAULT_LINEUP,
+        "provenance": data.provenance,
         "updated": data.updated,
         "tiers": [asdict(t) for t in data.tiers],
         "players": [asdict(p) for p in data.players],

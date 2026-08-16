@@ -116,6 +116,7 @@ class Source:
 # Yahoo's default starting lineup (help.yahoo.com/kb/SLN22673).
 DEFAULT_LINEUP = {"QB": 1, "RB": 2, "WR": 2, "TE": 1, "FLEX": 1, "K": 1, "DST": 1}
 DEFAULT_ROSTER_SIZE = 15
+LINEUP_SLOTS = ("QB", "RB", "WR", "TE", "FLEX", "K", "DST")
 
 SCHEMA_VERSION = 1
 """Bump when a change to the dataset shape needs a migration in `Dataset.from_dict`."""
@@ -135,6 +136,13 @@ class Dataset:
     injuries: list[Injury] = field(default_factory=list)
     sleepers: list[Entry] = field(default_factory=list)
     sources: list[Source] = field(default_factory=list)
+    # Starting lineup this board is built and priced for. None means Yahoo's default.
+    # A superflex board is not a re-skin: with two QB slots the replacement is QB24,
+    # which is why the page, the roster card and value-over-replacement all have to
+    # read the lineup rather than assume one.
+    lineup: dict | None = None
+    # One line on where the ranks and flags came from, shown in the page footer.
+    provenance: str | None = None
     # Provenance of the players' adp fields: {source, format, window, url}. None if unset.
     adp: dict | None = None
     # Auction context {budget, roster_size, teams} when values were computed.
@@ -168,6 +176,8 @@ class Dataset:
                 injuries=[Injury(**i) for i in raw.get("injuries") or []],
                 sleepers=[Entry(**e) for e in raw.get("sleepers") or []],
                 sources=[Source(**s) for s in raw.get("sources") or []],
+                lineup=raw.get("lineup"),
+                provenance=raw.get("provenance"),
                 adp=raw.get("adp"),
                 auction=raw.get("auction"),
                 trending=raw.get("trending") or [],

@@ -209,7 +209,8 @@ def cmd_refresh(args: argparse.Namespace) -> int:
             print(f"Projections: {hits} of {len(data.players)} players ({scoring})")
 
             values = proj_mod.auction_values(
-                data, DEFAULT_LINEUP, args.teams, budget=args.budget, roster_size=args.roster_size
+                data, data.lineup or DEFAULT_LINEUP, args.teams,
+                budget=args.budget, roster_size=args.roster_size,
             )
             data = replace(
                 data,

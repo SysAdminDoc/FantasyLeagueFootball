@@ -16,6 +16,7 @@ from pathlib import Path
 from .models import (
     FLAGS,
     ID_SOURCES,
+    LINEUP_SLOTS,
     POSITIONS,
     SCHEMA_VERSION,
     SEVERITIES,
@@ -105,6 +106,19 @@ def check(raw: dict) -> list[str]:
     for key in ("scoring", "format", "updated"):
         if key in raw and not isinstance(raw[key], str):
             bad(f"/{key}", f"must be text, got {_t(raw[key])}")
+    if raw.get("provenance") is not None and not isinstance(raw["provenance"], str):
+        bad("/provenance", f"must be text, got {_t(raw['provenance'])}")
+
+    lineup = raw.get("lineup")
+    if lineup is not None:
+        if not isinstance(lineup, dict):
+            bad("/lineup", f"must be an object of slot counts, got {_t(lineup)}")
+        else:
+            for slot, count in lineup.items():
+                if slot not in LINEUP_SLOTS:
+                    bad(f"/lineup/{slot}", f"unknown slot (expected {', '.join(LINEUP_SLOTS)})")
+                elif isinstance(count, bool) or not isinstance(count, int) or count < 0:
+                    bad(f"/lineup/{slot}", f"must be a non-negative whole number, got {count!r}")
 
     tiers = raw.get("tiers")
     tier_numbers: set[int] = set()

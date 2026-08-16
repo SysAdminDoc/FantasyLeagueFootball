@@ -94,6 +94,11 @@ def build(
         tiers=tiers,
         scoring=scoring.replace("-", "_"),
         format=f"{label} · {teams}-team",
+        # The board is priced against this lineup, so the page has to plan with it
+        # too — a superflex board that shows one QB slot is not a superflex board.
+        lineup=dict(lineup),
+        provenance=f"Ranked by {label} ADP from Fantasy Football Calculator, "
+        f"projected and priced in {points_key.replace('_', '-')} scoring.",
     )
 
     values = proj_mod.auction_values(out, lineup, teams, budget=budget, roster_size=roster_size)

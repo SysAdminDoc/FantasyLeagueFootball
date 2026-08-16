@@ -244,7 +244,7 @@
     return out;
   }
 
-  var LINEUP_COUNT = { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
+  var LINEUP_COUNT = DATA.lineup || { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
 
   // ---- what the managers picking before you still need ----
   function opponentNeeds(current, myNext) {
@@ -318,17 +318,28 @@
       (pr[1] != null ? " · " + Math.round(pr[1] * 100) + "%" : "") + "</span>";
   }
 
-  // ---- your roster: Yahoo's default lineup, and what it still needs ----
-  // help.yahoo.com/kb/SLN22673: 1QB 2RB 2WR 1TE 1FLEX 1K 1DEF, then bench.
-  var LINEUP = [
-    { slot: "QB", takes: ["QB"] },
-    { slot: "RB", takes: ["RB"] }, { slot: "RB", takes: ["RB"] },
-    { slot: "WR", takes: ["WR"] }, { slot: "WR", takes: ["WR"] },
-    { slot: "TE", takes: ["TE"] },
-    { slot: "FLEX", takes: ["RB", "WR", "TE"] },
-    { slot: "K", takes: ["K"] },
-    { slot: "DEF", takes: ["DST"] }
-  ];
+  // ---- your roster: the board's own lineup, and what it still needs ----
+  // Yahoo's default is 1QB 2RB 2WR 1TE 1FLEX 1K 1DEF (help.yahoo.com/kb/SLN22673),
+  // but a superflex board starts two quarterbacks — assuming one made its roster
+  // card, its lineup needs and its live value all wrong for the format it was
+  // built for. DATA.lineup is what the board was priced against.
+  var SLOT_ORDER = ["QB", "RB", "WR", "TE", "FLEX", "K", "DST"];
+  var SLOT_LABEL = { DST: "DEF" };
+  var LINEUP = (function () {
+    var out = [];
+    var order = SLOT_ORDER.concat(Object.keys(LINEUP_COUNT).filter(function (p) {
+      return SLOT_ORDER.indexOf(p) === -1;
+    }));
+    order.forEach(function (pos) {
+      for (var i = 0; i < (LINEUP_COUNT[pos] || 0); i++) {
+        out.push({
+          slot: SLOT_LABEL[pos] || pos,
+          takes: pos === "FLEX" ? ["RB", "WR", "TE"] : [pos]
+        });
+      }
+    });
+    return out;
+  })();
 
   function myPlayers() {
     return log.filter(function (e) { return e.mine; })
@@ -496,11 +507,21 @@
 
   /* ---------- static shell built from DATA ---------- */
 
+  function lineupSummary() {
+    return LINEUP.reduce(function (acc, row) {
+      var last = acc[acc.length - 1];
+      if (last && last.slot === row.slot) last.n += 1;
+      else acc.push({ slot: row.slot, n: 1 });
+      return acc;
+    }, []).map(function (g) { return g.n + g.slot; }).join(" · ");
+  }
+
   function buildShell() {
+    // Read from the dataset: this used to claim "Yahoo default · 0.5 PPR · QB
+    // Single" on every board, including the superflex and full-PPR variants.
     document.getElementById("settings").innerHTML =
-      "<span><b>Format</b> Yahoo default</span>" +
-      "<span><b>Scoring</b> 0.5 PPR</span>" +
-      "<span><b>QB</b> Single</span>" +
+      "<span><b>Format</b> " + esc(DATA.format) + "</span>" +
+      "<span><b>Lineup</b> " + esc(lineupSummary()) + "</span>" +
       "<span><b>Board</b> " + DATA.players.length + " ranked + rails</span>";
 
     if (DATA.league) {
@@ -538,6 +559,12 @@
           '<span class="s-st st-ok">+' + Number(t.count).toLocaleString() + "</span></div>";
       }).join("");
     }
+
+    // Where the ranks came from is a property of the dataset, not of the template:
+    // a variant or a hand-written board must not credit Rotoworld for its order.
+    document.getElementById("provenance").textContent =
+      (DATA.provenance ? DATA.provenance + " " : "") +
+      "Data current through " + DATA.updated + " — recheck the injury board before you draft.";
 
     var adpEl = document.getElementById("adpnote");
     if (DATA.adp) {

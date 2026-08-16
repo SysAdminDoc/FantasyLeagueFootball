@@ -471,6 +471,44 @@ def test_odds_survive_past_the_sixteenth_round(browser, page_url):
     ctx.close()
 
 
+def test_superflex_board_plans_with_two_quarterbacks(browser, tmp_path):
+    """The page used to hard-code Yahoo's 1-QB lineup, so a 2QB board planned wrong."""
+    import dataclasses
+
+    from fantasyleague.variant import SUPERFLEX_LINEUP
+
+    data = board.load()
+    out = tmp_path / "superflex.html"
+    render.write(
+        dataclasses.replace(data, lineup=dict(SUPERFLEX_LINEUP), format="Superflex / 2QB · 12-team"),
+        out, teams=12, slot=1,
+    )
+    ctx = browser.new_context(viewport={"width": 1280, "height": 900}, color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(out.resolve().as_uri())
+    pg.wait_for_selector(".row")
+    settings = pg.locator("#settings").text_content()
+    assert "Superflex" in settings
+    assert "2QB" in settings.replace(" ", "")
+    # Claim two quarterbacks: both must fill dedicated QB slots, not one plus bench.
+    qbs = pg.evaluate("""() => DATA.players.filter(p => p.pos === 'QB').slice(0, 2).map(p => p.rank)""")
+    for rank in qbs:
+        pg.locator(f'.row[data-rk="{rank}"]').scroll_into_view_if_needed()
+        pg.locator(f'.row[data-rk="{rank}"]').click()
+        pg.locator("#toastMine").click()
+    roster = pg.locator("#roster").text_content()
+    assert roster.count("QB") >= 2
+    assert "BN" not in roster, "a second QB must take a starting slot in superflex"
+    ctx.close()
+
+
+def test_packaged_board_still_reads_as_yahoo_default(page):
+    settings = page.locator("#settings").text_content()
+    assert "Yahoo default" in settings
+    assert "1QB" in settings.replace(" ", "")
+    assert "Rotoworld" in page.locator("#provenance").text_content()
+
+
 def test_html_comment_script_in_a_note_cannot_blank_the_page(browser, tmp_path):
     """`<!--<script>` used to stop the closing tag closing anything: 0 rows, no error."""
     import dataclasses

@@ -8,10 +8,21 @@ pass rather than one error per run.
 
 from __future__ import annotations
 
+import difflib
 import json
+from dataclasses import fields
 from pathlib import Path
 
-from .models import FLAGS, ID_SOURCES, POSITIONS, SCHEMA_VERSION, SEVERITIES
+from .models import (
+    FLAGS,
+    ID_SOURCES,
+    POSITIONS,
+    SCHEMA_VERSION,
+    SEVERITIES,
+    Dataset,
+    Player,
+    Tier,
+)
 
 REQUIRED_TOP = ("season", "scoring", "format", "updated", "tiers", "players")
 LIST_FIELDS = {
@@ -22,9 +33,51 @@ LIST_FIELDS = {
     "sources": ("label", "url"),
 }
 
+# Taken from the dataclasses so the checker cannot drift from what actually loads:
+# a key the model doesn't accept is a TypeError deep in `Dataset.from_dict`, which
+# is a traceback rather than the "every problem, with a pointer" this module promises.
+PLAYER_KEYS = frozenset(f.name for f in fields(Player))
+TIER_KEYS = frozenset(f.name for f in fields(Tier))
+TOP_KEYS = frozenset(f.name for f in fields(Dataset))
+ROW_KEYS = {
+    "plan": frozenset(LIST_FIELDS["plan"]),
+    "do_not_draft": frozenset(LIST_FIELDS["do_not_draft"]),
+    "injuries": frozenset(LIST_FIELDS["injuries"]),
+    "sleepers": frozenset(LIST_FIELDS["sleepers"]),
+    "sources": frozenset(LIST_FIELDS["sources"]),
+}
+# Fields that must be text when present, per row type.
+STRING_FIELDS = {
+    "players": ("name", "pos", "team", "note"),
+    "tiers": ("name", "range", "note"),
+    "plan": ("position", "guidance"),
+    "do_not_draft": ("name", "pos", "team", "why"),
+    "injuries": ("name", "team", "severity", "status"),
+    "sleepers": ("name", "pos", "team", "why"),
+    "sources": ("label", "url"),
+}
+
 
 def _t(value: object) -> str:
     return type(value).__name__
+
+
+def _unknown_keys(row: dict, allowed: frozenset[str], at: str, bad) -> None:
+    for key in sorted(set(row) - allowed):
+        near = difflib.get_close_matches(key, sorted(allowed), n=1, cutoff=0.7)
+        hint = f" (did you mean {near[0]!r}?)" if near else ""
+        bad(f"{at}/{key}", f"unknown field{hint}")
+
+
+def _strings(row: dict, keys: tuple[str, ...], at: str, bad, nullable: bool = True) -> None:
+    for key in keys:
+        if key not in row:
+            continue
+        value = row[key]
+        if value is None and nullable:
+            continue
+        if not isinstance(value, str):
+            bad(f"{at}/{key}", f"must be text, got {_t(value)}")
 
 
 def check(raw: dict) -> list[str]:
@@ -46,6 +99,12 @@ def check(raw: dict) -> list[str]:
     for key in REQUIRED_TOP:
         if key not in raw:
             bad(f"/{key}", "required field is missing")
+    _unknown_keys(raw, TOP_KEYS, "", bad)
+    if "season" in raw and not isinstance(raw["season"], int):
+        bad("/season", f"must be a year, got {_t(raw['season'])}")
+    for key in ("scoring", "format", "updated"):
+        if key in raw and not isinstance(raw[key], str):
+            bad(f"/{key}", f"must be text, got {_t(raw[key])}")
 
     tiers = raw.get("tiers")
     tier_numbers: set[int] = set()
@@ -61,6 +120,8 @@ def check(raw: dict) -> list[str]:
             for key in ("n", "name", "range", "note"):
                 if key not in t:
                     bad(f"{at}/{key}", "required field is missing")
+            _unknown_keys(t, TIER_KEYS, at, bad)
+            _strings(t, STRING_FIELDS["tiers"], at, bad)
             n = t.get("n")
             if isinstance(n, int):
                 if n in tier_numbers:
@@ -87,6 +148,8 @@ def check(raw: dict) -> list[str]:
         for key in ("rank", "name", "pos", "team", "tier"):
             if key not in p:
                 bad(f"{at}/{key}", "required field is missing")
+        _unknown_keys(p, PLAYER_KEYS, at, bad)
+        _strings(p, STRING_FIELDS["players"], at, bad)
 
         rank, name = p.get("rank"), p.get("name")
         if isinstance(rank, int):
@@ -127,7 +190,8 @@ def check(raw: dict) -> list[str]:
             bad(f"{at}/bye", f"must be a week between 1 and 18 or null, got {bye!r}")
 
         ids = p.get("ids")
-        if ids is not None:
+        if "ids" in p:
+            # None is not "absent": `Player(ids=None)` raises on `set(self.ids)`.
             if not isinstance(ids, dict):
                 bad(f"{at}/ids", f"must be an object, got {_t(ids)}")
             else:
@@ -155,6 +219,10 @@ def check(raw: dict) -> list[str]:
             for key in required:
                 if key not in row:
                     bad(f"{at}/{key}", "required field is missing")
+            _unknown_keys(row, ROW_KEYS[field_name], at, bad)
+            # Rail text is not nullable: a null `status` used to validate cleanly,
+            # build cleanly, then throw in the browser and render an empty page.
+            _strings(row, STRING_FIELDS[field_name], at, bad, nullable=False)
             if field_name == "injuries" and row.get("severity") not in SEVERITIES:
                 bad(f"{at}/severity", f"{row.get('severity')!r} is not one of {', '.join(SEVERITIES)}")
             if field_name == "sources" and "url" in row:

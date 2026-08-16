@@ -521,7 +521,7 @@
       return '<div class="statusline"><span class="s-nm">' + esc(i.name) +
         ' <span class="p">' + esc(i.team) + "</span></span>" +
         '<span class="s-st st-' + i.severity + '">' +
-        i.status.split("|").map(esc).join("<br>") + "</span></div>";
+        String(i.status == null ? "" : i.status).split("|").map(esc).join("<br>") + "</span></div>";
     }).join("");
 
     document.getElementById("slp").innerHTML = DATA.sleepers.map(function (e) {

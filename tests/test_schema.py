@@ -75,6 +75,82 @@ def test_duplicate_names_and_ids():
     assert any("/players/1/ids/sleeper: duplicate id" in p for p in schema.check(raw))
 
 
+def test_unknown_field_is_reported_not_raised(tmp_path):
+    """`notes` for `note` used to be a TypeError traceback from both validate and build."""
+    raw = base()
+    raw["players"][0]["notes"] = "typo"
+    problems = schema.check(raw)
+    assert any("/players/0/notes: unknown field (did you mean 'note'?)" in p for p in problems)
+    raw["tiers"][0]["nmae"] = "typo"
+    assert any("/tiers/0/nmae: unknown field" in p for p in schema.check(raw))
+    raw2 = base()
+    raw2["extras"] = 1
+    assert any("/extras: unknown field" in p for p in schema.check(raw2))
+
+
+def test_null_where_an_object_or_text_belongs():
+    raw = base()
+    raw["players"][0]["ids"] = None
+    assert any("/players/0/ids: must be an object, got NoneType" in p for p in schema.check(raw))
+
+    raw = base()
+    raw["players"][0]["name"] = 12
+    assert any("/players/0/name: must be text" in p for p in schema.check(raw))
+
+    raw = base()
+    raw["season"] = "2026"
+    assert any("/season: must be a year, got str" in p for p in schema.check(raw))
+
+
+def test_null_injury_status_is_caught_before_it_blanks_the_page():
+    raw = base()
+    raw["injuries"] = [{"name": "X", "team": "SF", "severity": "out", "status": None}]
+    assert any("/injuries/0/status: must be text, got NoneType" in p for p in schema.check(raw))
+
+
+def test_non_http_source_url_is_rejected():
+    raw = base()
+    raw["sources"] = [{"label": "x", "url": "javascript:alert(1)"}]
+    assert any("/sources/0/url: must be an http(s) URL" in p for p in schema.check(raw))
+    raw["sources"] = [{"label": "x", "url": "https://example.com"}]
+    assert not [p for p in schema.check(raw) if "/sources" in p]
+
+
+def test_malformed_dataset_loads_as_a_readable_error(tmp_path):
+    """`board.load` must not leak KeyError/TypeError tracebacks to the CLI."""
+    import json as _json
+
+    from fantasyleague import board as board_mod
+
+    raw = base()
+    del raw["season"]
+    path = tmp_path / "no-season.json"
+    path.write_text(_json.dumps(raw), encoding="utf-8")
+    with pytest.raises(ValueError, match="missing the required field 'season'"):
+        board_mod.load(path)
+
+    raw = base()
+    raw["players"][0]["notes"] = "typo"
+    path = tmp_path / "unknown-key.json"
+    path.write_text(_json.dumps(raw), encoding="utf-8")
+    with pytest.raises(ValueError, match="does not match the expected shape"):
+        board_mod.load(path)
+
+
+def test_cli_reports_shape_errors_without_a_traceback(tmp_path, capsys):
+    import json as _json
+
+    raw = base()
+    raw["players"][0]["notes"] = "typo"
+    path = tmp_path / "bad.json"
+    path.write_text(_json.dumps(raw), encoding="utf-8")
+    assert cli.main(["validate", str(path)]) == 1
+    assert cli.main(["--data", str(path), "build", "-o", str(tmp_path / "b.html")]) == 1
+    err = capsys.readouterr().err
+    assert "Traceback" not in err
+    assert "unknown field" in err
+
+
 def test_unknown_id_source_and_bad_numbers():
     raw = base()
     raw["players"][0]["ids"] = {"nfl": "x"}

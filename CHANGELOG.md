@@ -17,6 +17,12 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   board and late-round targets are reachable without scrolling past 200 rows.
 
 ### Fixed
+- `validate` reports the dataset shapes that used to be raw tracebacks: an unknown
+  field (with a "did you mean 'note'?" hint), `ids: null`, a number where text
+  belongs, and a missing top-level field. `build` on such a file now prints one
+  line pointing at `validate` rather than a `TypeError` stack. A null injury
+  `status` is caught too — it passed validation, built cleanly, then threw in the
+  browser and rendered an empty page.
 - Network failures are caught as a family rather than by name. `RemoteDisconnected`
   is a `ConnectionResetError` and `IncompleteRead` is an `HTTPException`, so neither
   was a `URLError`: a server closing a keep-alive mid-draft killed the Sleeper

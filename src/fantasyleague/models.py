@@ -153,22 +153,35 @@ class Dataset:
                 f"({SCHEMA_VERSION}) — upgrade fantasyleague"
             )
         # v0 (no key) is v1 without the stamp: every field it lacks already defaults.
-        return cls(
-            schema_version=SCHEMA_VERSION,
-            season=raw["season"],
-            scoring=raw["scoring"],
-            format=raw["format"],
-            updated=raw["updated"],
-            tiers=[Tier(**t) for t in raw["tiers"]],
-            players=[Player(**p) for p in raw["players"]],
-            # Rails are optional: a hand-written board may carry none of them.
-            plan=[PlanItem(**p) for p in raw.get("plan") or []],
-            do_not_draft=[Entry(**e) for e in raw.get("do_not_draft") or []],
-            injuries=[Injury(**i) for i in raw.get("injuries") or []],
-            sleepers=[Entry(**e) for e in raw.get("sleepers") or []],
-            sources=[Source(**s) for s in raw.get("sources") or []],
-            adp=raw.get("adp"),
-            auction=raw.get("auction"),
-            trending=raw.get("trending") or [],
-            refreshed=raw.get("refreshed"),
-        )
+        try:
+            return cls(
+                schema_version=SCHEMA_VERSION,
+                season=raw["season"],
+                scoring=raw["scoring"],
+                format=raw["format"],
+                updated=raw["updated"],
+                tiers=[Tier(**t) for t in raw["tiers"]],
+                players=[Player(**p) for p in raw["players"]],
+                # Rails are optional: a hand-written board may carry none of them.
+                plan=[PlanItem(**p) for p in raw.get("plan") or []],
+                do_not_draft=[Entry(**e) for e in raw.get("do_not_draft") or []],
+                injuries=[Injury(**i) for i in raw.get("injuries") or []],
+                sleepers=[Entry(**e) for e in raw.get("sleepers") or []],
+                sources=[Source(**s) for s in raw.get("sources") or []],
+                adp=raw.get("adp"),
+                auction=raw.get("auction"),
+                trending=raw.get("trending") or [],
+                refreshed=raw.get("refreshed"),
+            )
+        except KeyError as exc:
+            raise ValueError(
+                f"dataset is missing the required field {exc.args[0]!r} — "
+                "run `fantasyleague validate` for the full list"
+            ) from exc
+        except TypeError as exc:
+            # An unknown or mistyped key: a raw TypeError traceback is no use to
+            # someone hand-editing a board.
+            raise ValueError(
+                f"dataset does not match the expected shape ({exc}) — "
+                "run `fantasyleague validate` for the full list"
+            ) from exc

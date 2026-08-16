@@ -21,7 +21,10 @@ Initial release.
   and flags. Bad data fails at load rather than rendering a broken board.
 - Dark-first theme with a mirrored light palette; both `prefers-color-scheme` and an
   explicit `data-theme` stamp resolve correctly.
-- 36 tests covering data integrity, draft-time queries, render self-containment, and the
-  template/script DOM contract.
+- 42 tests covering data integrity, draft-time queries, render self-containment, the
+  template/script DOM contract, and a real-browser smoke suite (Playwright; skipped when
+  unavailable).
+- README screenshots (dark, light, mid-draft) captured from the rendered board.
+- Published to GitHub: https://github.com/SysAdminDoc/FantasyLeagueFootball
 
 [0.0.1]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.0.1

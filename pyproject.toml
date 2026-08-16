@@ -22,7 +22,7 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff==0.8.2"]
+dev = ["pytest>=8", "ruff==0.8.2", "playwright>=1.60"]
 
 [project.scripts]
 fantasyleague = "fantasyleague.cli:main"

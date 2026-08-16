@@ -124,13 +124,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Acceptance: cross off → toast "Gibbs crossed off · Undo" for 6 s; Reset → toast "Board reset · Undo" restores all; after 3 RBs in 4 consecutive picks a "RB run" chip appears on the RB filter.
   Complexity: M
 
-- [ ] P1 — Playwright browser smoke test
-  Why: nothing has ever rendered the page in a real browser; a runtime JS error would blank the board and pass all 36 tests.
-  Evidence: `tests/test_assets.py` docstring admits it stands in for "does the page boot"; Playwright + Chromium already installed on the dev machine (`~/AppData/Local/ms-playwright`).
-  Touches: `pyproject.toml` (`dev` += `playwright`, `pytest-playwright`), new `tests/test_browser.py` (build → open `file://` → assert 75 `.row`, click row 1 → `.gone`, drain tier 1 to 2 → `.breakflag` visible, reload → state persists), CLAUDE.md test command.
-  Acceptance: `python -m pytest tests/test_browser.py` passes locally in <10 s; the P0 tier-break fix has a browser-level regression test.
-  Complexity: S
-
 - [ ] P1 — `next --drafted` accepts names
   Why: at the table nobody knows a player's rank; typing `--drafted 1 2 3 5 8` is unusable mid-draft.
   Evidence: `src/fantasyleague/cli.py` `cmd_next` (`type=int`).
@@ -167,13 +160,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
   Touches: `sources/fantasypros.py` (`FANTASYPROS_API_KEY` env / `--ecr-key`, half-PPR draft rankings endpoint, on-disk cache), `board.py` (adopt `adp`, `rank_std`, `bye`), tests with fixture JSON.
   Acceptance: with a key, `refresh --ecr` populates `adp`/`sd`/`bye` for ≥90 % of board players by id/name; without a key the command explains how to get one and exits 0.
   Complexity: M — feeds **Live ADP fetch** and **Snake-draft awareness**.
-
-- [ ] P2 — README screenshot and GitHub publish + v0.0.1 release
-  Why: repo rules require a screenshot on any UI change and a GitHub release for milestones; the repo currently has no remote and the README shows no image.
-  Evidence: `README.md` (no `![…]`); `git remote -v` empty; global rules "Screenshots for READMEs", "GitHub Release on significant work".
-  Touches: `README.md` (`docs/screenshot-dark.png`, `docs/screenshot-light.png` captured at 125 % DPI with `SetProcessDPIAware`), `gh repo create SysAdminDoc/FantasyLeagueFootball`, branch protection, `gh release create v0.0.1` with wheel + `draft-board.html`.
-  Acceptance: release page shows three assets; README renders both screenshots; `git log` shows no AI authorship.
-  Complexity: S
 
 - [ ] P2 — Single source for the tier-break threshold
   Why: `TIER_BREAK_THRESHOLD` (Python) and `TIER_BREAK` (JS) are duplicated and only a test keeps them aligned.

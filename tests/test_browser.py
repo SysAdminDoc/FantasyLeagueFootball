@@ -561,3 +561,60 @@ def test_keeper_toggle_shows_age_and_persists(page):
     page.wait_for_selector(".row")
     assert page.locator("#keeper").get_attribute("aria-pressed") == "true"
     assert page.locator(".age").count() > 100
+
+
+def test_live_value_resorts_within_tiers_and_persists(page):
+    btn = page.locator("#liveval")
+    assert btn.get_attribute("aria-pressed") == "false"
+    assert page.locator(".vor").count() == 0
+
+    order_before = page.locator('.tier[data-tier="5"] .row').evaluate_all(
+        "els => els.map(e => Number(e.dataset.rk))"
+    )
+    assert order_before == sorted(order_before), "consensus order is by rank"
+
+    btn.click()
+    assert btn.get_attribute("aria-pressed") == "true"
+    assert page.locator(".vor").count() > 50
+    assert page.locator('.row[data-rk="1"] .vor').inner_text().startswith("+")
+
+    order_after = page.locator('.tier[data-tier="5"] .row').evaluate_all(
+        "els => els.map(e => Number(e.dataset.rk))"
+    )
+    assert sorted(order_after) == sorted(order_before), "no player may leave its tier"
+    assert order_after != order_before, "live value should reorder a mid board tier"
+
+    page.reload()
+    page.wait_for_selector(".row")
+    assert page.locator("#liveval").get_attribute("aria-pressed") == "true"
+
+
+def test_live_value_rises_as_a_position_thins(page):
+    page.locator("#liveval").click()
+    data = board.load()
+    te = next(p for p in data.players if p.pos == "TE" and p.projected)
+    before = page.locator(f'.row[data-rk="{te.rank}"] .vor').inner_text()
+
+    # Take every tight end ranked above him; his replacement level must fall.
+    for other in [p for p in data.players if p.pos == "TE" and p.rank != te.rank][:12]:
+        page.locator(f'.row[data-rk="{other.rank}"]').click()
+    after = page.locator(f'.row[data-rk="{te.rank}"] .vor').inner_text()
+    assert int(after.lstrip("+")) > int(before.lstrip("+")), (
+        f"a thinning position should gain value ({before} -> {after})"
+    )
+
+
+def test_opponent_needs_list_the_picks_before_yours(page):
+    card = page.locator("#opponentcard")
+    assert card.is_hidden(), "nothing to show until a slot is set"
+    page.locator("#slot").fill("4")          # 12 teams: picks 1-3 come before yours
+    assert card.is_visible()
+    lines = page.locator(".oppline")
+    assert lines.count() == 3
+    assert lines.first.inner_text().startswith("#1 · T1")
+    assert "needs" in lines.first.inner_text()
+
+    # Once your pick is on the clock there is nobody in front of you.
+    for rk in (1, 2, 3):
+        page.locator(f'.row[data-rk="{rk}"]').click()
+    assert card.is_hidden()

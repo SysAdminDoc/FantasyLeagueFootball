@@ -232,6 +232,25 @@ h1 {
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .bye.clash { color: var(--warn); font-weight: 700; }
+/* Opponent needs, and the live-value ordering */
+.oppline {
+  display: grid; grid-template-columns: 54px minmax(0,1fr); gap: 8px;
+  align-items: baseline; font-size: 13px;
+}
+.oppline .who2 {
+  font-family: var(--f-display); font-size: 11px; letter-spacing: .08em;
+  font-weight: 700; color: var(--ink-dim);
+}
+.oppline .needs2 { color: var(--ink-mid); }
+.oppline .needs2 b { color: var(--accent); font-weight: 600; }
+.oppline.threat .needs2 b { color: var(--avoid); }
+.vor {
+  font-family: var(--f-data); font-size: 11px; color: var(--accent);
+  font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 700;
+}
+.tier.resorted .tier-name::after {
+  content: " · by live value"; font-size: 10px; letter-spacing: .06em; color: var(--ink-dim);
+}
 .age {
   font-family: var(--f-data); font-size: 11px; color: var(--ink-dim);
   font-variant-numeric: tabular-nums; white-space: nowrap;

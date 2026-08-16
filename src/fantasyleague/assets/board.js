@@ -137,6 +137,7 @@
   var keeperMode = !!draft.keeper;
   function saveDraft() {
     draft.keeper = keeperMode;
+    draft.liveval = liveMode;
     try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {}
   }
 
@@ -163,6 +164,97 @@
     var sigma = Math.max(sd == null ? adp / 4 : sd, 0.5);
     return 1 - phi((pick - adp) / sigma);
   }
+  // ---- live value: value over replacement, recomputed against who is left ----
+  // A static rank cannot know that every startable tight end is gone. VOR against
+  // the *remaining* pool can: as a position thins, its replacement level drops and
+  // everyone still on the board at that position gains value.
+  var FLEX_SHARE = { RB: 0.5, WR: 0.4, TE: 0.1 };
+  var liveMode = !!draft.liveval;
+
+  function remaining() {
+    return DATA.players.filter(function (p) {
+      return !gone.has(String(p.rank)) && p.projected != null;
+    });
+  }
+
+  function liveVor() {
+    var pool = remaining();
+    if (!pool.length) return {};
+    var demand = {};
+    Object.keys(LINEUP_COUNT).forEach(function (pos) {
+      if (pos === "FLEX") {
+        Object.keys(FLEX_SHARE).forEach(function (f) {
+          demand[f] = (demand[f] || 0) + LINEUP_COUNT.FLEX * FLEX_SHARE[f];
+        });
+      } else {
+        demand[pos] = (demand[pos] || 0) + LINEUP_COUNT[pos];
+      }
+    });
+
+    var byPos = {};
+    pool.forEach(function (p) { (byPos[p.pos] = byPos[p.pos] || []).push(p.projected); });
+    var levels = {};
+    Object.keys(byPos).forEach(function (pos) {
+      var pts = byPos[pos].sort(function (a, b) { return b - a; });
+      var need = Math.round((demand[pos] || 1) * draft.teams);
+      levels[pos] = pts[Math.max(0, Math.min(pts.length - 1, need - 1))];
+    });
+
+    var out = {};
+    pool.forEach(function (p) {
+      if (levels[p.pos] != null) out[p.rank] = Math.round(p.projected - levels[p.pos]);
+    });
+    return out;
+  }
+
+  var LINEUP_COUNT = { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
+
+  // ---- what the managers picking before you still need ----
+  function opponentNeeds(current, myNext) {
+    if (!draft.slot || !myNext || myNext <= current) return [];
+    // Which slot owns each overall pick in a snake draft.
+    var slotOf = function (pick) {
+      var rnd = Math.floor((pick - 1) / draft.teams);
+      var idx = (pick - 1) % draft.teams;
+      return rnd % 2 === 0 ? idx + 1 : draft.teams - idx;
+    };
+    var rosters = {};
+    log.forEach(function (e, i) {
+      var owner = slotOf(i + 1);
+      var p = byRank(e.rank);
+      if (p) (rosters[owner] = rosters[owner] || []).push(p);
+    });
+
+    var out = [];
+    for (var pick = current; pick < myNext; pick++) {
+      var owner = slotOf(pick);
+      var res = fillLineup(rosters[owner] || []);
+      var open = res.filled.filter(function (r) { return !r.player; }).map(function (r) { return r.slot; });
+      out.push({ pick: pick, slot: owner, open: open });
+    }
+    return out;
+  }
+
+  function paintOpponents(current, mine) {
+    var card = document.getElementById("opponentcard");
+    var rows = opponentNeeds(current, mine[0]);
+    if (!rows.length) { card.hidden = true; return; }
+    card.hidden = false;
+    // A position two or more managers still need is the one that will not last.
+    var counts = {};
+    rows.forEach(function (r) {
+      r.open.forEach(function (slot) { counts[slot] = (counts[slot] || 0) + 1; });
+    });
+    document.getElementById("opponents").innerHTML = rows.map(function (r) {
+      var threat = r.open.some(function (slot) { return counts[slot] >= 2; });
+      return '<div class="oppline' + (threat ? " threat" : "") + '">' +
+        '<span class="who2">#' + r.pick + " · T" + r.slot + "</span>" +
+        '<span class="needs2">' +
+        (r.open.length ? "needs <b>" + r.open.slice(0, 4).join("</b>, <b>") + "</b>" : "lineup full") +
+        "</span></div>";
+    }).join("");
+  }
+
   // Keeper value tracks the age curve: backs fall off a cliff around 28, receivers
   // and tight ends hold value later, quarterbacks longest of all.
   var AGE_CLIFF = { RB: 27, WR: 29, TE: 30, QB: 34, K: 99, DST: 99 };
@@ -466,7 +558,7 @@
           '<span class="who"><span class="nm">' + esc(p.name) + "</span>" +
           '<span class="pos">' + esc(p.pos) + " · " + esc(p.team) + "</span>" +
           (p.note ? '<span class="note">' + esc(p.note) + "</span>" : "") + "</span>" +
-          '<span class="flags"><span class="ageslot"></span><span class="valslot"></span><span class="byeslot"></span><span class="oddsslot"></span>' +
+          '<span class="flags"><span class="vorslot"></span><span class="ageslot"></span><span class="valslot"></span><span class="byeslot"></span><span class="oddsslot"></span>' +
           (p.flag ? '<span class="flag f-' + p.flag + '">' + FLAG_LABEL[p.flag] + "</span>" : "") +
           "</span>";
         b.addEventListener("click", function () {
@@ -502,6 +594,8 @@
     var mine = nextPicks(current, 2);
     paintPickInfo(current, mine);
     paintRoster();
+    paintOpponents(current, mine);
+    var vor = liveMode ? liveVor() : {};
 
     Array.prototype.forEach.call(document.querySelectorAll(".row"), function (r) {
       var isGone = gone.has(r.dataset.rk);
@@ -513,6 +607,10 @@
       var pl = byRank(Number(r.dataset.rk));
       r.classList.toggle("mine", !!(isGone && (entryFor(pl.rank) || {}).mine));
       r.querySelector(".oddsslot").innerHTML = isGone ? "" : oddsHtml(pl, mine);
+      r.querySelector(".vorslot").innerHTML = liveMode && vor[pl.rank] != null && !isGone
+        ? '<span class="vor" title="Points above the replacement still available">+' +
+          vor[pl.rank] + "</span>"
+        : "";
       r.querySelector(".ageslot").innerHTML = keeperMode && pl.age
         ? '<span class="age ' + ageClass(pl) + '" title="' + esc(ageTitle(pl)) + '">' +
           pl.age + "y</span>"
@@ -524,6 +622,22 @@
         ? '<span class="bye' + (myByeWeeks[pl.bye] >= 2 && !isGone ? " clash" : "") + '" title="Bye week ' +
           pl.bye + '">B' + pl.bye + "</span>"
         : "";
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll(".tier"), function (sec) {
+      sec.classList.toggle("resorted", liveMode);
+      var host = sec.querySelector(".rows");
+      var rows = Array.prototype.slice.call(host.querySelectorAll(".row"));
+      rows.sort(function (a, b) {
+        if (liveMode) {
+          var va = vor[Number(a.dataset.rk)], vb = vor[Number(b.dataset.rk)];
+          if (va != null && vb != null && va !== vb) return vb - va;
+          if (va != null && vb == null) return -1;
+          if (va == null && vb != null) return 1;
+        }
+        return Number(a.dataset.rk) - Number(b.dataset.rk);
+      });
+      rows.forEach(function (r) { host.appendChild(r); });
     });
 
     var filtered = posFilter !== "ALL" || !!q;
@@ -609,6 +723,17 @@
   document.getElementById("search").addEventListener("input", paint);
   document.getElementById("search").addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); crossOffSearchMatch(); }
+  });
+
+  var liveBtn = document.getElementById("liveval");
+  liveBtn.setAttribute("aria-pressed", liveMode ? "true" : "false");
+  liveBtn.addEventListener("click", function () {
+    liveMode = !liveMode;
+    draft.liveval = liveMode;
+    liveBtn.setAttribute("aria-pressed", liveMode ? "true" : "false");
+    saveDraft();
+    say(liveMode ? "Sorted by live value over replacement." : "Back to consensus rank.");
+    paint();
   });
 
   var keeperBtn = document.getElementById("keeper");

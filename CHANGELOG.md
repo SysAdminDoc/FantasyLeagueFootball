@@ -22,6 +22,12 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- **Live value** toggle: value over replacement recomputed against the players actually
+  left, so a thinning position lifts everyone still on the board at it. Rows resort inside
+  their tier and show `+104`; a static rank cannot tell you every startable tight end is gone.
+- **Before your next pick**: the managers picking between now and your turn, each with the
+  lineup slots they still need. A position two or more of them need is marked in red — that
+  is the run that will not wait for you.
 - Keeper/dynasty context. `refresh` attaches age and completed seasons from Sleeper
   (188 of 200 players), and a **Keeper info** toggle puts age on every row — green below
   the position's age cliff, amber at or past it (RB 27, WR 29, TE 30, QB 34), with the

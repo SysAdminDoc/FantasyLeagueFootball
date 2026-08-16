@@ -161,6 +161,20 @@
     });
   }
 
+  // Search has to ignore punctuation: seven players on the board have apostrophes
+  // (Ja'Marr, De'Von, Ka'imi...) and nobody types them on the clock. Mirrors
+  // board.normalise_name in Python.
+  // Hyphens become spaces, other punctuation is dropped — same rule as
+  // board.normalise_name in Python.
+  var NON_NAME = new RegExp("[^a-z0-9 ]", "g");
+  var HYPHEN = new RegExp("-", "g");
+  var SPACES = new RegExp(" +", "g");
+  function normName(s) {
+    var lowered = String(s).toLowerCase().replace(HYPHEN, " ");
+    if (lowered.normalize) lowered = lowered.normalize("NFD");
+    return lowered.replace(NON_NAME, "").replace(SPACES, " ").trim();
+  }
+
   // Escape first, then promote **bold** — the only markup guidance text may carry.
   function emph(s) {
     return esc(s).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
@@ -194,15 +208,25 @@
 
   // ---- draft position: teams + slot, persisted per board; snake math mirrors draft.py ----
   var DKEY = KEY + "-draft";
-  var draft = { teams: (DATA.draft && DATA.draft.teams) || 12, slot: (DATA.draft && DATA.draft.slot) || null };
+  var seed = { teams: (DATA.draft && DATA.draft.teams) || 12, slot: (DATA.draft && DATA.draft.slot) || null };
+  var draft = { teams: seed.teams, slot: seed.slot };
   try {
     var dsaved = JSON.parse(localStorage.getItem(DKEY) || "null");
-    if (dsaved && dsaved.teams) draft = dsaved;
+    if (dsaved && dsaved.teams) {
+      // Page edits normally win, but a rebuild that passes a *different*
+      // --teams/--slot is the operator changing their mind; honour it rather
+      // than silently showing the settings they just replaced.
+      var cliChanged = !dsaved.seed ||
+        dsaved.seed.teams !== seed.teams || dsaved.seed.slot !== seed.slot;
+      draft = cliChanged ? { teams: seed.teams, slot: seed.slot, keeper: dsaved.keeper,
+                             liveval: dsaved.liveval } : dsaved;
+    }
   } catch (e) { /* storage already reported */ }
   var keeperMode = !!draft.keeper;
   function saveDraft() {
     draft.keeper = keeperMode;
     draft.liveval = liveMode;
+    draft.seed = seed;
     try { localStorage.setItem(DKEY, JSON.stringify(draft)); } catch (e) {}
   }
 
@@ -583,8 +607,18 @@
       "<span><b>Lineup</b> " + esc(lineupSummary()) + "</span>" +
       "<span><b>Board</b> " + DATA.players.length + " ranked + rails</span>";
 
+    // After a draft-morning refresh the ranks keep their date but the market data
+    // is newer; showing only the older one reads as "the refresh didn't take".
+    var eyebrow = document.getElementById("eyebrow");
+    if (DATA.refreshed) {
+      // Same day as the ranks? The time is the only new information.
+      var stamp = DATA.refreshed.indexOf(DATA.updated) === 0
+        ? DATA.refreshed.slice(DATA.updated.length).trim()
+        : DATA.refreshed;
+      eyebrow.textContent = eyebrow.textContent.replace("Board is live", "Refreshed " + stamp);
+    }
     if (DATA.league) {
-      document.getElementById("eyebrow").textContent += " · " + DATA.league;
+      eyebrow.textContent += " · " + DATA.league;
     }
 
     document.getElementById("plan").innerHTML = DATA.plan.map(function (p) {
@@ -688,7 +722,7 @@
         b.type = "button";
         b.dataset.rk = p.rank;
         b.dataset.pos = p.pos;
-        b.dataset.nm = p.name.toLowerCase();
+        b.dataset.nm = normName(p.name);
         b.innerHTML =
           '<span class="rk">' + p.rank + "</span>" +
           '<span class="who"><span class="nm">' + esc(p.name) + "</span>" +
@@ -727,7 +761,7 @@
   }
 
   function paint() {
-    var q = document.getElementById("search").value.trim().toLowerCase();
+    var q = normName(document.getElementById("search").value);
     var current = log.length + 1;                 // every taken player crossed off => this is the pick on the clock
     var mine = nextPicks(current, 2);
     paintPickInfo(current, mine);
@@ -829,7 +863,7 @@
 
   // Enter in the search box crosses off (or restores) the single visible match.
   function crossOffSearchMatch() {
-    var q = document.getElementById("search").value.trim().toLowerCase();
+    var q = normName(document.getElementById("search").value);
     if (!q) return;
     var matches = Array.prototype.filter.call(document.querySelectorAll(".row:not(.hide)"), function (r) {
       return r.dataset.nm.indexOf(q) !== -1;

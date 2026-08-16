@@ -81,6 +81,11 @@ def price_flag(player: Player) -> str | None:
     return None
 
 
+def source_url(scoring: str, teams: int) -> str:
+    """The FFC page these numbers came from — not always half-PPR 12-team."""
+    return f"https://fantasyfootballcalculator.com/adp/{scoring}/{teams}-team/all"
+
+
 def apply(data: Dataset, payload: dict, reflag: bool = False) -> tuple[Dataset, list[str], list[str]]:
     """Return *data* with adp/adp_sd/bye refreshed, plus (changed, unmatched) notes.
 
@@ -122,10 +127,13 @@ def apply(data: Dataset, payload: dict, reflag: bool = False) -> tuple[Dataset, 
             changed.append(f"{p.name}: ADP {p.adp if p.adp is not None else '—'} -> {adp}")
         players.append(updated)
 
+    # Link the sample we actually pulled: this used to point at half-PPR 12-team
+    # no matter which format or league size produced the numbers.
+    fmt = str(meta.get("type") or "half-ppr").lower().replace("_", "-").replace(" ", "-")
     provenance = {
         "source": "Fantasy Football Calculator",
         "format": f"{meta.get('type', '?')} · {meta.get('teams', '?')}-team · {meta.get('total_drafts', '?')} drafts",
         "window": f"{meta.get('start_date', '?')} to {meta.get('end_date', '?')}",
-        "url": "https://fantasyfootballcalculator.com/adp/half-ppr/12-team/all",
+        "url": source_url(fmt, meta.get("teams") or 12),
     }
     return replace(data, players=players, adp=provenance), changed, unmatched

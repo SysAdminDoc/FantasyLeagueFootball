@@ -44,6 +44,18 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   board and late-round targets are reachable without scrolling past 200 rows.
 
 ### Fixed
+- Name search ignores punctuation, on the board and in `next --drafted`. Seven
+  players carry apostrophes and nobody types them on the clock — "jamarr" and
+  "dandre" used to match nothing at all. Hyphenated names split on the hyphen, so
+  "croskey merritt" finds Jacory Croskey-Merritt.
+- The masthead shows when the data was last refreshed, instead of only the ranks
+  date — reading, after a draft-morning `refresh`, as though it hadn't taken.
+- Stored ADP provenance links the sample it actually pulled; the URL was fixed at
+  half-PPR 12-team however `--adp-format`/`--teams` were set.
+- A rebuild that passes a different `--teams`/`--slot` now wins over the settings
+  saved in the browser, while an edit made on the page still survives a reload.
+- Template substitution runs in one pass, so a dataset string containing the
+  literal text `__TITLE__` is no longer rewritten into the page title.
 - A live pick that fails to reach the server is reported and retried rather than
   swallowed. A phone that drops Wi-Fi for a moment kept accepting taps, and the
   next state replay silently deleted them; unsynced changes are now queued, shown

@@ -8,6 +8,15 @@ from fantasyleague import board
 from fantasyleague.models import Player
 from fantasyleague.sync import adp
 
+
+def test_provenance_links_the_sample_it_pulled():
+    """The stored URL was hard-coded to half-PPR 12-team whatever the payload said."""
+    payload = {"players": [], "meta": {"type": "ppr", "teams": 10, "total_drafts": 5,
+                                       "start_date": "a", "end_date": "b"}}
+    fresh, _, _ = adp.apply(board.load(), payload)
+    assert fresh.adp["url"] == "https://fantasyfootballcalculator.com/adp/ppr/10-team/all"
+    assert adp.source_url("half-ppr", 12).endswith("/adp/half-ppr/12-team/all")
+
 # Shape recorded from GET /api/v1/adp/half-ppr?teams=12&year=2026 on 2026-08-16.
 PAYLOAD = {
     "status": "Success",

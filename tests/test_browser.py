@@ -558,7 +558,8 @@ def test_toast_fits_a_phone_and_waits_while_focused(browser, page_url):
     pg.locator("#slot").fill("5")
     for rk in (1, 2, 3, 4):
         pg.locator(f'.row[data-rk="{rk}"]').click()
-    row = pg.locator('.row[data-nm="jacory croskey-merritt"]')     # the longest name on the board
+    # The longest name on the board. data-nm is normalised for search.
+    row = pg.locator('.row[data-nm="jacory croskey merritt"]')
     row.scroll_into_view_if_needed()
     row.click()
     fits = pg.evaluate("""() => {
@@ -570,6 +571,40 @@ def test_toast_fits_a_phone_and_waits_while_focused(browser, page_url):
     pg.locator("#toastUndo").focus()
     pg.wait_for_timeout(8400)
     assert pg.locator("#toast").is_visible(), "the timer must pause while the toast has focus"
+    ctx.close()
+
+
+def test_search_ignores_apostrophes(page):
+    page.locator("#search").fill("jamarr")
+    assert page.locator(".row:not(.hide)").count() == 1
+    assert "Ja'Marr Chase" in page.locator(".row:not(.hide)").first.text_content()
+    page.locator("#search").fill("dandre")
+    assert page.locator(".row:not(.hide)").count() == 1
+    page.locator("#search").fill("")
+
+
+def test_refresh_stamp_shows_in_the_masthead(page):
+    """The header used to show only the ranks date, reading as "the refresh didn't take"."""
+    assert "REFRESHED" in page.locator("#eyebrow").inner_text().upper()
+
+
+def test_cli_settings_win_over_saved_ones_when_they_change(browser, tmp_path):
+    out = tmp_path / "b.html"
+    render.write(board.load(), out, teams=12, slot=4)
+    url = out.resolve().as_uri()
+    ctx = browser.new_context(color_scheme="dark")
+    pg = ctx.new_page()
+    pg.goto(url)
+    pg.wait_for_selector(".row")
+    pg.locator("#slot").fill("9")               # the user edits the page
+    pg.reload()
+    pg.wait_for_selector(".row")
+    assert pg.locator("#slot").input_value() == "9", "a page edit should stick across reloads"
+
+    render.write(board.load(), out, teams=12, slot=6)   # rebuilt with a new --slot
+    pg.goto(url)
+    pg.wait_for_selector(".row")
+    assert pg.locator("#slot").input_value() == "6", "a changed --slot must win over the saved one"
     ctx.close()
 
 

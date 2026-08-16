@@ -112,9 +112,14 @@ def render(
         "__UPDATED__": htmlmod.escape(_pretty_date(data.updated)),
         "__TITLE__": htmlmod.escape(title or default_title),
     }
-    for token, value in replacements.items():
-        html = html.replace(token, value)
-    return html
+    # One pass over the raw template: replacing sequentially let an earlier
+    # substitution's content be rewritten by a later token, so a player note
+    # containing the literal text "__TITLE__" came out as the page title.
+    return re.sub(
+        "|".join(re.escape(token) for token in replacements),
+        lambda m: replacements[m.group(0)],
+        html,
+    )
 
 
 def write(

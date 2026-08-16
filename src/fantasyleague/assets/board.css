@@ -346,7 +346,10 @@ h1 {
     overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
   }
   .plan-cell { scroll-snap-align: start; }
-  .masthead { padding-top: 20px; }
+  /* Every pixel above the controls pushes the live readouts off the first screen. */
+  .masthead { padding: 14px 0 12px; }
+  h1 { font-size: 32px; }
+  .plan { margin: 14px 0 16px; }
 }
 
 /* ---------- Tiers ---------- */

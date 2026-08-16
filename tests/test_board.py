@@ -5,6 +5,17 @@ from __future__ import annotations
 import pytest
 
 from fantasyleague import board
+
+
+def test_resolve_ignores_punctuation_and_case():
+    """Nobody types the apostrophe in Ja'Marr on the clock."""
+    data = board.load()
+    assert board.resolve(data, "jamarr").name == "Ja'Marr Chase"
+    assert board.resolve(data, "Ja'Marr").name == "Ja'Marr Chase"
+    assert board.resolve(data, "devon achane").name == "De'Von Achane"
+    assert board.resolve(data, "dandre").name == "D'Andre Swift"
+    assert board.resolve(data, "croskey merritt").name == "Jacory Croskey-Merritt"
+    assert board.normalise_name("Ka'imi Fairbairn") == "kaimi fairbairn"
 from fantasyleague.models import Dataset, Player, Tier
 
 

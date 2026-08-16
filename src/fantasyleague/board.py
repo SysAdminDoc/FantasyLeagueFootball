@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import unicodedata
 from importlib import resources
 from pathlib import Path
 
@@ -119,12 +120,27 @@ def tier_breaks(data: Dataset, drafted: set[int] | None = None) -> list[tuple[ob
     return out
 
 
+def normalise_name(name: str) -> str:
+    """Comparable form of a name: lowercase, unaccented, punctuation removed.
+
+    Seven players on the board carry apostrophes (Ja'Marr Chase, De'Von Achane,
+    Ka'imi Fairbairn...). Under draft-clock pressure nobody types them, and
+    "jamarr" used to match nothing at all.
+    """
+    # Hyphens become spaces (Croskey-Merritt -> "croskey merritt") while other
+    # punctuation is dropped (Ja'Marr -> "jamarr"), matching sync.adp.normalise
+    # so name joins and name search agree.
+    folded = unicodedata.normalize("NFD", name.casefold().replace("-", " "))
+    return " ".join("".join(c for c in folded if c.isalnum() or c.isspace()).split())
+
+
 def resolve(data: Dataset, token: str | int) -> Player:
     """Turn a rank or (part of) a name into exactly one player.
 
-    Digits mean rank. Text is matched case-insensitively: an exact name wins,
-    then a unique prefix, then a unique substring. Anything ambiguous raises
-    with the candidates listed so the caller can be more specific.
+    Digits mean rank. Text is matched case-insensitively and ignoring
+    punctuation: an exact name wins, then a unique prefix, then a unique
+    substring. Anything ambiguous raises with the candidates listed so the
+    caller can be more specific.
     """
     if isinstance(token, int) or str(token).strip().isdigit():
         rank = int(token)
@@ -133,16 +149,17 @@ def resolve(data: Dataset, token: str | int) -> Player:
                 return p
         raise ValueError(f"no player has rank {rank}")
 
-    q = str(token).strip().lower()
+    q = normalise_name(str(token))
     if not q:
         raise ValueError("empty player name")
-    exact = [p for p in data.players if p.name.lower() == q]
+    names = [(p, normalise_name(p.name)) for p in data.players]
+    exact = [p for p, n in names if n == q]
     if len(exact) == 1:
         return exact[0]
-    prefix = [p for p in data.players if p.name.lower().startswith(q)]
+    prefix = [p for p, n in names if n.startswith(q)]
     if len(prefix) == 1:
         return prefix[0]
-    within = [p for p in data.players if q in p.name.lower()]
+    within = [p for p, n in names if q in n]
     if len(within) == 1:
         return within[0]
     candidates = prefix or within

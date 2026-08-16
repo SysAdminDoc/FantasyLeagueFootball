@@ -63,6 +63,17 @@ def test_no_raw_angle_brackets_reach_the_inline_script(html):
     assert "<" not in body and ">" not in body
 
 
+def test_template_tokens_in_data_are_not_substituted():
+    """Sequential replacement rewrote already-inlined content."""
+    import dataclasses
+
+    data = board.load()
+    players = [dataclasses.replace(data.players[0], note="see __TITLE__ and __VERSION__"), *data.players[1:]]
+    html = render.render(dataclasses.replace(data, players=players), title="My Board")
+    assert _payload(html)["players"][0]["note"] == "see __TITLE__ and __VERSION__"
+    assert "<title>My Board</title>" in html
+
+
 def test_hostile_strings_survive_as_data(tmp_path):
     import dataclasses
 

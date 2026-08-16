@@ -43,15 +43,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 
 Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause fixes, then trust/reliability, then quick wins, then larger bets.
 
-### P1
-
-- [ ] P1 — Injury/status refresh and Sleeper trending in the rails
-  Why: the injury board is typed by hand and goes stale by kickoff; Sleeper publishes `injury_status`, `injury_body_part`, `injury_notes`, `practice_participation`, `news_updated` free of charge, and its trending-adds feed is a live late-round radar.
-  Evidence: verified 2026-08-16 against `players/nfl?position=QB&active=true` and `/players/nfl/trending/add?lookback_hours=24` (top add: Darren Waller TE CAR, 53,190); docs say cache `players/nfl` daily.
-  Touches: `sync/sleeper.py` (`fetch_players()` with 24 h on-disk cache in the user cache dir), `board.py` (`apply_injuries(data, sleeper_players)` → overrides `Injury` rows and sets `flag: watch` for Q/D/O), `render.py`/`board.js` ("Trending adds (24 h)" card), `cli.py` (`refresh --injuries --trending`), tests.
-  Acceptance: `refresh` updates the injury card from live data with a "as of <timestamp>" line; offline it falls back to packaged data and says so; second run within 24 h makes no network call.
-  Complexity: M — shares plumbing with **Live ADP fetch** (existing); Sleeper cannot supply ADP.
-
 ### P2
 
 - [ ] P2 — `schema_version` + JSON Schema + `validate` subcommand for custom data

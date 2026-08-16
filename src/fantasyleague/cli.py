@@ -6,6 +6,8 @@ import argparse
 import sys
 import time
 import webbrowser
+from dataclasses import replace
+from datetime import UTC, datetime
 from pathlib import Path
 
 from . import __version__
@@ -13,6 +15,7 @@ from . import board as board_mod
 from . import draft as draft_mod
 from . import render as render_mod
 from . import serve as serve_mod
+from .sync import players as players_mod
 from .sync import sleeper as sleeper_mod
 
 DEFAULT_OUT = Path("dist/draft-board.html")
@@ -148,6 +151,49 @@ def cmd_serve(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_refresh(args: argparse.Namespace) -> int:
+    """Rebuild the injury board and trending rail from Sleeper's public data."""
+    data = board_mod.load(args.data)
+    try:
+        players, origin = players_mod.fetch_players(max_age=0 if args.force else players_mod.MAX_AGE_SECONDS)
+    except (OSError, ValueError) as exc:
+        print(f"error: could not reach Sleeper and no cache is available ({exc})", file=sys.stderr)
+        return 1
+    print(f"Player database: {origin} ({len(players):,} records)")
+    if origin == "stale-cache":
+        age = players_mod.cache_age()
+        print(f"  offline — using a cache {age / 3600:.1f}h old")
+
+    data, updated = players_mod.apply_status(data, players)
+    print(f"Injury board: {len(data.injuries)} players carrying a designation")
+    for line in updated[: args.limit]:
+        print("  " + line)
+    if len(updated) > args.limit:
+        print(f"  … and {len(updated) - args.limit} more")
+
+    if not args.no_trending:
+        try:
+            rows = players_mod.trending(hours=args.hours, limit=args.trending_limit)
+            data = replace(data, trending=players_mod.name_trending(rows, players))
+            print(f"Trending adds ({args.hours}h): {len(data.trending)}")
+            for t in data.trending[:5]:
+                print(f"  +{t['count']:,} {t['name']} ({t['pos']} {t['team']})")
+        except OSError as exc:
+            print(f"  trending unavailable ({exc}); keeping the previous list")
+
+    data = replace(data, refreshed=datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC"))
+    out = args.out or args.data or _packaged_data_path()
+    board_mod.save(data, out)
+    print(f"Wrote {out}")
+    return 0
+
+
+def _packaged_data_path() -> Path:
+    from importlib import resources
+
+    return Path(str(resources.files("fantasyleague").joinpath("data/players_2026.json")))
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="fantasyleague",
@@ -213,6 +259,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sv.add_argument("--open", action="store_true", help="open the board in a browser when up")
     sv.set_defaults(func=cmd_serve)
+
+    rf = sub.add_parser("refresh", help="update the injury board and trending rail from Sleeper")
+    rf.add_argument("-o", "--out", help="write here instead of updating the dataset in place")
+    rf.add_argument("--force", action="store_true", help="ignore the 24h cache and re-download")
+    rf.add_argument("--hours", type=int, default=24, help="trending look-back window (default 24)")
+    rf.add_argument("--trending-limit", type=int, default=10, help="how many trending adds to keep")
+    rf.add_argument("--no-trending", action="store_true", help="only refresh injuries")
+    rf.add_argument("--limit", type=int, default=15, help="how many injury lines to print")
+    rf.set_defaults(func=cmd_refresh)
 
     return p
 

@@ -7,6 +7,8 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Fixed
+- Injury board rebuilt from live data: the hand-typed list is replaced by 11 current
+  designations, and stale `watch` flags on healthy players are cleared.
 - A.J. Brown listed as PHI; he was traded to New England this offseason (caught by the
   Sleeper crosswalk — the only team mismatch across all 99 players).
 - Tier-break badge is computed from the whole tier, not the rows left visible by a
@@ -14,6 +16,12 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `fantasyleague refresh` — rebuilds the injury board from Sleeper's player database
+  (`injury_status`, body part, practice participation) and adds a **Trending adds · 24h** rail.
+  The 15 MB player file is cached for 24 hours in the platform cache dir (`FANTASYLEAGUE_CACHE`
+  overrides); offline it falls back to a stale cache and says so. The refresh sets and clears
+  the `watch` flag only — `value` and `avoid` are price judgements and survive it. The board
+  footer carries an "as of" stamp.
 - Sleeper live draft sync: `serve --sleeper DRAFT_ID` polls Sleeper's public API (no key, no
   browser extension) and crosses each pick off in every open tab. Picks join on `ids.sleeper`,
   polling is idempotent, unknown players are logged once rather than every tick, and network

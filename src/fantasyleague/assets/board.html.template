@@ -71,6 +71,11 @@ __CSS__
         <div class="card-body tight" id="inj"></div>
       </section>
 
+      <section class="card" id="trendcard" hidden>
+        <h2>Trending adds · 24h</h2>
+        <div class="card-body tight" id="trend"></div>
+      </section>
+
       <section class="card">
         <h2>Late-round targets</h2>
         <div class="card-body"><ul class="listing" id="slp"></ul></div>

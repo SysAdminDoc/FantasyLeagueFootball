@@ -113,6 +113,10 @@ class Dataset:
     sources: list[Source] = field(default_factory=list)
     # Provenance of the players' adp fields: {source, format, window, url}. None if unset.
     adp: dict | None = None
+    # Most-added players in the last day, from the last `refresh`. [{name, pos, team, count}]
+    trending: list = field(default_factory=list)
+    # ISO-8601 timestamp of the last injury/trending refresh, or None.
+    refreshed: str | None = None
 
     @classmethod
     def from_dict(cls, raw: dict) -> Dataset:
@@ -129,4 +133,6 @@ class Dataset:
             sleepers=[Entry(**e) for e in raw["sleepers"]],
             sources=[Source(**s) for s in raw["sources"]],
             adp=raw.get("adp"),
+            trending=raw.get("trending") or [],
+            refreshed=raw.get("refreshed"),
         )

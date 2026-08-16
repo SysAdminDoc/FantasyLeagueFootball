@@ -151,7 +151,7 @@
       "pos": "RB",
       "team": "SF",
       "tier": 2,
-      "flag": null,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "4034",
@@ -508,7 +508,7 @@
       "pos": "RB",
       "team": "ARI",
       "tier": 4,
-      "flag": null,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "13287",
@@ -1001,7 +1001,7 @@
       "pos": "RB",
       "team": "SEA",
       "tier": 6,
-      "flag": null,
+      "flag": "watch",
       "note": "ADP 63 vs 66th projected — fair.",
       "ids": {
         "sleeper": "13286",
@@ -1171,7 +1171,7 @@
       "pos": "WR",
       "team": "BUF",
       "tier": 7,
-      "flag": null,
+      "flag": "watch",
       "note": "",
       "ids": {
         "sleeper": "4983",
@@ -1808,112 +1808,70 @@
   ],
   "injuries": [
     {
-      "name": "Ricky Pearsall",
-      "team": "SF",
-      "severity": "out",
-      "status": "OUT — season|PCL surgery"
-    },
-    {
-      "name": "Chris Brazzell",
-      "team": "CAR",
-      "severity": "out",
-      "status": "OUT — season|knee"
-    },
-    {
-      "name": "George Kittle",
+      "name": "Christian McCaffrey",
       "team": "SF",
       "severity": "risk",
-      "status": "PUP — Achilles|4 wks if unlisted"
+      "status": "Questionable — undisclosed"
     },
     {
-      "name": "Kenyon Sadiq",
-      "team": "NYJ",
+      "name": "D.J. Moore",
+      "team": "BUF",
       "severity": "risk",
-      "status": "Hernia setback|will miss time"
+      "status": "Questionable — lower body"
     },
     {
-      "name": "Zach Charbonnet",
+      "name": "DeVonta Smith",
+      "team": "PHI",
+      "severity": "risk",
+      "status": "Questionable — hamstring"
+    },
+    {
+      "name": "Emeka Egbuka",
+      "team": "TB",
+      "severity": "risk",
+      "status": "Questionable — undisclosed"
+    },
+    {
+      "name": "Jadarian Price",
       "team": "SEA",
       "severity": "risk",
-      "status": "PUP — knee"
+      "status": "Questionable — lower body"
+    },
+    {
+      "name": "Jaylen Waddle",
+      "team": "DEN",
+      "severity": "risk",
+      "status": "Questionable — undisclosed"
+    },
+    {
+      "name": "Jeremiyah Love",
+      "team": "ARI",
+      "severity": "risk",
+      "status": "Questionable — ankle"
+    },
+    {
+      "name": "Josh Jacobs",
+      "team": "GB",
+      "severity": "risk",
+      "status": "Questionable — groin"
     },
     {
       "name": "Luther Burden III",
       "team": "CHI",
       "severity": "risk",
-      "status": "Groin — out preseason"
-    },
-    {
-      "name": "Jordyn Tyson",
-      "team": "NO",
-      "severity": "risk",
-      "status": "Hamstring|Wk 1 in danger"
-    },
-    {
-      "name": "Chuba Hubbard",
-      "team": "CAR",
-      "severity": "risk",
-      "status": "Hamstring|week to week"
-    },
-    {
-      "name": "Tucker Kraft",
-      "team": "GB",
-      "severity": "ok",
-      "status": "Off PUP — ACL|tracking Wk 1"
+      "status": "Questionable — lower body"
     },
     {
       "name": "Malik Nabers",
       "team": "NYG",
-      "severity": "ok",
-      "status": "ACL — running routes|tracking Wk 1"
-    },
-    {
-      "name": "Patrick Mahomes",
-      "team": "KC",
-      "severity": "ok",
-      "status": "Knee \"feels great\"|targeting Wk 1"
-    },
-    {
-      "name": "Isiah Pacheco",
-      "team": "DET",
-      "severity": "ok",
-      "status": "MCL sprain|Wk 1 expected"
+      "severity": "risk",
+      "status": "Questionable — knee - acl"
     },
     {
       "name": "Puka Nacua",
       "team": "LAR",
-      "severity": "ok",
-      "status": "Groin — minor"
-    },
-    {
-      "name": "Jaylen Waddle",
-      "team": "DEN",
-      "severity": "ok",
-      "status": "Leg strain — ~1 wk"
-    },
-    {
-      "name": "Josh Jacobs",
-      "team": "GB",
-      "severity": "ok",
-      "status": "Groin — ~1 wk"
-    },
-    {
-      "name": "DeVonta Smith",
-      "team": "PHI",
-      "severity": "ok",
-      "status": "Hamstring — day to day"
-    },
-    {
-      "name": "Emeka Egbuka",
-      "team": "TB",
-      "severity": "ok",
-      "status": "Toe — minor"
-    },
-    {
-      "name": "Alec Pierce",
-      "team": "IND",
-      "severity": "ok",
-      "status": "Ankle — off PUP soon"
+      "severity": "risk",
+      "status": "Questionable — undisclosed"
     }
   ],
   "sleepers": [
@@ -2023,5 +1981,68 @@
     "format": "Half-PPR · 12-team · 2364 drafts",
     "window": "2026-08-11 to 2026-08-16",
     "url": "https://fantasyfootballcalculator.com/adp/half-ppr/12-team/all"
-  }
+  },
+  "trending": [
+    {
+      "name": "Darren Waller",
+      "pos": "TE",
+      "team": "CAR",
+      "count": 52992
+    },
+    {
+      "name": "Camden Brown",
+      "pos": "WR",
+      "team": "DAL",
+      "count": 39192
+    },
+    {
+      "name": "Robert Henry",
+      "pos": "RB",
+      "team": "WAS",
+      "count": 37765
+    },
+    {
+      "name": "Barion Brown",
+      "pos": "WR",
+      "team": "NO",
+      "count": 33111
+    },
+    {
+      "name": "Caleb Douglas",
+      "pos": "WR",
+      "team": "MIA",
+      "count": 32216
+    },
+    {
+      "name": "Matt Hibner",
+      "pos": "TE",
+      "team": "BAL",
+      "count": 23611
+    },
+    {
+      "name": "Cyrus Allen",
+      "pos": "WR",
+      "team": "KC",
+      "count": 18594
+    },
+    {
+      "name": "MarShawn Lloyd",
+      "pos": "RB",
+      "team": "GB",
+      "count": 13284
+    },
+    {
+      "name": "Dean Connors",
+      "pos": "RB",
+      "team": "LAR",
+      "count": 12056
+    },
+    {
+      "name": "Drew Allar",
+      "pos": "QB",
+      "team": "PIT",
+      "count": 11070
+    }
+  ],
+  "refreshed": "2026-08-16 19:02 UTC"
 }

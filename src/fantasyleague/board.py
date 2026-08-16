@@ -23,6 +23,17 @@ def load(path: str | Path | None = None) -> Dataset:
     return data
 
 
+def save(data: Dataset, path: str | Path) -> Path:
+    """Write *data* back to *path* as JSON (used by `refresh`)."""
+    from dataclasses import asdict
+
+    raw = asdict(data)
+    raw["injuries"] = [{k: v for k, v in i.items()} for i in raw["injuries"]]
+    out = Path(path)
+    out.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    return out
+
+
 def validate(data: Dataset) -> None:
     """Raise if the board has structural problems that would corrupt a draft."""
     ranks = [p.rank for p in data.players]

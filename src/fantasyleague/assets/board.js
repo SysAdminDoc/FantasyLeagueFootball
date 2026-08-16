@@ -251,12 +251,25 @@
         '<span class="l-why">' + esc(e.why) + "</span></li>";
     }).join("");
 
+    if (DATA.trending && DATA.trending.length) {
+      document.getElementById("trendcard").hidden = false;
+      document.getElementById("trend").innerHTML = DATA.trending.map(function (t) {
+        return '<div class="statusline"><span class="s-nm">' + esc(t.name) +
+          ' <span class="p">' + esc(t.pos) + " " + esc(t.team) + "</span></span>" +
+          '<span class="s-st st-ok">+' + Number(t.count).toLocaleString() + "</span></div>";
+      }).join("");
+    }
+
     var adpEl = document.getElementById("adpnote");
     if (DATA.adp) {
       adpEl.textContent = "ADP and bye weeks: " + DATA.adp.source + " — " + DATA.adp.format +
         ", " + DATA.adp.window + ". Survival odds assume a normal draft position with that spread.";
     } else {
       adpEl.textContent = "";
+    }
+
+    if (DATA.refreshed) {
+      adpEl.textContent += " Injuries and trending refreshed " + DATA.refreshed + ".";
     }
 
     document.getElementById("srcs").innerHTML = DATA.sources.map(function (s) {

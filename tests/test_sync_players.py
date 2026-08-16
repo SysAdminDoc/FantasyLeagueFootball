@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import http.client
 import json
+import os
 import time
 import urllib.error
 
@@ -112,6 +114,74 @@ def test_offline_with_no_cache_raises(tmp_path, monkeypatch):
     )
     with pytest.raises(urllib.error.URLError):
         players_mod.fetch_players()
+
+
+class _Resp:
+    """Minimal urlopen context manager."""
+
+    def __init__(self, payload):
+        self._payload = json.dumps(payload).encode()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def read(self):
+        return self._payload
+
+
+def test_corrupt_cache_is_replaced_rather_than_failing_every_run(tmp_path, monkeypatch):
+    """A Ctrl+C during the 15 MB write used to poison every later refresh."""
+    cache = tmp_path / "sleeper-players-nfl.json"
+    cache.write_text("{not json", encoding="utf-8")
+    monkeypatch.setattr(players_mod, "cache_path", lambda: cache)
+    monkeypatch.setattr(players_mod.urllib.request, "urlopen", lambda *a, **k: _Resp(DB))
+    payload, origin = players_mod.fetch_players()
+    assert origin == "network" and payload == DB
+    assert json.loads(cache.read_text(encoding="utf-8")) == DB    # repaired in place
+
+
+def test_corrupt_cache_with_no_network_raises_rather_than_returning_junk(tmp_path, monkeypatch):
+    cache = tmp_path / "sleeper-players-nfl.json"
+    cache.write_text("{not json", encoding="utf-8")
+    monkeypatch.setattr(players_mod, "cache_path", lambda: cache)
+    monkeypatch.setattr(
+        players_mod.urllib.request, "urlopen",
+        lambda *a, **k: (_ for _ in ()).throw(urllib.error.URLError("offline")),
+    )
+    with pytest.raises(urllib.error.URLError):
+        players_mod.fetch_players()
+
+
+def test_cache_write_is_atomic(tmp_path, monkeypatch):
+    cache = tmp_path / "sleeper-players-nfl.json"
+    monkeypatch.setattr(players_mod, "cache_path", lambda: cache)
+    monkeypatch.setattr(players_mod.urllib.request, "urlopen", lambda *a, **k: _Resp(DB))
+    players_mod.fetch_players()
+    assert cache.exists() and not cache.with_suffix(".tmp").exists()
+
+
+@pytest.mark.parametrize(
+    "exc",
+    [
+        http.client.RemoteDisconnected("closed"),          # a ConnectionResetError, not a URLError
+        http.client.IncompleteRead(b"half"),                # an HTTPException, not an OSError
+    ],
+)
+def test_stale_cache_covers_the_whole_urllib_failure_family(tmp_path, monkeypatch, exc):
+    cache = tmp_path / "sleeper-players-nfl.json"
+    cache.write_text(json.dumps(DB), encoding="utf-8")
+    old = time.time() - (players_mod.MAX_AGE_SECONDS + 60)
+    os.utime(cache, (old, old))
+    monkeypatch.setattr(players_mod, "cache_path", lambda: cache)
+    monkeypatch.setattr(
+        players_mod.urllib.request, "urlopen",
+        lambda *a, **k: (_ for _ in ()).throw(exc),
+    )
+    payload, origin = players_mod.fetch_players()
+    assert origin == "stale-cache" and payload == DB
 
 
 def test_cache_dir_respects_env(monkeypatch, tmp_path):

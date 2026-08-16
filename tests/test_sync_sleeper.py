@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import http.client
 import json
+import time
 import urllib.error
 
 import pytest
@@ -129,6 +131,45 @@ def test_poll_once_survives_network_failure(data, bus, monkeypatch):
     assert s.poll_once() == 0
     assert any("poll failed" in m for m in log)
     assert bus.state()["picks"] == []
+
+
+@pytest.mark.parametrize(
+    "exc",
+    [
+        http.client.RemoteDisconnected("closed"),   # ConnectionResetError, not URLError
+        http.client.IncompleteRead(b"half"),         # HTTPException, not OSError
+        TimeoutError("slow"),
+    ],
+)
+def test_poll_survives_the_whole_urllib_failure_family(data, bus, monkeypatch, exc):
+    """These used to escape the except clause and kill the polling thread silently."""
+    s, log = make(data, bus)
+    monkeypatch.setattr(sleeper, "fetch_picks",
+                        lambda _d, timeout=10.0: (_ for _ in ()).throw(exc))
+    assert s.poll_once() == 0
+    assert any("poll failed" in m for m in log)
+
+
+def test_run_forever_outlives_an_unexpected_error(data, bus, monkeypatch):
+    """A live draft must not end because one poll raised something unforeseen."""
+    s, log = make(data, bus, interval=0.01)
+    calls = {"n": 0}
+
+    def flaky(_d, timeout=10.0):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("something unforeseen")
+        return PICKS
+
+    monkeypatch.setattr(sleeper, "fetch_picks", flaky)
+    s.start()
+    for _ in range(100):
+        if len(bus.state()["picks"]) == 4:
+            break
+        time.sleep(0.02)
+    s.stop()
+    assert len(bus.state()["picks"]) == 4
+    assert any("poll crashed" in m for m in log)
 
 
 def test_poll_once_applies_fetched_picks(data, bus, monkeypatch):

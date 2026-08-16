@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import http.client
 import sys
 import time
 import webbrowser
@@ -172,7 +173,7 @@ def cmd_refresh(args: argparse.Namespace) -> int:
     data = board_mod.load(args.data)
     try:
         players, origin = players_mod.fetch_players(max_age=0 if args.force else players_mod.MAX_AGE_SECONDS)
-    except (OSError, ValueError) as exc:
+    except (OSError, http.client.HTTPException, ValueError) as exc:
         print(f"error: could not reach Sleeper and no cache is available ({exc})", file=sys.stderr)
         return 1
     print(f"Player database: {origin} ({len(players):,} records)")
@@ -196,7 +197,7 @@ def cmd_refresh(args: argparse.Namespace) -> int:
                 for pl in data.players:
                     flags[pl.flag] = flags.get(pl.flag, 0) + 1
                 print(f"  flags recomputed: {flags.get('value', 0)} value, {flags.get('avoid', 0)} reach")
-        except (OSError, ValueError) as exc:
+        except (OSError, http.client.HTTPException, ValueError) as exc:
             print(f"  ADP unavailable ({exc}); keeping the stored numbers")
 
     if not args.no_projections:
@@ -219,7 +220,7 @@ def cmd_refresh(args: argparse.Namespace) -> int:
             print(f"Auction: {len(priced)} players priced on a ${args.budget} budget")
             for p in priced[:5]:
                 print(f"  ${p.value:>3}  {p.name} ({p.pos} {p.team})")
-        except (OSError, ValueError) as exc:
+        except (OSError, http.client.HTTPException, ValueError) as exc:
             print(f"  projections unavailable ({exc}); keeping the stored numbers")
 
     data, profiled = players_mod.apply_profile(data, players)
@@ -288,7 +289,7 @@ def cmd_tiers(args: argparse.Namespace) -> int:
         except borischen_mod.StaleTiers as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 1
-        except (OSError, ValueError) as exc:
+        except (OSError, http.client.HTTPException, ValueError) as exc:
             print(f"error: could not fetch {pos} tiers ({exc})", file=sys.stderr)
             return 1
         fetched[pos] = mapping
@@ -318,7 +319,7 @@ def cmd_variant(args: argparse.Namespace) -> int:
         built, notes = variant_mod.build(
             data, args.scoring, teams=args.teams, budget=args.budget, roster_size=args.roster_size
         )
-    except (OSError, ValueError) as exc:
+    except (OSError, http.client.HTTPException, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     for note in notes:
@@ -341,7 +342,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     if not problems:
         try:
             data = board_mod.load(target)
-        except (OSError, ValueError) as exc:
+        except (OSError, http.client.HTTPException, ValueError) as exc:
             print(f"{target}: {exc}", file=sys.stderr)
             return 1
         print(f"{target}: valid — {len(data.players)} players in {len(data.tiers)} tiers")

@@ -9,6 +9,7 @@ so a variant re-ranks by the target format's ADP and re-derives everything downs
 
 from __future__ import annotations
 
+import http.client
 from dataclasses import replace
 
 from .models import DEFAULT_LINEUP, DEFAULT_ROSTER_SIZE, Dataset, Tier
@@ -83,7 +84,7 @@ def build(
         staged, hits = proj_mod.apply(staged, points)
         players = staged.players
         notes.append(f"projections attached to {hits} players ({points_key})")
-    except (OSError, ValueError) as exc:
+    except (OSError, http.client.HTTPException, ValueError) as exc:
         notes.append(f"projections unavailable ({exc})")
 
     players, tiers = _retier(players)

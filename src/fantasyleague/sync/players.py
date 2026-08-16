@@ -8,6 +8,7 @@ offline — a draft must never block on a refresh.
 
 from __future__ import annotations
 
+import http.client
 import json
 import os
 import time
@@ -56,6 +57,19 @@ def cache_age(path: Path | None = None) -> float | None:
     return time.time() - p.stat().st_mtime
 
 
+def _read_cache(path: Path) -> dict | None:
+    """Parsed cache, or None when it is missing or unusable.
+
+    A Ctrl+C during the 15 MB write leaves a truncated file. Treating that as
+    "no cache" and re-downloading beats failing every later refresh with a JSON
+    error that reads like the network is down.
+    """
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
 def fetch_players(max_age: float = MAX_AGE_SECONDS, timeout: float = 60.0) -> tuple[dict, str]:
     """Sleeper's whole player database plus where it came from ("cache"/"network").
 
@@ -63,8 +77,12 @@ def fetch_players(max_age: float = MAX_AGE_SECONDS, timeout: float = 60.0) -> tu
     """
     path = cache_path()
     age = cache_age(path)
-    if age is not None and age < max_age:
-        return json.loads(path.read_text(encoding="utf-8")), "cache"
+    cached = _read_cache(path) if age is not None else None
+    if cached is None and age is not None:
+        path.unlink(missing_ok=True)          # corrupt: don't keep failing on it
+        age = None
+    if cached is not None and age is not None and age < max_age:
+        return cached, "cache"
 
     req = urllib.request.Request(
         f"{API}/players/nfl", headers={"User-Agent": USER_AGENT, "Accept": "application/json"}
@@ -72,12 +90,17 @@ def fetch_players(max_age: float = MAX_AGE_SECONDS, timeout: float = 60.0) -> tu
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             payload = json.loads(r.read())
-    except (urllib.error.URLError, TimeoutError, ValueError, json.JSONDecodeError):
-        if age is not None:
-            return json.loads(path.read_text(encoding="utf-8")), "stale-cache"
+    except (OSError, http.client.HTTPException, ValueError):
+        # OSError covers URLError and RemoteDisconnected (a ConnectionResetError);
+        # HTTPException covers IncompleteRead, which a 15 MB download invites.
+        if cached is not None:
+            return cached, "stale-cache"
         raise
+    # Write through a temp file: a half-written cache used to poison every later run.
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload), encoding="utf-8")
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(payload), encoding="utf-8")
+    tmp.replace(path)
     return payload, "network"
 
 

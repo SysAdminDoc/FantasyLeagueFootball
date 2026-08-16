@@ -11,6 +11,7 @@ connection just resyncs on the next tick.
 
 from __future__ import annotations
 
+import http.client
 import json
 import threading
 import urllib.error
@@ -123,10 +124,15 @@ class SleeperSync:
 
     def poll_once(self) -> int:
         """Fetch and apply. Network errors are logged, never raised — a draft
-        must not stop because one request timed out."""
+        must not stop because one request timed out.
+
+        OSError, not just URLError: `RemoteDisconnected` is a ConnectionResetError,
+        and `IncompleteRead` is an HTTPException — neither is a URLError, so both
+        used to escape and kill the polling thread silently.
+        """
         try:
             picks = fetch_picks(self.draft_id)
-        except (urllib.error.URLError, TimeoutError, ValueError, json.JSONDecodeError) as exc:
+        except (OSError, http.client.HTTPException, ValueError, json.JSONDecodeError) as exc:
             self._log(f"poll failed ({exc.__class__.__name__}: {exc}); retrying")
             return 0
         return self.apply(picks)
@@ -135,7 +141,10 @@ class SleeperSync:
 
     def run_forever(self) -> None:
         while not self._stop.is_set():
-            self.poll_once()
+            try:
+                self.poll_once()
+            except Exception as exc:  # noqa: BLE001 - a live draft outlives any one bug
+                self._log(f"poll crashed ({exc.__class__.__name__}: {exc}); retrying")
             self._stop.wait(self.interval)
 
     def start(self) -> SleeperSync:

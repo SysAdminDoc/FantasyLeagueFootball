@@ -17,6 +17,15 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   board and late-round targets are reachable without scrolling past 200 rows.
 
 ### Fixed
+- Network failures are caught as a family rather than by name. `RemoteDisconnected`
+  is a `ConnectionResetError` and `IncompleteRead` is an `HTTPException`, so neither
+  was a `URLError`: a server closing a keep-alive mid-draft killed the Sleeper
+  polling thread while the CLI still said it was following the draft, and a cut
+  15 MB download skipped the stale-cache fallback. The poll loop also survives an
+  unexpected error now instead of ending the session.
+- A truncated player cache (Ctrl+C during the 15 MB write) is detected and
+  re-downloaded instead of failing every later `refresh` with a JSON error that
+  reads like the network is down. The cache is written through a temp file.
 - `fantasyleague tiers` rebuilds every tier from the import instead of reusing the
   packaged names, which used to leave a block of quarterbacks labelled "The
   anchors · No wrong answer. Take the board." and dropped players with no

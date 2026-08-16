@@ -4,10 +4,6 @@ Single task tracker for FantasyLeagueFootball. Drain top to bottom. Shipped work
 
 ## Next
 
-- [ ] **Board expansion to 200** — currently 75 deep, which runs out around round 7 in a
-      12-team league. Late rounds are where the sleeper rail is doing the work instead.
-      *Research 2026-08-16:* Boris Chen and FantasyPros both publish top-200; Sleeper `search_rank`
-      is a free ordering proxy for depth once the ID crosswalk exists.
 
 ## Later
 

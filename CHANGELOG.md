@@ -22,6 +22,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- Board expanded from 99 to **200 players**. Ranks 1–75 stay curated; 76–176 are filled in
+  live half-PPR ADP order from Fantasy Football Calculator (all 101 matched to Sleeper ids),
+  in three new tiers — Rounds 7–9, Rounds 10–12, Last rounds. Kickers and defenses move to
+  tiers 11 and 12. A 12-team draft no longer runs off the end of the board in round 7.
 - `fantasyleague export` writes the board as CSV to stdout or a file, with the same
   `--pos`/`--flag` filters as `list`. On the board, "Copy as CSV" puts your drafted roster
   on the clipboard (lineup slot, rank, name, pos, team, bye, ADP), falling back to a
@@ -110,6 +114,8 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   promoted after escaping, so an untrusted `--data` file cannot inject markup.
 
 ### Changed
+- The printed cheat sheet is now one double-sided sheet rather than one page — 200 players
+  at a size you can actually read across a table.
 - Touch pass: on coarse pointers rows are at least 44px tall, chips/buttons/inputs grow,
   inputs use 16px so iOS stops zooming on focus, the toast spans the screen, and the
   controls bar stops being sticky (it ate too much of a phone screen).

@@ -9,7 +9,7 @@
 
 A draft-day board for **Yahoo half-PPR fantasy football**. Renders one self-contained HTML page you keep open on a second screen while you draft — click players off as they go, watch tiers drain, and get warned the moment a tier is about to break.
 
-Ships with a ranked 2026 board (75 skill players in 7 tiers, plus 12 kickers and 12 defenses in two more) with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies. No account, no network calls, no telemetry — the page works from `file://` with the Wi-Fi off.
+Ships with a ranked 2026 board — 200 players in 12 tiers — with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies. No account, no network calls, no telemetry — the page works from `file://` with the Wi-Fi off.
 
 ![Draft board, dark theme](docs/screenshot-dark.png)
 
@@ -33,7 +33,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, trending adds from the last 24 hours, late-round targets.
 - **Refreshable.** `fantasyleague refresh` pulls current ADP, bye weeks, injury designations, and trending adds — no key, cached for a day, degrades to cache offline.
 - **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
-- **Print sheet.** One button (or Ctrl+P) turns the board into a one-page, three-column, greyscale cheat sheet — flags as glyphs, crossed-off players struck through.
+- **Print sheet.** One button (or Ctrl+P) turns the board into a compact three-column greyscale cheat sheet — flags as glyphs, crossed-off players struck through.
 - **Second screen on your phone.** `fantasyleague serve --host 0.0.0.0` puts the board on your LAN; every tab and device stays in sync, and the screen won't sleep mid-draft.
 - **Terminal CLI** over the same data: `list`, `values`, `next --drafted …` for best available and tier breaks without a browser.
 - **Bring your own board.** Any JSON matching the packaged file works; it's validated on load so a bad edit fails loudly instead of rendering holes.
@@ -118,7 +118,7 @@ Every pick made in the Sleeper room is crossed off your board within a few secon
 
 ## The 2026 board
 
-**Format assumptions:** Yahoo defaults — half-PPR, single QB, 1 K, 1 DEF. Ranks 1–75 follow the Rotoworld/NBC Sports top-200 consensus; kickers (76–87) follow FantasyPros' 2026-08-14 tiers and defenses (88–99) FantasyLife's 2026-08-08 rankings; flags compare Yahoo ADP against Yahoo's projected finish; the injury board and trending rail come from `fantasyleague refresh` against Sleeper's live player data. Player teams and external ids come from Sleeper's public player database; ADP, ADP spread, and bye weeks from Fantasy Football Calculator's half-PPR 12-team ADP (2026-08-11 → 2026-08-16). Data is current through **August 16, 2026**. Fantasy data goes stale fast — run `fantasyleague refresh` on draft morning.
+**Format assumptions:** Yahoo defaults — half-PPR, single QB, 1 K, 1 DEF. Ranks 1–75 follow the Rotoworld/NBC Sports top-200 consensus; 76–176 follow live half-PPR ADP; kickers follow FantasyPros' 2026-08-14 tiers and defenses FantasyLife's 2026-08-08 rankings; flags compare Yahoo ADP against Yahoo's projected finish; the injury board and trending rail come from `fantasyleague refresh` against Sleeper's live player data. Player teams and external ids come from Sleeper's public player database; ADP, ADP spread, and bye weeks from Fantasy Football Calculator's half-PPR 12-team ADP (2026-08-11 → 2026-08-16). Data is current through **August 16, 2026**. Fantasy data goes stale fast — run `fantasyleague refresh` on draft morning.
 
 ### Tiers
 
@@ -131,8 +131,11 @@ Every pick made in the Sleeper room is crossed off your board within a few secon
 | 5 | Rounds 3–4 | 31–42 | Elite QBs enter. So do the first traps. |
 | 6 | Rounds 4–5 | 43–56 | Third RB deadline. Don't drift past it. |
 | 7 | Rounds 5–7 | 57–75 | The value pocket. Most of your edge is here. |
-| 8 | Kickers | last two rounds | Aubrey, then wait. Accuracy is sticky; volume isn't. |
-| 9 | Defenses | last two rounds | Matchups beat talent. Take one, stream after Week 1. |
+| 8 | Rounds 7–9 | 76–120 | Bench value with a path to targets. |
+| 9 | Rounds 10–12 | 121–165 | Upside swings — backups a snap away, rookies with a role. |
+| 10 | Last rounds | 166–176 | Handcuffs, camp risers, Week 1 fill-ins. |
+| 11 | Kickers | last two rounds | Aubrey, then wait. Accuracy is sticky; volume isn't. |
+| 12 | Defenses | last two rounds | Matchups beat talent. Take one, stream after Week 1. |
 
 ### Flags
 
@@ -194,7 +197,7 @@ Dark is the default. The page defines a complete light palette too and picks one
 ```bash
 pip install -e ".[dev]"
 python -m playwright install chromium   # only needed for the browser tests
-pytest                                  # 135 tests
+pytest                                  # 156 tests
 ruff check .
 python -m build                         # wheel + sdist into dist/
 ```
@@ -227,7 +230,6 @@ docs/                        README screenshots
 
 ## Known limitations (v0.0.1)
 
-- Skill-position board is 75 deep — runs out around round 7 in a 12-team league; the sleeper rail carries the late rounds.
 - Yahoo live sync isn't wired up yet (Sleeper is) — it needs a Yahoo Developer app.
 
 ## License

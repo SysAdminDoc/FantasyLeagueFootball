@@ -51,7 +51,7 @@ def test_apply_crosses_off_and_tags_source(data, bus):
     s, log = make(data, bus)
     assert s.apply(PICKS) == 3
     ranks = [p["rank"] for p in bus.state()["picks"]]
-    assert ranks == [21, 31, 88]
+    assert ranks == [21, 31, 189]  # A.J. Brown, Josh Allen, Texans D/ST
     assert all(p["source"] == "sleeper" for p in bus.state()["picks"])
     assert bus.state()["current_pick"] == 4
     assert any("A.J. Brown" in m for m in log)

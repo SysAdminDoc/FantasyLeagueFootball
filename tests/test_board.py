@@ -19,8 +19,8 @@ def data():
 def test_packaged_board_loads_and_validates(data):
     assert data.season == 2026
     assert data.scoring == "half_ppr"
-    assert len(data.players) == 99  # 75 skill players + 12 K + 12 DST
-    assert len(data.tiers) == 9
+    assert len(data.players) == 200  # 176 skill players + 12 K + 12 DST
+    assert len(data.tiers) == 12
 
 
 def test_every_player_belongs_to_a_defined_tier(data):
@@ -200,7 +200,7 @@ def test_player_rejects_unknown_id_source():
 
 
 def test_k_and_dst_sit_in_their_own_tiers(data):
-    assert {p.tier for p in data.players if p.pos == "K"} == {8}
-    assert {p.tier for p in data.players if p.pos == "DST"} == {9}
+    assert {p.tier for p in data.players if p.pos == "K"} == {11}
+    assert {p.tier for p in data.players if p.pos == "DST"} == {12}
     assert board.best_available(data, pos="K", limit=1)[0].name == "Brandon Aubrey"
     assert board.best_available(data, pos="DST", limit=1)[0].team == "HOU"

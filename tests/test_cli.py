@@ -89,7 +89,7 @@ def test_export_writes_a_file_and_quotes_commas(capsys, tmp_path):
 
     rows = list(_csv.reader(text.splitlines()))
     assert all(len(r) == 10 for r in rows), "every row must have exactly 10 columns"
-    assert len(rows) == 100  # header + 99 players
+    assert len(rows) == 201  # header + 200 players
 
 
 def test_export_filters_compose(capsys):

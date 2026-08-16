@@ -54,10 +54,13 @@ def render(
     league: str | None = None,
     teams: int | None = None,
     slot: int | None = None,
+    live: bool = False,
 ) -> str:
-    """Return the complete HTML document for *data*."""
+    """Return the complete HTML document for *data*. *live* marks a served page that
+    should follow the server's pick log over Server-Sent Events."""
     payload = {
         "tier_break": TIER_BREAK_THRESHOLD,
+        "live": live,
         "board_id": board_id(data, league),
         "league": league or "",
         "draft": {"teams": teams or 12, "slot": slot},

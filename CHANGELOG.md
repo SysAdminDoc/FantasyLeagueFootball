@@ -14,6 +14,13 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   When a filter hides part of a tier the header now reads e.g. `1 left · 7 in tier`.
 
 ### Added
+- `fantasyleague serve` — serves the board over HTTP with Server-Sent Events. Every open
+  tab shows the same crossed-off state, `--host 0.0.0.0` makes it reachable from a phone on
+  the LAN (the URL is printed), the served page keeps the screen awake via the Screen Wake
+  Lock API, and a live indicator shows the connection. `POST /state` accepts
+  `{"pick": {"rank": N}}` / `{"pick": {"name": "gibbs"}}` / `{"undo": N}` / `{"reset": true}`,
+  which is how sync sources will feed picks in without a browser extension. Standard library
+  only.
 - Snake-draft awareness. Set **Teams** and **Your slot** on the board (or `build --teams N
   --slot S`) and the controls bar shows the pick on the clock and how far away yours is;
   every undrafted player shows the odds of still being there at your next two picks,

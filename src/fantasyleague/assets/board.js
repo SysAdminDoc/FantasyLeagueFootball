@@ -47,15 +47,32 @@
     try { localStorage.setItem(KEY, JSON.stringify({ v: 2, log: log })); } catch (e) { storageFailed(); }
   }
 
-  function crossOff(rank) {
-    if (gone.has(String(rank))) return;
-    log.push({ rank: rank, ts: Date.now() });
-    rebuildIndex();
+  // ---- live mode: a served page follows the server's log over SSE and echoes
+  // local actions back with fetch(), so every open tab shows the same board.
+  var LIVE = !!DATA.live;
+  function remote(body) {
+    if (!LIVE) return;
+    try {
+      fetch("/state", { method: "POST", headers: { "Content-Type": "application/json", "X-Source": "board" },
+        body: JSON.stringify(body) }).catch(function () {});
+    } catch (e) { /* no fetch — nothing to sync */ }
   }
 
-  function restore(rank) {
+  function crossOff(rank, fromServer) {
+    if (gone.has(String(rank))) return false;
+    log.push({ rank: rank, ts: Date.now() });
+    rebuildIndex();
+    if (!fromServer) remote({ pick: { rank: rank } });
+    return true;
+  }
+
+  function restore(rank, fromServer) {
+    var before = log.length;
     log = log.filter(function (e) { return e.rank !== rank; });
     rebuildIndex();
+    if (log.length === before) return false;
+    if (!fromServer) remote({ undo: rank });
+    return true;
   }
 
   function esc(s) {
@@ -436,15 +453,60 @@
     log = [];
     rebuildIndex();
     save();
+    remote({ reset: true });
     document.getElementById("search").value = "";
     say("Board reset. " + DATA.players.length + " players on the board.");
     if (before.length) {
       toast("Board reset — " + before.length + " picks cleared", function () {
-        log = before; rebuildIndex(); save(); say("Reset undone. " + before.length + " picks restored.");
+        log = before; rebuildIndex(); save();
+        before.forEach(function (e) { remote({ pick: { rank: e.rank } }); });
+        say("Reset undone. " + before.length + " picks restored.");
       });
     }
     paint();
   });
+
+  // ---- SSE client + screen wake lock (served pages only) ----
+  if (LIVE && typeof EventSource !== "undefined") {
+    var pill = document.getElementById("livepill");
+    var setPill = function (on) {
+      pill.hidden = false;
+      pill.classList.toggle("off", !on);
+      pill.textContent = on ? "Live · following the server" : "Live · reconnecting…";
+    };
+    var es = new EventSource("/events");
+    es.addEventListener("open", function () { setPill(true); });
+    es.addEventListener("error", function () { setPill(false); });
+    es.addEventListener("state", function (ev) {
+      var st = JSON.parse(ev.data);
+      log = (st.picks || []).map(function (p) { return { rank: p.rank, ts: p.ts || null }; });
+      rebuildIndex(); save(); paint();
+    });
+    es.addEventListener("pick", function (ev) {
+      var p = JSON.parse(ev.data);
+      if (crossOff(p.rank, true)) {
+        save();
+        var pl = byRank(p.rank);
+        if (pl && p.source !== "board") say(pl.name + " crossed off" + (p.source ? " (" + p.source + ")" : "") + ".");
+        paint();
+      }
+    });
+    es.addEventListener("undo", function (ev) {
+      var p = JSON.parse(ev.data);
+      if (restore(p.rank, true)) { save(); paint(); }
+    });
+    es.addEventListener("reset", function () {
+      log = []; rebuildIndex(); save(); paint();
+    });
+
+    var wakeLock = null;
+    var keepAwake = function () {
+      if (!("wakeLock" in navigator) || document.visibilityState !== "visible") return;
+      navigator.wakeLock.request("screen").then(function (w) { wakeLock = w; }).catch(function () {});
+    };
+    document.addEventListener("visibilitychange", keepAwake);
+    keepAwake();
+  }
 
   buildShell();
   buildBoard();

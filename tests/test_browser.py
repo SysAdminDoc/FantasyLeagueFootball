@@ -319,6 +319,52 @@ def test_print_media_is_a_one_page_monochrome_sheet(browser, page_url, tmp_path)
     ctx.close()
 
 
+def test_served_board_syncs_across_tabs_and_http(browser):
+    import http.client
+    import json
+
+    from fantasyleague import serve
+
+    with serve.BoardServer(board.load(), port=0) as s:
+        url = f"http://127.0.0.1:{s.port}/"
+        ctx = browser.new_context()
+        a = ctx.new_page()
+        a.goto(url)
+        a.wait_for_selector(".row")
+        b = ctx.new_page()
+        b.goto(url)
+        b.wait_for_selector(".row")
+        a.wait_for_selector("#livepill:not([hidden])")
+        assert "following" in a.locator("#livepill").inner_text().lower()
+
+        # A click in tab A reaches the server and tab B.
+        a.locator('.row[data-rk="1"]').click()
+        b.wait_for_selector('.row[data-rk="1"].gone', timeout=3000)
+        assert s.bus.state()["picks"][0]["rank"] == 1
+
+        # A pick POSTed by an external source (e.g. a sync process) reaches both tabs.
+        c = http.client.HTTPConnection("127.0.0.1", s.port, timeout=5)
+        c.request("POST", "/state", body=json.dumps({"pick": {"name": "bijan"}}),
+                  headers={"Content-Type": "application/json", "X-Source": "sleeper"})
+        assert c.getresponse().status == 200
+        c.close()
+        a.wait_for_selector('.row[data-rk="2"].gone', timeout=3000)
+        b.wait_for_selector('.row[data-rk="2"].gone', timeout=3000)
+        assert "Bijan Robinson crossed off (sleeper)." in _live(a)
+
+        # Undo in tab B propagates to A and the server.
+        b.locator('.row[data-rk="2"]').click()  # restore
+        a.wait_for_selector('.row[data-rk="2"]:not(.gone)', timeout=3000)
+        assert [p["rank"] for p in s.bus.state()["picks"]] == [1]
+
+        # A fresh tab gets the server state, not stale local storage.
+        d = ctx.new_page()
+        d.goto(url)
+        d.wait_for_selector('.row[data-rk="1"].gone', timeout=3000)
+        assert d.locator(".row.gone").count() == 1
+        ctx.close()
+
+
 def test_light_theme_paints_its_own_ground(browser, page_url):
     ctx = browser.new_context(color_scheme="light")
     pg = ctx.new_page()

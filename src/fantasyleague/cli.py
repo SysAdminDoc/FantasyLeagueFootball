@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 import webbrowser
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from . import __version__
 from . import board as board_mod
 from . import draft as draft_mod
 from . import render as render_mod
+from . import serve as serve_mod
 
 DEFAULT_OUT = Path("dist/draft-board.html")
 
@@ -107,6 +109,32 @@ def cmd_next(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_serve(args: argparse.Namespace) -> int:
+    data = board_mod.load(args.data)
+    server = serve_mod.BoardServer(
+        data, host=args.host, port=args.port, title=args.title, league=args.league,
+        teams=args.teams, slot=args.slot,
+    )
+    server.start()
+    urls = server.urls()
+    print("Serving the board (Ctrl+C to stop):")
+    for u in urls:
+        print("  " + u)
+    # flush: the process then sleeps forever, and piped stdout is block-buffered,
+    # so a supervising process would otherwise see nothing at all.
+    print("Picks made in any open tab, or POSTed to /state, appear everywhere within a second.", flush=True)
+    if args.open:
+        webbrowser.open(urls[0])
+    try:
+        while True:
+            time.sleep(3600)
+    except KeyboardInterrupt:
+        print("\nStopping.")
+    finally:
+        server.stop()
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="fantasyleague",
@@ -153,6 +181,18 @@ def build_parser() -> argparse.ArgumentParser:
     n.add_argument("--slot", type=int, help="your draft slot, 1-based; adds survival odds at your next picks")
     n.add_argument("--pick", type=int, help="current overall pick (default: number drafted + 1)")
     n.set_defaults(func=cmd_next)
+
+    sv = sub.add_parser("serve", help="serve the board over HTTP so every tab (and phone) stays in sync")
+    sv.add_argument(
+        "--host", default="127.0.0.1", help="bind address; use 0.0.0.0 to reach it from a phone on the LAN"
+    )
+    sv.add_argument("--port", type=int, default=8765, help="port (default 8765; 0 picks a free one)")
+    sv.add_argument("--title", help="override the page title")
+    sv.add_argument("--league", help="league name (see build --league)")
+    sv.add_argument("--teams", type=int, default=draft_mod.DEFAULT_TEAMS, help="league size (default 12)")
+    sv.add_argument("--slot", type=int, help="your draft slot, 1-based")
+    sv.add_argument("--open", action="store_true", help="open the board in a browser when up")
+    sv.set_defaults(func=cmd_serve)
 
     return p
 

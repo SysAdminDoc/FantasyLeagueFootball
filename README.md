@@ -32,6 +32,7 @@ Rankings sites give you a list. A list doesn't answer the only question that mat
 - **Rails:** positional plan for the draft, do-not-draft list with reasons, injury board with severity, late-round targets.
 - **Dark-first, light-aware.** Follows `prefers-color-scheme` and honors an explicit `data-theme` toggle. Reduced-motion respected. Focus states and `aria-pressed` on every control; a polite live region announces cross-offs, best available, and tier breaks to screen readers.
 - **Print sheet.** One button (or Ctrl+P) turns the board into a one-page, three-column, greyscale cheat sheet — flags as glyphs, crossed-off players struck through.
+- **Second screen on your phone.** `fantasyleague serve --host 0.0.0.0` puts the board on your LAN; every tab and device stays in sync, and the screen won't sleep mid-draft.
 - **Terminal CLI** over the same data: `list`, `values`, `next --drafted …` for best available and tier breaks without a browser.
 - **Bring your own board.** Any JSON matching the packaged file works; it's validated on load so a bad edit fails loudly instead of rendering holes.
 
@@ -69,6 +70,7 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague list [--pos QB\|RB\|WR\|TE\|K\|DST\|ALL] [--flag value\|avoid\|watch] [--limit N]` | The board as a table. |
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
+| `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
 
@@ -81,6 +83,24 @@ fantasyleague next --drafted gibbs bijan chase 5 8 --pos WR --limit 5
 fantasyleague next --teams 12 --slot 5 --drafted 1 2 3 4     # odds at picks 5 and 20
 fantasyleague --data my-league.json build -o dist/my-board.html --league "Thursday League"
 ```
+
+## Live mode
+
+```bash
+fantasyleague serve --host 0.0.0.0 --slot 5
+#   http://localhost:8765/
+#   http://192.168.1.48:8765/     <- open this on your phone
+```
+
+Cross a player off on the laptop and the phone updates, and vice versa. The served page keeps the screen awake while it's open. Anything that can make an HTTP request can drive the board:
+
+```bash
+curl -X POST localhost:8765/state -H 'Content-Type: application/json' -d '{"pick": {"name": "gibbs"}}'
+curl -X POST localhost:8765/state -H 'Content-Type: application/json' -d '{"undo": 1}'
+curl localhost:8765/state
+```
+
+That endpoint is the seam live draft sync will plug into — no browser extension required.
 
 ## The 2026 board
 

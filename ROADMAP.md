@@ -45,13 +45,6 @@ Added 2026-08-16 from RESEARCH.md. Ordered P0 → P3; within a tier: root-cause 
 
 ### P1
 
-- [ ] P1 — `fantasyleague serve`: local HTTP + Server-Sent Events
-  Why: a stable `http://localhost` origin fixes storage, enables Screen Wake Lock, lets a phone on the LAN be the second screen, and is the transport for live sync without a browser extension.
-  Evidence: MDN Screen Wake Lock (needs secure context; localhost qualifies; ≥94 % support); Draft Caddie/BeatADP/DraftKick are all desktop-only Chrome extensions — the gap is a phone-friendly board.
-  Touches: new `src/fantasyleague/serve.py` (stdlib `http.server` + `ThreadingHTTPServer`, `/` serves the rendered board, `/events` SSE, `/state` JSON), `board.js` (`EventSource` when `DATA.live` is set; apply `pick` events; request `navigator.wakeLock` on load), `cli.py` (`serve --port 8765 --host 0.0.0.0`), tests (server round-trip with `http.client`).
-  Acceptance: `fantasyleague serve` prints a URL; opening it on a phone shows the board; posting `{"pick":{"rank":3}}` to `/state` crosses Gibbs off in every open tab within 1 s; screen stays awake on a phone for 10 min idle.
-  Complexity: M
-
 - [ ] P1 — Sleeper live draft sync
   Why: zero-auth, public, read-only — the cheapest possible live cross-off; Sleeper itself has no custom-rankings import, so a following board is the community's standard workaround.
   Evidence: docs.sleeper.com `GET /v1/draft/{draft_id}/picks` (fields `player_id, picked_by, round, draft_slot, pick_no, metadata, is_keeper`); Draft Caddie polls every 3 s; rate guidance <1000 req/min; fantasyjoes.gg/sleeper-draft (no CSV import on Sleeper).

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="generator" content="FantasyLeagueFootball v__VERSION__">
 <title>__TITLE__</title>
 <style>
@@ -20,6 +20,7 @@ __CSS__
       <h1>__SEASON__ Draft<br> War Room</h1>
     </div>
     <div class="settings" id="settings"></div>
+    <div class="livepill" id="livepill" hidden></div>
   </header>
 
   <section class="plan" id="plan"></section>

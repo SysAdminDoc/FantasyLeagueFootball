@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fantasyleaguefootball"
-version = "0.2.0"
-description = "Draft-day board for Yahoo half-PPR fantasy football"
+version = "0.3.0"
+description = "Draft-day board and in-season manager for Yahoo fantasy football"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
@@ -24,6 +24,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.16", "playwright>=1.60"]
+yahoo = ["playwright>=1.60"]
 
 [project.scripts]
 fantasyleague = "fantasyleague.cli:main"

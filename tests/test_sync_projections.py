@@ -110,3 +110,76 @@ def test_packaged_board_ships_projections_and_values():
     assert len(priced) >= 100
     assert data.auction and data.auction["budget"] == 200
     assert max(p.value for p in priced) <= 80
+
+
+# ---------------------------------------------------------------- weekly / rest of season
+
+# Shape recorded from GET /projections/nfl/2026/3 on 2026-08-16: `player` carries the name and
+# position, `opponent` is None on a bye, defenses come through with position DEF and a nickname.
+WEEK_ROWS = [
+    {"player_id": "9488", "week": 3, "opponent": "WAS", "team": "SEA",
+     "player": {"first_name": "Jaxon", "last_name": "Smith-Njigba", "position": "WR", "team": "SEA",
+                "injury_status": None},
+     "stats": {"pts_ppr": 21.43, "pts_half_ppr": 17.76, "pts_std": 14.1, "gp": 1.0}},
+    {"player_id": "8155", "week": 3, "opponent": None, "team": "JAX",
+     "player": {"first_name": "Travis", "last_name": "Etienne", "position": "RB", "team": "JAX",
+                "injury_status": "Questionable"},
+     "stats": {"pts_ppr": 0.0, "pts_half_ppr": 0.0, "pts_std": 0.0}},
+    {"player_id": "LAR", "week": 3, "opponent": "DEN", "team": "LAR",
+     "player": {"first_name": "Los Angeles", "last_name": "Rams", "position": "DEF", "team": "LAR"},
+     "stats": {"pts_ppr": 8.94, "pts_half_ppr": 8.94, "pts_std": 8.94}},
+    {"player_id": "x", "week": 3, "opponent": "NE", "player": {"first_name": "Some", "last_name": "Lineman",
+                                                                "position": "OL"}, "stats": {"pts_ppr": 1}},
+]
+
+
+def test_weekly_points_by_name_keys_suffix_blind_and_zeroes_byes():
+    pts = pj.weekly_points_by_name(WEEK_ROWS, "ppr")
+    assert pts["jaxon smith njigba"]["points"] == 21.43
+    assert pts["jaxon smith njigba"]["opponent"] == "WAS" and pts["jaxon smith njigba"]["team"] == "SEA"
+    etienne = pts["travis etienne"]                     # "Travis Etienne Jr." on a roster joins to this
+    assert etienne["points"] == 0.0 and etienne["opponent"] is None and etienne["injury"] == "Questionable"
+    assert pts["rams dst"]["pos"] == "DST" and pts["rams dst"]["name"] == "Rams D/ST"   # punctuation-blind key
+    assert "some lineman" not in pts
+    assert pj.weekly_points_by_name(WEEK_ROWS, "half_ppr")["jaxon smith njigba"]["points"] == 17.76
+    with pytest.raises(ValueError, match="unknown scoring"):
+        pj.weekly_points_by_name(WEEK_ROWS, "ppr6")
+
+
+def test_rest_of_season_sums_the_weeks_and_reports_gaps():
+    def fake(season, week):
+        if week == 5:
+            raise OSError("down")
+        return WEEK_ROWS
+    totals, missing = pj.rest_of_season(2026, 3, "ppr", through=6, fetch=fake)
+    assert missing == [5]
+    jsn = totals["jaxon smith njigba"]
+    assert jsn["points"] == pytest.approx(21.43 * 3) and jsn["games"] == 3
+    assert totals["travis etienne"]["points"] == 0.0 and totals["travis etienne"]["games"] == 0
+
+
+def test_fetch_week_caches_on_disk_and_reuses_within_max_age(tmp_path, monkeypatch):
+    import json as _json
+
+    monkeypatch.setenv("FANTASYLEAGUE_CACHE", str(tmp_path))
+    calls = []
+
+    class Resp:
+        def __init__(self, body): self._b = body
+        def read(self): return self._b
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    def fake_urlopen(req, timeout=0):
+        calls.append(req.full_url)
+        return Resp(_json.dumps(WEEK_ROWS).encode())
+
+    monkeypatch.setattr(pj.urllib.request, "urlopen", fake_urlopen)
+    rows = pj.fetch_week(2026, 3)
+    again = pj.fetch_week(2026, 3)
+    assert rows == again == WEEK_ROWS
+    assert len(calls) == 1 and "/projections/nfl/2026/3?" in calls[0]
+    assert (tmp_path / "sleeper-projections-2026-w03.json").exists()
+    # A corrupt cache is discarded and refetched rather than crashing.
+    (tmp_path / "sleeper-projections-2026-w03.json").write_text("{not json", encoding="utf-8")
+    assert pj.fetch_week(2026, 3) == WEEK_ROWS and len(calls) == 2

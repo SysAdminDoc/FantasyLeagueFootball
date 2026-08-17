@@ -16,6 +16,8 @@ from pathlib import Path
 from . import __version__
 from . import board as board_mod
 from . import draft as draft_mod
+from . import league as league_mod
+from . import manage as manage_mod
 from . import render as render_mod
 from . import schema as schema_mod
 from . import serve as serve_mod
@@ -26,8 +28,10 @@ from .sync import borischen as borischen_mod
 from .sync import players as players_mod
 from .sync import projections as proj_mod
 from .sync import sleeper as sleeper_mod
+from .sync import yahoo as yahoo_mod
 
 DEFAULT_OUT = Path("dist/draft-board.html")
+DEFAULT_LEAGUE = Path("league.json")
 
 _COLS = "{:>4}  {:<24} {:<3} {:<4} {:>4}  {}"
 
@@ -210,6 +214,15 @@ def cmd_serve(args: argparse.Namespace) -> int:
             on_event=lambda m: print(f"  sleeper: {m}", flush=True),
         )
         print(f"Following Sleeper draft {args.sleeper} every {args.every:g}s.")
+    elif getattr(args, "yahoo", None):
+        every = max(args.every, yahoo_mod.DEFAULT_POLL_SECONDS) if args.every == sleeper_mod.DEFAULT_INTERVAL \
+            else args.every
+        sync = yahoo_mod.YahooDraftSync(
+            data, args.yahoo, server.bus, teams=args.teams, interval=every, profile=args.profile,
+            headless=not args.show, on_event=lambda m: print(f"  yahoo: {m}", flush=True),
+        )
+        print(f"Following Yahoo league {args.yahoo}'s draft results every {every:g}s "
+              "(sign in once if a browser window opens).")
     # flush: the process then sleeps forever, and piped stdout is block-buffered,
     # so a supervising process would otherwise see nothing at all.
     print("Picks made in any open tab, or POSTed to /state, appear everywhere within a second.", flush=True)
@@ -424,6 +437,268 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 1
 
 
+# ---------------------------------------------------------------- in-season
+
+def _scoring_key(league: league_mod.League) -> str:
+    return league.scoring if league.scoring in proj_mod.POINTS_KEY else "half_ppr"
+
+
+def _week_now(args: argparse.Namespace, league: league_mod.League) -> tuple[int, str | None]:
+    """The week to reason about: --week, else Sleeper's idea of now, else 1."""
+    if getattr(args, "week", None):
+        return args.week, None
+    try:
+        season, week = sleeper_mod.current_week()
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        return 1, f"could not read the NFL calendar ({exc}); assuming week 1 — pass --week"
+    if season and season != league.season:
+        return 1, f"the NFL is in {season} but the league file says {league.season}; assuming week 1 — pass --week"
+    return week, None
+
+
+def _valuation(
+    args: argparse.Namespace, league: league_mod.League, horizon: str
+) -> tuple[league_mod.Valuation, dict[str, dict], list[str]]:
+    """(valuation, projected-player pool, notes) for *horizon*: "week", "ros" or "season".
+
+    Weekly and rest-of-season numbers come from Sleeper and cover everyone it
+    projects, so the pool doubles as the free-agent universe. Offline, both fall
+    back to the board's season projections with a note saying so.
+    """
+    notes: list[str] = []
+    data = board_mod.load(args.data)
+    base = league_mod.Valuation.from_board(data)
+    scoring = _scoring_key(league)
+    week, note = _week_now(args, league)
+    if note:
+        notes.append(note)
+    if horizon == "season":
+        pool = {league_mod.join_key(p.name): {"name": p.name, "pos": p.pos, "team": p.team,
+                                                     "points": p.projected or 0.0} for p in data.players}
+        return base, pool, notes
+    if horizon == "week":
+        try:
+            rows = proj_mod.fetch_week(league.season, week)
+        except (OSError, http.client.HTTPException, ValueError) as exc:
+            notes.append(f"week {week} projections unavailable ({exc}); using season projections / 17 with byes")
+            pts = {league_mod.join_key(p.name): (p.projected or 0.0) / 17 for p in data.players}
+            val = base.with_week(week, points=pts, label=f"week {week} (season ÷ 17)")
+            pool = {league_mod.join_key(p.name): {"name": p.name, "pos": p.pos, "team": p.team,
+                                                         "points": pts[league_mod.join_key(p.name)]}
+                    for p in data.players}
+            return val, pool, notes
+        weekly = proj_mod.weekly_points_by_name(rows, scoring)
+        val = base.with_week(week, points={k: e["points"] for k, e in weekly.items()}, label=f"week {week}")
+        return val, weekly, notes
+    # rest of season
+    totals, missing = proj_mod.rest_of_season(league.season, week, scoring)
+    if not totals:
+        notes.append(f"rest-of-season projections unavailable (weeks {week}-17 failed); using season projections")
+        pool = {league_mod.join_key(p.name): {"name": p.name, "pos": p.pos, "team": p.team,
+                                                     "points": p.projected or 0.0} for p in data.players}
+        return base, pool, notes
+    if missing:
+        notes.append("rest-of-season is missing weeks " + ", ".join(map(str, missing)))
+    val = league_mod.Valuation({k: e["points"] for k, e in totals.items()}, label=f"rest of season from week {week}")
+    return val, totals, notes
+
+
+def _load_league(args: argparse.Namespace) -> league_mod.League:
+    return league_mod.load(getattr(args, "league", None) or DEFAULT_LEAGUE)
+
+
+def _spot_line(s, val, width: int = 24) -> str:
+    tag = f" ({s.status[:1]})" if s.status else ""
+    return f"{s.name + tag:<{width}} {s.pos:<3} {s.team:<4} {val.points(s):>6.1f}"
+
+
+def _short(s) -> str:
+    """Surname for a one-line lineup summary; 'Ravens' for a defense; suffixes dropped."""
+    if s.pos == "DST":
+        return s.name.split()[0]
+    parts = [w for w in s.name.split() if w.rstrip(".").lower() not in ("jr", "sr", "ii", "iii", "iv", "v")]
+    return parts[-1] if parts else s.name
+
+
+def cmd_league_import(args: argparse.Namespace) -> int:
+    say = print
+    if args.draft:
+        data = board_mod.load(args.data)
+        by_name = {league_mod.join_key(p.name): (p.pos, p.team) for p in data.players}
+        picks = yahoo_mod.fetch_draft_results(
+            args.yahoo, season=args.season, profile=args.profile, headless=not args.show, teams=args.teams,
+            on_event=say,
+        )
+        league = yahoo_mod.league_from_draft(
+            picks, league_name=f"Yahoo league {args.yahoo}", season=args.season or data.season, me=args.me,
+            resolve_pos=lambda name: by_name.get(league_mod.join_key(name)),
+        )
+        skipped = len(picks) - sum(len(t.roster) for t in league.teams)
+        print(f"Draft results: {len(picks)} picks into {len(league.teams)} teams"
+              + (f"; {skipped} not on the board were skipped" if skipped else ""))
+    else:
+        league = yahoo_mod.fetch_league(
+            args.yahoo, season=args.season, profile=args.profile, headless=not args.show, on_event=say
+        )
+        if args.me:
+            league.me = args.me
+    league.scoring = args.scoring
+    league_mod.validate(league)
+    out = league_mod.save(league, args.out)
+    mine = f"; you are {league.me}" if league.me else "; pass --me to mark your team"
+    print(f"Wrote {out}: {league.name}, {len(league.teams)} teams{mine}")
+    return 0
+
+
+def cmd_league_show(args: argparse.Namespace) -> int:
+    league = _load_league(args)
+    val, _, notes = _valuation(args, league, args.horizon)
+    for n in notes:
+        print(f"note: {n}")
+    rows = manage_mod.strength_table(league, val)
+    print(f"\n{league.name} — best lineups by {val.label}\n")
+    print(f"{'#':>2}  {'TEAM':<26} {'TOTAL':>7}  STARTERS")
+    print("-" * 100)
+    for i, (t, total, starters) in enumerate(rows, 1):
+        me = " <- you" if league.me and t.name == league.me else ""
+        core = ", ".join(_short(s) for k, s in starters.items() if k not in ("K", "DST"))
+        print(f"{i:>2}  {t.name:<26} {total:>7.1f}  {core}{me}")
+    print()
+    if args.rosters:
+        for t in league.teams:
+            print(f"{t.name}" + (f"  (waiver #{t.waiver})" if t.waiver else ""))
+            for s in sorted(t.roster, key=lambda s: (league_mod.SLOTS.index(s.slot), -val.points(s))):
+                print(f"  {s.slot:<4} {_spot_line(s, val)}")
+            print()
+    return 0
+
+
+def cmd_lineup(args: argparse.Namespace) -> int:
+    league = _load_league(args)
+    team = league.team(args.team)
+    val, _, notes = _valuation(args, league, "week")
+    for n in notes:
+        print(f"note: {n}")
+    call = manage_mod.start_sit(team, val, league.lineup)
+    print(f"\n{team.name} — best lineup for {val.label} ({call.total:.1f} projected)\n")
+    for slot, s in call.starters.items():
+        print(f"  {slot:<5} {_spot_line(s, val)}")
+    if call.bench:
+        print("  bench")
+        for s in call.bench:
+            print(f"        {_spot_line(s, val)}")
+    if call.start or call.sit:
+        print("\nMoves:")
+        for s in call.start:
+            print(f"  START {s.name} ({s.pos})")
+        for s in call.sit:
+            print(f"  SIT   {s.name} ({s.pos})")
+    else:
+        print("\nNo moves — the lineup on file is already the best one.")
+    if call.byes:
+        print("On bye: " + ", ".join(s.name for s in call.byes))
+    if call.unknown:
+        print("No projection (check them by hand): " + ", ".join(s.name for s in call.unknown))
+    print()
+    return 0
+
+
+def cmd_waivers(args: argparse.Namespace) -> int:
+    league = _load_league(args)
+    me = league.team(args.team)
+    val, pool, notes = _valuation(args, league, args.horizon)
+    for n in notes:
+        print(f"note: {n}")
+    trending: dict[str, int] = {}
+    if not args.no_trending:
+        try:
+            db, _ = players_mod.fetch_players()
+            rows = players_mod.trending(hours=args.hours, limit=50)
+            trending = {league_mod.join_key(t["name"]): t["count"] for t in players_mod.name_trending(rows, db)}
+        except (OSError, http.client.HTTPException, ValueError):
+            pass
+    targets = manage_mod.waiver_targets(league, me, val, pool, pos=args.pos, limit=args.limit, trending=trending)
+    print(f"\nFree agents for {me.name} — by {val.label}\n")
+    if targets:
+        print(f"{'PLAYER':<24} {'POS':<3} {'TM':<4} {'PTS':>6} {'GAIN':>6} {'DEPTH':>6}  {'ADDS':>7}  DROP")
+        print("-" * 92)
+        for t in targets:
+            starts = f"{t.gain:>+6.1f}" if t.gain > 0 else "   sit"
+            adds = f"+{t.trending:,}" if t.trending else ""
+            drop = f"{t.drop.name} ({t.drop.pos})" if t.drop else "—"
+            print(f"{t.name:<24} {t.pos:<3} {t.team:<4} {t.points:>6.1f} {starts:>6} {t.depth_gain:>+6.1f}  "
+                  f"{adds:>7}  {drop}")
+        print("\nGAIN = points your best lineup improves by if you add him (sit = a bench upgrade only);"
+              "\nDEPTH = his points minus your worst player at the position; ADDS = Sleeper adds in the window.")
+    else:
+        print("  nobody available beats what you already have at any position")
+    # Context either way: the best of what is out there, so a thin wire reads as thin rather than broken.
+    taken = league.rostered()
+    print("\nBest available by position:")
+    for p in ([args.pos] if args.pos else ["QB", "RB", "WR", "TE"]):
+        top = sorted((e for k, e in pool.items() if k not in taken and e["pos"] == p and e.get("points")),
+                     key=lambda e: -e["points"])[:4]
+        if top:
+            print(f"  {p}: " + " | ".join(f"{e['name']} ({e['points']:.0f})" for e in top))
+    print()
+    return 0
+
+
+def cmd_trade(args: argparse.Namespace) -> int:
+    league = _load_league(args)
+    me = league.team(args.team)
+    them = league.team(args.with_team)
+    if them is me:
+        raise ValueError("pick a different team to trade with")
+    give = [me.find(tok) for tok in args.give]
+    get = [them.find(tok) for tok in args.get]
+    val, _, notes = _valuation(args, league, args.horizon)
+    for n in notes:
+        print(f"note: {n}")
+    _print_trade(manage_mod.evaluate_trade(league, me, them, give, get, val), val)
+    return 0
+
+
+def _tag(s) -> str:
+    """'Alec Pierce (WR, PUP-P)' — the site's injury designation travels with the name."""
+    return f"{s.name} ({s.pos}" + (f", {s.status}" if s.status else "") + ")"
+
+
+def _print_trade(r: manage_mod.TradeResult, val) -> None:
+    print(f"\n{r.me.name} sends  " + ", ".join(f"{_tag(s)[:-1]} {val.points(s):.0f})" for s in r.give))
+    print(f"{r.them.name} sends  " + ", ".join(f"{_tag(s)[:-1]} {val.points(s):.0f})" for s in r.get))
+    print(f"\n  {r.me.name:<26} best lineup {r.me_before:>7.1f} -> {r.me_after:>7.1f}  ({r.me_delta:+.1f})")
+    print(f"  {r.them.name:<26} best lineup {r.them_before:>7.1f} -> {r.them_after:>7.1f}  ({r.them_delta:+.1f})")
+    print(f"\n  Verdict: {r.verdict}")
+    for n in r.notes:
+        print(f"  note: {n}")
+    print()
+
+
+def cmd_trades(args: argparse.Namespace) -> int:
+    league = _load_league(args)
+    me = league.team(args.team)
+    partners = [league.team(args.with_team)] if args.with_team else None
+    val, _, notes = _valuation(args, league, args.horizon)
+    for n in notes:
+        print(f"note: {n}")
+    results = manage_mod.find_trades(
+        league, me, val, partners=partners, min_gain=args.min_gain, partner_floor=-args.allow_loss,
+        deep=args.deep, limit=args.limit,
+    )
+    print(f"\nTrades that improve {me.name} by {val.label} (partner floor {-args.allow_loss:+.0f})\n")
+    if not results:
+        print("  nothing found — loosen --min-gain or --allow-loss, or try --deep for 2-for-2s\n")
+        return 0
+    for i, r in enumerate(results, 1):
+        give = " + ".join(_tag(s) for s in r.give)
+        get = " + ".join(_tag(s) for s in r.get)
+        print(f"{i:>2}. with {r.them.name}: give {give}  for  {get}")
+        print(f"      you {r.me_delta:+.1f}   they {r.them_delta:+.1f}   — {r.verdict}")
+    print("\nProjections don't know about PUP/IR stints or role changes — read the tags and the news before you send.\n")
+    return 0
+
+
 def _packaged_data_path() -> Path:
     from importlib import resources
 
@@ -433,7 +708,7 @@ def _packaged_data_path() -> Path:
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="fantasyleague",
-        description="Draft-day board for Yahoo half-PPR fantasy football.",
+        description="Draft-day board and in-season manager for Yahoo fantasy football.",
     )
     p.add_argument("--version", action="version", version=f"FantasyLeagueFootball v{__version__}")
     p.add_argument("--data", metavar="PATH", help="alternate dataset JSON (default: packaged board)")
@@ -490,8 +765,15 @@ def build_parser() -> argparse.ArgumentParser:
         "--sleeper", metavar="DRAFT_ID", help="follow this Sleeper draft and cross picks off live"
     )
     sv.add_argument(
+        "--yahoo", type=_positive, metavar="LEAGUE_ID",
+        help="follow this Yahoo league's live draft via its Draft Results page (needs the [yahoo] extra)",
+    )
+    sv.add_argument("--profile", type=Path, help="browser profile dir for --yahoo (default ~/.fantasyleague/yahoo-profile)")
+    sv.add_argument("--show", action="store_true", help="show the --yahoo browser (needed the first time, to sign in)")
+    sv.add_argument(
         "--every", type=_interval, default=sleeper_mod.DEFAULT_INTERVAL,
-        help=f"seconds between Sleeper polls (default {sleeper_mod.DEFAULT_INTERVAL:g})",
+        help=f"seconds between polls (default {sleeper_mod.DEFAULT_INTERVAL:g} for Sleeper, "
+             f"{yahoo_mod.DEFAULT_POLL_SECONDS:g} for Yahoo, which rate-limits faster reloads)",
     )
     sv.add_argument("--open", action="store_true", help="open the board in a browser when up")
     sv.set_defaults(func=cmd_serve)
@@ -557,6 +839,64 @@ def build_parser() -> argparse.ArgumentParser:
     ex.add_argument("--flag", choices=["value", "avoid", "watch"], help="filter by flag")
     ex.add_argument("--limit", type=_positive, default=1000, help="max rows")
     ex.set_defaults(func=cmd_export)
+
+    # ---- in-season ------------------------------------------------------
+    def in_season(parser, horizon_default: str | None) -> None:
+        parser.add_argument("--league", metavar="PATH", help=f"league file (default: {DEFAULT_LEAGUE})")
+        parser.add_argument("--team", help="which team is yours (default: the one marked in the league file)")
+        parser.add_argument("--week", type=lambda t: _bounded_int(t, 1, "week"), help="NFL week (default: now)")
+        if horizon_default:
+            parser.add_argument(
+                "--horizon", choices=["ros", "week", "season"], default=horizon_default,
+                help=f"which projections to value players by (default {horizon_default}: rest of season)",
+            )
+
+    lg = sub.add_parser("league", help="import or inspect an in-season league file")
+    lg_sub = lg.add_subparsers(dest="league_command", required=True)
+    li = lg_sub.add_parser("import", help="read rosters from Yahoo into league.json (needs the [yahoo] extra)")
+    li.add_argument("--yahoo", type=_positive, required=True, metavar="LEAGUE_ID", help="Yahoo league id")
+    li.add_argument("--season", type=_positive, help="past season year (archived leagues)")
+    li.add_argument("--draft", action="store_true", help="read the Draft Results page instead of team pages")
+    li.add_argument("--teams", type=_team_count, default=draft_mod.DEFAULT_TEAMS, help="league size for --draft")
+    li.add_argument("--me", help="your team name, as Yahoo shows it")
+    li.add_argument("--scoring", choices=list(proj_mod.POINTS_KEY), default="half_ppr", help="league scoring")
+    li.add_argument("--profile", type=Path, help="browser profile dir (default ~/.fantasyleague/yahoo-profile)")
+    li.add_argument("--show", action="store_true", help="show the browser (needed the first time, to sign in)")
+    li.add_argument("-o", "--out", default=DEFAULT_LEAGUE, help=f"where to write (default {DEFAULT_LEAGUE})")
+    li.set_defaults(func=cmd_league_import)
+    ls2 = lg_sub.add_parser("show", help="every team's best lineup, strongest first")
+    in_season(ls2, "ros")
+    ls2.add_argument("--rosters", action="store_true", help="also print every roster")
+    ls2.set_defaults(func=cmd_league_show)
+
+    lu = sub.add_parser("lineup", help="best lineup for the week, and the moves to get there")
+    in_season(lu, None)
+    lu.set_defaults(func=cmd_lineup)
+
+    wv = sub.add_parser("waivers", help="free agents ranked by what they would do for your lineup")
+    in_season(wv, "ros")
+    wv.add_argument("--pos", choices=["QB", "RB", "WR", "TE", "K", "DST"], help="one position only")
+    wv.add_argument("--limit", type=_positive, default=15, help="how many to show")
+    wv.add_argument("--hours", type=_positive, default=24, help="trending-adds window")
+    wv.add_argument("--no-trending", action="store_true", help="skip the Sleeper trending lookup")
+    wv.set_defaults(func=cmd_waivers)
+
+    tr = sub.add_parser("trade", help="evaluate a proposed trade for both sides")
+    in_season(tr, "ros")
+    tr.add_argument("--with", dest="with_team", required=True, metavar="TEAM", help="the other team")
+    tr.add_argument("--give", nargs="+", required=True, metavar="PLAYER", help="players you send")
+    tr.add_argument("--get", nargs="+", required=True, metavar="PLAYER", help="players you receive")
+    tr.set_defaults(func=cmd_trade)
+
+    tf = sub.add_parser("trades", help="find trades that improve your lineup and don't hurt the partner")
+    in_season(tf, "ros")
+    tf.add_argument("--with", dest="with_team", metavar="TEAM", help="only this partner")
+    tf.add_argument("--min-gain", type=float, default=3.0, help="least improvement to your lineup (default 3)")
+    tf.add_argument("--allow-loss", type=float, default=0.0,
+                    help="how much the partner's lineup may drop and still be listed (default 0: win-win only)")
+    tf.add_argument("--deep", action="store_true", help="also search 2-for-2s")
+    tf.add_argument("--limit", type=_positive, default=10, help="how many to show")
+    tf.set_defaults(func=cmd_trades)
 
     return p
 

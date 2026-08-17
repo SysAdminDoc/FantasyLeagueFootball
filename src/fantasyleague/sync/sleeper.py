@@ -46,6 +46,22 @@ def fetch_draft(draft_id: str, timeout: float = 10.0) -> dict:
     return _get(f"{API}/draft/{draft_id}", timeout=timeout)
 
 
+def current_week(timeout: float = 10.0) -> tuple[int, int]:
+    """(season, week) the NFL is in right now, per `/state/nfl`.
+
+    Before the regular season starts (`season_type` "pre" or "off") the answer is
+    week 1 of the upcoming season, which is what every in-season command wants.
+    """
+    state = _get(f"{API}/state/nfl", timeout=timeout)
+    if not isinstance(state, dict):
+        raise ValueError("unexpected response for /state/nfl")  # noqa: TRY004
+    season = int(state.get("season") or state.get("league_season") or 0)
+    week = int(state.get("week") or 1)
+    if state.get("season_type") != "regular":
+        week = 1
+    return season, max(1, min(week, 18))
+
+
 @dataclass
 class SleeperSync:
     """Polls a Sleeper draft and pushes picks into a `serve.Bus`.

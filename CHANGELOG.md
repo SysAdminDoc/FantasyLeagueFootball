@@ -4,6 +4,60 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-08-16
+
+The in-season half. The board answers "who should I take"; from Week 1 the
+questions become who to start, who to add and whether a trade helps, and all
+three need everyone's roster plus a number per player. This release adds both.
+
+### Added
+- `league import --yahoo ID` reads every roster in a Yahoo league into a plain
+  `league.json` by driving a browser profile you sign into once (optional
+  `[yahoo]` extra; Yahoo's API needs an OAuth app, its pages only need you).
+  `--draft` reads the Draft Results page instead, for a league file before any
+  moves are made. Team pages, injury tags, waiver priority and which team is
+  yours are all parsed with plain Python over the HTML, so the parsers run —
+  and are tested — without a browser.
+- `league show`: every team's best lineup, strongest first, by rest-of-season
+  projection — a power ranking that ignores what people *say* about rosters.
+- `lineup`: the best legal lineup for the week from that week's projections,
+  and the START/SIT moves that get there from what the roster file records.
+  Byes are zero, injury designations travel with the name, unknown players are
+  called out rather than silently valued at nothing.
+- `waivers`: free agents ranked by how much your best lineup improves if you
+  add them (GAIN), or how much deeper you get at the position (DEPTH), with a
+  drop paired to each and Sleeper's trending adds alongside. Anyone on any
+  roster in the league is excluded; the pool is everyone Sleeper projects, so a
+  breakout backup who was never on the draft board still shows up.
+- `trade`: both best lineups before and after a proposal, with a verdict, a
+  roster-count note when one side must drop, and a warning when a kicker or a
+  defense is being traded.
+- `trades`: searches every partner (1-for-1, 2-for-1, 1-for-2; `--deep` adds
+  2-for-2) for trades that raise your lineup by `--min-gain` without lowering
+  theirs by more than `--allow-loss` (default 0: win-win only). Results are
+  ranked by your gain plus half of theirs — the trades people actually accept —
+  deduplicated to one per partner and headline player, and capped per partner
+  so eleven variations on one deal don't crowd out the others.
+- `serve --yahoo LEAGUE_ID`: follow a live Yahoo draft the same way `--sleeper`
+  follows a Sleeper one — by re-reading the league's Draft Results page every
+  12 seconds through the signed-in browser profile. Off-board picks are
+  counted, snake slots are derived so your own picks are claimed, and a
+  commissioner's undo is mirrored. The page reader is injectable, so the sync
+  logic is tested against a real `serve.Bus` without a browser.
+- Weekly projections (`sync.projections.fetch_week`, cached six hours) and a
+  rest-of-season sum of them (`rest_of_season`), plus `sync.sleeper.current_week`
+  so the commands know which week it is without being told.
+- `board.join_key`: name joins are now suffix-blind ("Travis Etienne Jr." on
+  Yahoo joins "Travis Etienne" on Sleeper) as well as punctuation-blind.
+
+### Notes
+- Every in-season command works offline: it falls back to the board's season
+  projections (÷17 for a week) and prints a note saying so.
+- 337 tests (was 282). New: league file round trip and validation; lineup maths
+  (FLEX optimality, IR never starts, byes zero); trade evaluation and finder
+  behaviour; waiver ranking and drop pairing; Yahoo parsers on fixtures shaped
+  like the real pages; every new command through the CLI offline.
+
 ## [0.2.0] — 2026-08-16
 
 ### Accessibility
@@ -323,6 +377,7 @@ Initial release.
 - README screenshots (dark, light, mid-draft) captured from the rendered board.
 - Published to GitHub: https://github.com/SysAdminDoc/FantasyLeagueFootball
 
+[0.3.0]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.3.0
 [0.2.0]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.2.0
 [0.1.0]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.1.0
 [0.0.1]: https://github.com/SysAdminDoc/FantasyLeagueFootball/releases/tag/v0.0.1

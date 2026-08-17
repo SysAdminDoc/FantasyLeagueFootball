@@ -1,15 +1,15 @@
 # FantasyLeagueFootball
 
-[![Version](https://img.shields.io/badge/version-0.2.0-E8963C.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.0-E8963C.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](pyproject.toml)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](#install)
-[![Tests](https://img.shields.io/badge/tests-282%20passing-6FBF73.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-337%20passing-6FBF73.svg)](tests/)
 [![Dependencies](https://img.shields.io/badge/runtime%20deps-0-6FBF73.svg)](pyproject.toml)
 
-A draft-day board for **Yahoo half-PPR fantasy football**. Renders one self-contained HTML page you keep open on a second screen while you draft — click players off as they go, watch tiers drain, and get warned the moment a tier is about to break.
+A draft-day board — and, once the season starts, a manager — for **Yahoo fantasy football**. On draft night it renders one self-contained HTML page you keep open on a second screen: click players off as they go, watch tiers drain, and get warned the moment a tier is about to break. Afterwards it reads every roster in your league and answers the three in-season questions: who do I start, who do I add, is this trade good for me.
 
-Ships with a ranked 2026 board — 200 players in 12 tiers — with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies, no account, no telemetry. The rendered page makes no network calls at all — it works from `file://` with the Wi-Fi off. Only the commands that fetch data (`refresh`, `tiers`, `variant`, `serve --sleeper`) talk to the internet, and all of them use public APIs with no key.
+Ships with a ranked 2026 board — 200 players in 12 tiers — with value/reach flags, a do-not-draft list, a training-camp injury board, and late-round targets. Zero runtime dependencies, no account, no telemetry. The rendered page makes no network calls at all — it works from `file://` with the Wi-Fi off. Only the commands that fetch data (`refresh`, `tiers`, `variant`, `serve --sleeper`, and the in-season commands) talk to the internet, and all of them use public APIs with no key. Reading your Yahoo league needs the optional `[yahoo]` extra and your own sign-in — see [In-season](#in-season).
 
 ![Draft board, dark theme](docs/screenshot-dark.png)
 
@@ -46,6 +46,7 @@ On a phone the readouts you need on the clock — best available, your roster, w
 - **Second screen on your phone.** `fantasyleague serve --host 0.0.0.0` puts the board on your LAN; every tab and device stays in sync, the screen won't sleep mid-draft, and the phone layout leads with the readouts you need on the clock. A pick that fails to reach the server is reported and replayed rather than silently lost.
 - **Terminal CLI** over the same data: `list`, `values`, `next --drafted …` for best available and tier breaks without a browser.
 - **Bring your own board.** Any JSON matching the packaged file works; it's validated on load so a bad edit fails loudly instead of rendering holes.
+- **In-season.** `league import` reads every roster in your Yahoo league into a plain `league.json`; then `lineup` sets your best lineup for the week from live weekly projections (byes and injury tags included), `waivers` ranks free agents by what they'd do for *your* lineup with a drop paired to each, `trade` scores a proposal for both sides, and `trades` searches every partner for win-wins — trades that raise your best lineup without lowering theirs. Rest-of-season projections drive the trade and waiver maths; the week's projections drive the lineup.
 
 ## Install
 
@@ -82,11 +83,17 @@ If `fantasyleague` isn't on your PATH (common on Windows), `python -m fantasylea
 | `fantasyleague values` | Value picks, reaches, and the do-not-draft list. |
 | `fantasyleague refresh [-o PATH] [--force] [--reflag] [--no-adp] [--no-projections] [--no-trending] [--adp-format F] [--teams N] [--budget N] [--roster-size N] [--hours N] [--trending-limit N] [--limit N]` | Pull current ADP + spread + byes (Fantasy Football Calculator), season projections and auction values (Sleeper), then rebuild the injury board, keeper ages and trending rail. Caches for 24h; works offline from cache. Without `-o` it rewrites the dataset in place. |
 | `fantasyleague next [--drafted PLAYER …] [--pos …] [--limit N] [--teams N --slot S [--pick P]]` | Best available given who's gone (ranks or names — `gibbs`, `"ja'marr"`, `4`), plus any tier down to its last two and a remaining-by-position count. With `--slot`, adds your next picks and each player's odds of surviving to them. |
-| `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft. |
+| `fantasyleague serve [--host H] [--port P] [--league NAME] [--teams N] [--slot S] [--sleeper ID \| --yahoo ID [--show]] [--every S] [--open]` | Serve the board with live sync. Every open tab and device shares one pick log. `--host 0.0.0.0` exposes it to your LAN for phone use; `--sleeper` follows a live Sleeper draft, `--yahoo` follows a live Yahoo draft through the league's Draft Results page (needs the `[yahoo]` extra and a one-time sign-in). |
 | `fantasyleague export [-o PATH] [--pos …] [--flag …]` | Write the board as CSV — stdout by default. |
 | `fantasyleague tiers [--scoring half\|ppr\|standard] [--allow-stale]` | Re-tier the board from Boris Chen's published consensus tiers. Refuses files older than 14 days — as of 2026-08-16 the published set is still from December 2025. |
 | `fantasyleague variant {half-ppr,ppr,standard,2qb,dynasty} [-o PATH]` | Build a board for another scoring format — re-ranked, re-projected, re-tiered and re-priced. `2qb` is superflex. |
 | `fantasyleague validate [PATH]` | Check a dataset and print every problem found, each with a JSON pointer. Exits non-zero if any. |
+| `fantasyleague league import --yahoo ID [--me NAME] [--scoring ppr] [--show] [--draft] [-o league.json]` | Read every roster in a Yahoo league into `league.json` (needs `pip install "fantasyleaguefootball[yahoo]"`). `--show` opens the browser so you can sign in the first time; `--draft` reads the Draft Results page instead of the team pages. |
+| `fantasyleague league show [--rosters] [--horizon ros\|week\|season]` | Every team's best lineup, strongest first — a projection-based power ranking. |
+| `fantasyleague lineup [--week N] [--team NAME]` | Your best lineup for the week from that week's projections, and the START/SIT moves to get there. Byes and injury tags shown. |
+| `fantasyleague waivers [--pos …] [--limit N] [--horizon …]` | Free agents ranked by how much your best lineup improves if you add them, with a drop paired to each. Anyone on any roster is excluded. |
+| `fantasyleague trade --with TEAM --give A [B] --get C [D]` | Score a proposal: both best lineups before and after, and a verdict. |
+| `fantasyleague trades [--with TEAM] [--min-gain N] [--allow-loss N] [--deep] [--limit N]` | Search every partner for trades that raise your lineup by at least `--min-gain` without lowering theirs by more than `--allow-loss` (default 0: win-win only). `--deep` adds 2-for-2s. |
 | `fantasyleague --data my.json <command>` | Run any command against your own dataset. |
 | `fantasyleague --version` | Version string. |
 
@@ -127,6 +134,36 @@ fantasyleague serve --sleeper 1234567890123456789 --slot 5
 ```
 
 Every pick made in the Sleeper room is crossed off your board within a few seconds. The draft ID is the last path segment of the Sleeper draft URL. Picks are matched on Sleeper player IDs, so a name that differs between sources still lands on the right row; anyone drafted who isn't on this board is logged once and ignored.
+
+### Following a Yahoo draft
+
+```bash
+pip install "fantasyleaguefootball[yahoo]" && python -m playwright install chromium
+fantasyleague serve --yahoo 358473 --slot 10 --show     # --show the first time, to sign in
+```
+
+Yahoo has no keyless API, so this drives a browser profile you sign into once and re-reads the league's **Draft Results** page every 12 seconds (Yahoo refuses faster reloads). Each pick lands on the board within a poll, off-board picks are counted, and a commissioner's undo is mirrored. Keep the reader window out of the draft room — Yahoo tries to pull league pages into it once the room opens, and the reader refuses that redirect on purpose. You draft in your own browser as normal.
+
+## In-season
+
+The draft board answers "who should I take". From Week 1 the questions change, and they all need the same two things: everyone's roster, and a number per player. So:
+
+```bash
+pip install "fantasyleaguefootball[yahoo]"      # Playwright, for reading your league's pages
+python -m playwright install chromium
+
+fantasyleague league import --yahoo 358473 --scoring ppr --show   # sign in once in the window that opens
+fantasyleague league show                                          # every team's best lineup, strongest first
+fantasyleague lineup                                               # this week's best lineup + START/SIT moves
+fantasyleague waivers                                              # free agents that would actually start for you
+fantasyleague trades                                               # win-win trades with every partner
+fantasyleague trade --with "Bijan Mustardson" --give hubbard addison --get olave
+```
+
+- **`league.json`** is plain: team names, and for each player a name, position, NFL team and current slot. `league import` fills it from Yahoo's team pages by driving a browser profile you sign into once (Yahoo's API needs an OAuth app; its pages only need you). Re-run it after waivers clear so the rosters are current, or edit the file by hand — anything a site exports can produce it.
+- **Numbers.** `lineup` uses **this week's** projections (Sleeper's public endpoint, cached for six hours), so a bye is 0 and a Wednesday designation shows by Thursday. `trades`, `waivers` and `league show` use **rest-of-season** — the sum of the remaining weekly projections — because a trade is for the year, not the week. Offline, everything falls back to the board's season projections and says so.
+- **The maths** is one calculation from three angles: take a roster, find its best legal lineup (QB, 2 RB, 2 WR, TE, FLEX, K, DEF by default; superflex boards carry their own shape), compare totals. A trade is good when your best lineup scores more after it and a *win-win* when the partner's does too — those are the ones people accept, and the only ones `trades` proposes unless you pass `--allow-loss`. A free agent is worth adding when he would start (GAIN) or beats your worst player at his position (DEPTH).
+- **What it doesn't know:** the news. Projections carry a "Questionable", not a PUP stint or a role change; injury tags from the league page travel with each name so you see them before you send.
 
 ## The 2026 board
 
@@ -211,7 +248,7 @@ Dark is the default. The page defines a complete light palette too and picks one
 ```bash
 pip install -e ".[dev]"
 python -m playwright install chromium   # only needed for the browser tests
-pytest                                  # 282 tests
+pytest                                  # 337 tests
 ruff check .
 python -m build                         # wheel + sdist into dist/
 ```
@@ -223,6 +260,7 @@ What the tests cover:
 - **Render** — output is a complete document, fully inlined, no external requests, both themes defined, no leftover template tokens, `</script>` in the data can't break the page, version stamped.
 - **DOM contract** — every element ID `board.js` queries exists in the template; every flag has a label; every severity has a style; the tier-break threshold matches between Python and JS.
 - **Real browser** (Playwright, skipped if unavailable) — 200 rows render with zero JS errors in both Chromium and Firefox; click toggles `aria-pressed` and updates best available; tier breaks fire at two left; state and roster claims survive a reload, including in live mode; the phone layout puts the live readouts above the board; the toast keeps Undo reachable; contrast tokens meet AA; a `<!--<script>` in the data cannot blank the page.
+- **In-season** — the league file round-trips and rejects duplicates; the lineup maths puts the right player in FLEX, never starts IR, zeroes byes; trades score both sides and the finder only proposes win-wins in the surplus-for-need direction; waivers exclude rostered players and pair a drop; the Yahoo parsers read team pages and draft results shaped like the real ones; every command runs offline against the season projections and says so.
 
 Project layout:
 
@@ -232,15 +270,18 @@ src/fantasyleague/
   models.py                  frozen dataclasses, validated on construction
   board.py                   load / validate / draft-time queries
   render.py                  token replacement into the HTML template
+  league.py                  in-season league file, valuation, best-lineup maths
+  manage.py                  start/sit, trade evaluation + finder, waiver targets
+  sync/                      adp, projections (season + weekly), sleeper, players, borischen, yahoo
   cli.py                     argparse front end
   assets/board.{html.template,css,js}
-tests/                       282 tests across data, queries, render, DOM contract, browser
+tests/                       337 tests across data, queries, render, DOM contract, browser, in-season
 docs/                        README screenshots
 ```
 
 ## Known limitations
 
-- Yahoo live sync isn't wired up (Sleeper is) — it needs a Yahoo Developer app.
+- Yahoo sync — both the live draft (`serve --yahoo`) and rosters (`league import`) — works by driving a signed-in browser, because Yahoo's API needs a Developer app. It reads Yahoo's own pages, so a Yahoo redesign can break the parsers; they are fixtures-tested against the 2026 markup.
 - `refresh` without `-o` writes back into the installed package, so a `pip install --upgrade` replaces your refreshed data with the packaged board. Pass `-o my-board.json` and use `--data my-board.json` to keep it.
 - The screen-reader announcements and iOS Safari behaviour are built to spec but have not been verified on real assistive tech or a physical iPhone.
 

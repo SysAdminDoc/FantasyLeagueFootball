@@ -242,3 +242,151 @@ def test_export_filters_compose(capsys):
 
     rows = list(_csv.DictReader(out.splitlines()))
     assert rows and all(r["flag"] == "value" and r["pos"] == "RB" for r in rows)
+
+
+# ---------------------------------------------------------------- in-season
+
+def _league_file(tmp_path):
+    """A two-team league drawn from real board names so projections join without the network."""
+    from fantasyleague import league as league_mod
+    from fantasyleague.league import League, Spot, Team
+
+    def s(name, pos, slot="BN"):
+        return Spot(name=name, pos=pos, slot=slot)
+
+    me = Team("Matt's AI Picks", [
+        s("Jayden Daniels", "QB", "QB"), s("Jonathan Taylor", "RB", "RB"), s("Ashton Jeanty", "RB", "RB"),
+        s("Rashee Rice", "WR", "WR"), s("Mike Evans", "WR", "WR"), s("Trey McBride", "TE", "TE"),
+        s("Parker Washington", "WR", "FLEX"), s("Chuba Hubbard", "RB"), s("Jordan Addison", "WR"),
+        s("Eddy Pineiro", "K", "K"), s("Ravens D/ST", "DST", "DST"),
+    ])
+    them = Team("Girldad", [
+        s("Brock Purdy", "QB", "QB"), s("Bijan Robinson", "RB", "RB"), s("Jaylen Warren", "RB", "RB"),
+        s("Nico Collins", "WR", "WR"), s("Chris Olave", "WR", "WR"), s("Brock Bowers", "TE", "TE"),
+        s("Tetairoa McMillan", "WR", "FLEX"), s("Davante Adams", "WR"), s("Rachaad White", "RB"),
+        s("Tyler Loop", "K", "K"), s("Packers D/ST", "DST", "DST"),
+    ])
+    path = tmp_path / "league.json"
+    league_mod.save(League("Broseph's", 2026, [me, them], me="Matt's AI Picks", scoring="ppr"), path)
+    return path
+
+
+@pytest.fixture
+def season_only(monkeypatch):
+    """No network: the calendar and every projection endpoint are unreachable."""
+    from fantasyleague.sync import projections as proj_mod
+    from fantasyleague.sync import sleeper as sleeper_mod
+
+    def down(*a, **kw):
+        raise OSError("offline")
+
+    monkeypatch.setattr(sleeper_mod, "current_week", down)
+    monkeypatch.setattr(proj_mod, "fetch_week", down)
+
+
+def test_league_show_ranks_teams_offline(capsys, tmp_path, season_only):
+    path = _league_file(tmp_path)
+    code, out, _ = run(capsys, "league", "show", "--league", str(path), "--rosters")
+    assert code == 0
+    assert "note:" in out and "assuming week 1" in out          # honest about the fallback
+    assert "Girldad" in out and "Matt's AI Picks" in out and "<- you" in out
+    assert out.index("Girldad") < out.index("Matt's AI Picks")   # stronger lineup listed first
+    assert "Ravens D/ST" in out                                  # --rosters prints everyone
+
+
+def test_league_show_with_season_horizon_needs_no_network(capsys, tmp_path, monkeypatch):
+    from fantasyleague.sync import projections as proj_mod
+
+    monkeypatch.setattr(proj_mod, "fetch_week", lambda *a, **k: (_ for _ in ()).throw(AssertionError("no fetch")))
+    path = _league_file(tmp_path)
+    code, out, _ = run(capsys, "league", "show", "--league", str(path), "--horizon", "season", "--week", "4")
+    assert code == 0 and "by season" in out
+
+
+def test_lineup_uses_weekly_projections_and_names_moves(capsys, tmp_path, monkeypatch):
+    from fantasyleague.sync import projections as proj_mod
+    from fantasyleague.sync import sleeper as sleeper_mod
+
+    monkeypatch.setattr(sleeper_mod, "current_week", lambda **kw: (2026, 3))
+
+    def week_rows(season, week, **kw):
+        assert (season, week) == (2026, 3)
+        def row(pid, first, last, pos, pts, opp="X"):
+            return {"player_id": pid, "opponent": opp, "team": "T",
+                    "player": {"first_name": first, "last_name": last, "position": pos},
+                    "stats": {"pts_ppr": pts, "pts_half_ppr": pts, "pts_std": pts}}
+        return [row("1", "Jayden", "Daniels", "QB", 20), row("2", "Jonathan", "Taylor", "RB", 18),
+                row("3", "Ashton", "Jeanty", "RB", 5), row("4", "Chuba", "Hubbard", "RB", 15),
+                row("5", "Rashee", "Rice", "WR", 14), row("6", "Mike", "Evans", "WR", 0, opp=None),  # bye
+                row("7", "Parker", "Washington", "WR", 9), row("8", "Jordan", "Addison", "WR", 12),
+                row("9", "Trey", "McBride", "TE", 13), row("10", "Eddy", "Pineiro", "K", 7),
+                row("BAL", "Baltimore", "Ravens", "DEF", 8)]
+
+    monkeypatch.setattr(proj_mod, "fetch_week", week_rows)
+    path = _league_file(tmp_path)
+    code, out, _ = run(capsys, "lineup", "--league", str(path))
+    assert code == 0, out
+    assert "best lineup for week 3" in out
+    assert "START Chuba Hubbard" in out and "START Jordan Addison" in out
+    assert "SIT   Ashton Jeanty" in out and "SIT   Mike Evans" in out
+    assert "No projection" not in out
+
+
+def test_lineup_falls_back_to_season_over_17_with_byes(capsys, tmp_path, season_only):
+    path = _league_file(tmp_path)
+    code, out, _ = run(capsys, "lineup", "--league", str(path), "--week", "6")
+    assert code == 0
+    assert "season ÷ 17" in out
+    # Every starter shows a per-game number, not a season total.
+    import re
+    nums = [float(x) for x in re.findall(r"\s(\d+\.\d)\n", out)]
+    assert nums and max(nums) < 40
+
+
+def test_waivers_lists_free_agents_from_the_pool(capsys, tmp_path, monkeypatch):
+    from fantasyleague.sync import projections as proj_mod
+    from fantasyleague.sync import sleeper as sleeper_mod
+
+    monkeypatch.setattr(sleeper_mod, "current_week", lambda **kw: (2026, 1))
+    monkeypatch.setattr(proj_mod, "rest_of_season", lambda season, week, scoring, **kw: ({
+        "free agent wr": {"name": "Free Agent WR", "pos": "WR", "team": "FA", "points": 400.0},
+        "rashee rice": {"name": "Rashee Rice", "pos": "WR", "team": "KC", "points": 250.0},
+        "jayden daniels": {"name": "Jayden Daniels", "pos": "QB", "team": "WAS", "points": 300.0},
+        "bench guy": {"name": "Bench Guy", "pos": "RB", "team": "FA", "points": 1.0},
+    }, []))
+    path = _league_file(tmp_path)
+    code, out, _ = run(capsys, "waivers", "--league", str(path), "--no-trending")
+    assert code == 0, out
+    assert "Free Agent WR" in out and "+400" in out          # would start: gain shown
+    assert "Rashee Rice" not in out.split("Best available")[0]  # rostered players are never targets
+    assert "DROP" in out
+
+
+def test_trade_evaluates_both_sides_and_trades_finds_partners(capsys, tmp_path, monkeypatch):
+    from fantasyleague.sync import projections as proj_mod
+    from fantasyleague.sync import sleeper as sleeper_mod
+
+    monkeypatch.setattr(sleeper_mod, "current_week", lambda **kw: (2026, 1))
+    monkeypatch.setattr(proj_mod, "rest_of_season", lambda *a, **kw: ({}, list(range(1, 18))))
+    path = _league_file(tmp_path)
+    code, out, _ = run(capsys, "trade", "--league", str(path), "--with", "girldad",
+                       "--give", "hubbard", "--get", "adams")
+    assert code == 0, out
+    assert "note: rest-of-season projections unavailable" in out
+    assert "Matt's AI Picks sends" in out and "Girldad sends" in out and "Verdict:" in out
+
+    code, out, _ = run(capsys, "trades", "--league", str(path), "--allow-loss", "50", "--limit", "5")
+    assert code == 0, out
+    assert "Trades that improve Matt's AI Picks" in out
+
+
+def test_trade_rejects_a_player_not_on_the_roster(capsys, tmp_path, season_only):
+    path = _league_file(tmp_path)
+    code, _, err = run(capsys, "trade", "--league", str(path), "--with", "girldad",
+                       "--give", "hubbard", "--get", "nobody")
+    assert code == 1 and "not on Girldad" in err
+
+
+def test_in_season_commands_explain_a_missing_league_file(capsys, tmp_path):
+    code, _, err = run(capsys, "lineup", "--league", str(tmp_path / "missing.json"))
+    assert code == 1 and "league import" in err

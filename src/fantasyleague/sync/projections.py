@@ -11,10 +11,13 @@ better one player is than the replacement at his position.
 
 from __future__ import annotations
 
+import http.client
 import json
+import time
 import urllib.error
 import urllib.request
 from dataclasses import replace
+from pathlib import Path
 
 from ..models import Dataset, Player
 from .sleeper import USER_AGENT
@@ -137,3 +140,115 @@ def auction_values(
     spendable = teams * budget - teams * roster_size
     total = sum(v for _, v in positive)
     return {rank: max(1, round(v / total * spendable) + 1) for rank, v in positive}
+
+
+# ---------------------------------------------------------------- weekly
+
+REGULAR_SEASON_WEEKS = 18
+WEEKLY_MAX_AGE_SECONDS = 6 * 3600
+
+
+def _weekly_cache_path(season: int, week: int) -> Path:
+    from .players import cache_dir
+
+    return cache_dir() / f"sleeper-projections-{season}-w{week:02d}.json"
+
+
+def fetch_week(
+    season: int, week: int, positions: tuple[str, ...] = POSITIONS, timeout: float = 60.0,
+    max_age: float = WEEKLY_MAX_AGE_SECONDS,
+) -> list[dict]:
+    """Projection rows for one week — `/projections/nfl/{season}/{week}` — cached for a few hours.
+
+    Rows carry `player` (name, position, team, injury_status), `opponent` (None on
+    a bye) and the same `stats` block as the season endpoint. Weekly numbers move
+    all week as news lands, so the cache is short; the season endpoint's 24h would
+    hide a Wednesday injury designation until Thursday.
+    """
+    path = _weekly_cache_path(season, week)
+    try:
+        if path.exists() and time.time() - path.stat().st_mtime < max_age:
+            cached = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(cached, list) and cached:
+                return cached
+    except (OSError, ValueError):
+        path.unlink(missing_ok=True)
+    query = "&".join(f"position[]={p}" for p in positions)
+    url = f"{API}/{season}/{week}?season_type=regular&order_by=pts_half_ppr&{query}"
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        rows = json.loads(r.read())
+    if not isinstance(rows, list) or not rows:
+        raise ValueError(f"no projections returned for {season} week {week}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(rows), encoding="utf-8")
+    tmp.replace(path)
+    return rows
+
+
+def weekly_points_by_name(rows: list[dict], scoring: str = "half_ppr") -> dict[str, dict]:
+    """{normalised name: {name, pos, team, points, opponent, sleeper_id, injury}} for one week.
+
+    Keyed by name rather than id so a roster typed by hand still joins; a player
+    with no game that week (no opponent) is kept with 0 points, which is what a
+    bye is worth. Defenses come through as "<Nickname> D/ST" to match the board.
+    """
+    from ..board import join_key
+
+    key = POINTS_KEY.get(scoring)
+    if key is None:
+        raise ValueError(f"unknown scoring {scoring!r}; expected one of {', '.join(POINTS_KEY)}")
+    out: dict[str, dict] = {}
+    for row in rows:
+        player = row.get("player") or {}
+        pos = player.get("position") or ""
+        if pos == "DEF":
+            pos, name = "DST", f"{player.get('last_name', row.get('player_id', ''))} D/ST"
+        else:
+            name = " ".join(filter(None, [player.get("first_name"), player.get("last_name")]))
+        if not name or pos not in ("QB", "RB", "WR", "TE", "K", "DST"):
+            continue
+        pts = (row.get("stats") or {}).get(key)
+        opp = row.get("opponent")
+        entry = {
+            "name": name, "pos": pos, "team": row.get("team") or player.get("team") or "",
+            "points": float(pts) if isinstance(pts, int | float) and opp else 0.0,
+            "opponent": opp, "sleeper_id": str(row.get("player_id") or ""),
+            "injury": player.get("injury_status"),
+        }
+        n = join_key(name)
+        # Two players can share a name (rare); keep the higher-projected one.
+        if n not in out or entry["points"] > out[n]["points"]:
+            out[n] = entry
+    return out
+
+
+def rest_of_season(
+    season: int, from_week: int, scoring: str = "half_ppr", through: int = REGULAR_SEASON_WEEKS - 1,
+    fetch: object = None,
+) -> tuple[dict[str, dict], list[int]]:
+    """Sum weekly projections from *from_week* through *through* (week 17 by default).
+
+    Fantasy playoffs end in week 17, so week 18 is left out. Returns
+    ({normalised name: {name, pos, team, points}}, [weeks that could not be fetched]).
+    A week that fails to download is skipped rather than aborting the sum — a
+    partial rest-of-season is still a far better trade lens than a full-season number.
+    """
+    getter = fetch or fetch_week
+    totals: dict[str, dict] = {}
+    missing: list[int] = []
+    for week in range(from_week, through + 1):
+        try:
+            rows = getter(season, week)
+        except (OSError, http.client.HTTPException, ValueError):
+            missing.append(week)
+            continue
+        for n, e in weekly_points_by_name(rows, scoring).items():
+            slot = totals.setdefault(n, {"name": e["name"], "pos": e["pos"], "team": e["team"], "points": 0.0,
+                                         "sleeper_id": e["sleeper_id"], "games": 0})
+            slot["points"] += e["points"]
+            slot["team"] = e["team"] or slot["team"]
+            if e["opponent"]:
+                slot["games"] += 1
+    return totals, missing

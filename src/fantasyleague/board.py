@@ -134,6 +134,22 @@ def normalise_name(name: str) -> str:
     return " ".join("".join(c for c in folded if c.isalnum() or c.isspace()).split())
 
 
+_SUFFIXES = frozenset({"jr", "sr", "ii", "iii", "iv", "v"})
+
+
+def join_key(name: str) -> str:
+    """`normalise_name` with generational suffixes dropped, for joining across sources.
+
+    Yahoo prints "Travis Etienne Jr."; Sleeper's projection rows say "Travis
+    Etienne". Keying rosters and projections on the same suffix-blind form is what
+    lets a roster typed from one site value against numbers from another.
+    """
+    parts = normalise_name(name).split()
+    while len(parts) > 1 and parts[-1] in _SUFFIXES:
+        parts.pop()
+    return " ".join(parts)
+
+
 def resolve(data: Dataset, token: str | int) -> Player:
     """Turn a rank or (part of) a name into exactly one player.
 
